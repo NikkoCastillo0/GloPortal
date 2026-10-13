@@ -1,8 +1,5 @@
-import Homepage from './pages/Homepage.jsx'
-import './App.css'
+import Homepage from "./pages/Homepage.jsx";
 
 export default function App() {
-  return <Homepage/>
+  return <Homepage />;
 }
-
-

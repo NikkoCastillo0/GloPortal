@@ -1,5 +1,5 @@
 
-/* Hero/About section */
+/*About section */
 .homepage-about {
   background-color: #999999;
   display: flex;
@@ -9,7 +9,7 @@
   padding: 40px;
 }
 
-/* Tire service image */
+/*tire image*/
 .hero {
   flex: 1;
   display: flex;

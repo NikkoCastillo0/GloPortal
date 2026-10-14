@@ -9,7 +9,11 @@ import Footer from '../components/home/Footer.jsx'
 export default function Homepage(){
     return(
         <>
-            <Header/>
+            <Header 
+                role="customer" 
+                isHome={false} 
+                isSignedIn={false}
+            />
             <main>
                 <Hero/>
                 <BusinessHighlights/>

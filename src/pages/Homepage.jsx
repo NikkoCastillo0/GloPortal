@@ -15,8 +15,10 @@ export default function Homepage(){
                 isSignedIn={false}
             />
             <main>
-                <Hero/>
-                <BusinessHighlights/>
+            <div className="homepage-about">
+                <Hero />
+                <BusinessHighlights />
+            </div>
                 <ServiceCarousel/>
                 <CalendarPreview/>
                 <ContactSection/>

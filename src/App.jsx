@@ -3,7 +3,5 @@ import ViewAppointments from './pages/ViewAppointments.jsx'
 import './App.css'
 
 export default function App() {
-  return <Homepage/>
+  return <Homepage />;
 }
-
-

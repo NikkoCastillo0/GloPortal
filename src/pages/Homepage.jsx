@@ -10,7 +10,7 @@ export default function Homepage() {
   return (
     <>
       <Header role="customer" isHome={false} isSignedIn={false} />
-      <main>
+      <main className="p-8">
         <Hero />
         <BusinessHighlights />
         <ServiceCarousel />

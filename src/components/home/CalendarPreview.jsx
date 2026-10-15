@@ -7,6 +7,7 @@ export default function CalendarPreview() {
   );
 
   const [selectedDay, setSelectedDay] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
@@ -26,9 +27,31 @@ export default function CalendarPreview() {
 
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const timeSlots = [
+  "8:00 AM",
+  "9:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM",
+  "4:00 PM",
+];
+
+// Temporary test data, NOT real appointments.
+const mockBookedTimes =
+  selectedDay === null
+    ? []
+    : selectedDay % 2 === 0
+      ? ["10:00 AM", "2:00 PM"]
+      : ["9:00 AM", "1:00 PM"];
+
+
   function changeMonth(amount) {
     setCurrentMonth(new Date(year, month + amount, 1));
     setSelectedDay(null);
+    setSelectedTime(null);
   }
 
   return (
@@ -73,7 +96,10 @@ export default function CalendarPreview() {
               <button
                 key={day}
                 type="button"
-                onClick={() => setSelectedDay(day)}
+                onClick={() => {
+                    setSelectedDay(day);
+                    setSelectedTime(null);
+                }}
                 aria-pressed={selectedDay === day}
                 className={`min-h-10 cursor-pointer rounded border border-gray-200
                   ${selectedDay === day
@@ -87,15 +113,66 @@ export default function CalendarPreview() {
           )}
         </div>
 
-        <div className="mt-6 text-center">
-          {selectedDay === null ? (
-            <p>Select a date to view available times.</p>
-          ) : (
-            <p>
-              Selected date: {month + 1}/{selectedDay}/{year}
-            </p>
-          )}
-        </div>
+        
+<div className="mt-6 border-t border-gray-200 pt-6">
+  {selectedDay === null ? (
+    <p className="text-center text-gray-600">
+      Select a date to view available times.
+    </p>
+  ) : (
+    <div>
+      <h3 className="mb-2 text-xl font-semibold">
+        {new Date(year, month, selectedDay).toLocaleDateString(
+          "en-US",
+          {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          }
+        )}
+      </h3>
+
+      <p className="mb-4 text-sm text-gray-600">
+        Select an available appointment time.
+      </p>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {timeSlots.map((time) => {
+          const isBooked = mockBookedTimes.includes(time);
+
+          return (
+            <button
+              key={time}
+              type="button"
+              disabled={isBooked}
+              aria-pressed={selectedTime === time}
+              onClick={() => setSelectedTime(time)}
+              className={`rounded-md border px-3 py-3 text-sm
+                ${
+                  isBooked
+                    ? "cursor-not-allowed bg-gray-200 text-gray-500"
+                    : selectedTime === time
+                      ? "cursor-pointer bg-gray-900 text-white"
+                      : "cursor-pointer bg-white hover:bg-gray-100"
+                }`}
+            >
+              {time}
+              {isBooked ? " - Booked" : ""}
+            </button>
+          );
+        })}
+      </div>
+
+      {selectedTime && (
+        <p className="mt-5 text-center font-medium text-green-700">
+          Selected appointment time: {selectedTime}
+        </p>
+      )}
+    </div>
+  )}
+</div>
+
 
       </div>
     </section>

@@ -2,21 +2,35 @@ import { useEffect, useId, useRef, useState } from 'react'
 import ServiceCard from './ServiceCard.jsx'
 import tireMountAndBalanceImage from '../assets/services/tire-mount-and-balance.png'
 import tirePlugPatchImage from '../assets/services/tire-plug-patch.png'
+import wheelBalancingImage from '../assets/services/wheel-balancing.jpg'
+import tpmsServiceImage from '../assets/services/tpms-service.jpg'
 import './ServiceCarousel.css'
 
 const defaultServices = [
-  { title: 'Wheel Painting', image: '', description: '' },
   {
     title: 'Tire Mount and Balance',
     image: tireMountAndBalanceImage,
-    description: '',
+    description:
+      'Tire mounting and balancing help ensure proper tire installation and a smoother ride.',
   },
   {
     title: 'Tire Plug/Patch',
     image: tirePlugPatchImage,
-    description: '',
+    description:
+      'Tire puncture repairs may help restore a tire when the damage is safely repairable.',
   },
-  { title: 'TPMS Service', image: '', description: '' },
+  {
+    title: 'Wheel Balancing',
+    image: wheelBalancingImage,
+    description:
+      'Experiencing vibrations while driving? A wheel balancing could help. We correct uneven weight distribution between the tire and wheel for a smoother ride and more even tire wear.',
+  },
+  {
+    title: 'TPMS Service',
+    image: tpmsServiceImage,
+    description:
+      'Tire Pressure Monitoring System service helps identify and address tire pressure sensor issues.',
+  },
 ]
 
 function ServiceCarousel({ services = defaultServices, title = 'Our Services' }) {

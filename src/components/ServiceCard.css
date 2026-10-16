@@ -32,6 +32,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: filter 180ms ease;
 }
 
 .service-card__image-placeholder {
@@ -54,14 +55,19 @@
   padding: clamp(0.75rem, 3vw, 1.25rem);
   box-sizing: border-box;
   color: #fff;
-  background: rgb(8 6 13 / 92%);
+  background: rgb(8 6 13 / 78%);
   opacity: 0;
   text-align: center;
   transition: opacity 180ms ease;
 }
 
+.service-card:hover .service-card__image,
+.service-card:focus-within .service-card__image {
+  filter: brightness(0.68);
+}
+
 .service-card:hover .service-card__overlay,
-.service-card:focus-visible .service-card__overlay {
+.service-card:focus-within .service-card__overlay {
   opacity: 1;
 }
 
@@ -85,9 +91,14 @@
   overflow-wrap: anywhere;
   hyphens: auto;
   text-wrap: balance;
+  text-align: center;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .service-card__image {
+    transition: none;
+  }
+
   .service-card__overlay {
     transition: none;
   }

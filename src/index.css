@@ -134,3 +134,18 @@
     @apply font-sans;
   }
 }
+
+{/* table css */}
+table, th, td {
+  border: 2px solid rgb(18, 18, 18);
+  border-collapse: collapse;
+  padding: 15px
+}
+thead{
+  background-color:rgb(122, 122, 122);
+  color: black;
+}
+tbody{
+  background-color:rgb(93, 93, 93);
+  color: black;
+}

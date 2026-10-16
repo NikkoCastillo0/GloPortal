@@ -8,7 +8,7 @@ import './ServiceCarousel.css'
 
 const defaultServices = [
   {
-    title: 'Tire Mount and Balance',
+    title: 'Tire Mount And Balance',
     image: tireMountAndBalanceImage,
     description:
       'Tire mounting and balancing help ensure proper tire installation and a smoother ride.',

@@ -1,34 +1,75 @@
 import ContactImage from "../../assets/ContactImage.png";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "../ui/textarea";
+
+import { useForm } from "react-hook-form";
 
 export default function ContactSection() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => console.log(data);
+  console.log(errors);
+
   return (
-    <section className="flex w-full flex-col items-center gap-8 p-8 md:flex-row">
+    <section className="grid grid-cols-2 gap-4">
       <img
         src={ContactImage}
         alt="Mechanic working on a tire"
-        className="w-1/3 md:w-2/5 lg:w-1/3"
+        className="w-64 mx-auto rounded-lg"
       />
-      <div className="flex w-full flex-col justify-center md:flex-1">
-        <h1 className="p-5 mb-5 text-center text-3xl font-bold">Contact</h1>
-        <form className="flex flex-col gap-4">
-          <div className="flex flex-col gap-4 md:flex-row">
-            <div className="flex flex-1 flex-col gap-4">
-              <input type="text" name="name" id="name" placeholder="Name" />
-              <input type="email" name="email" id="email" placeholder="Email" />
+      <Card size="sm" className="w-full mx-auto">
+        <CardHeader>
+          <h2 className="text-2xl font-bold">Contact</h2>
+        </CardHeader>
+        <CardContent>
+          <form id="contact-form" onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label>Name</Label>
+                </div>
+                <Input
+                  type="text"
+                  {...register("Name", { required: true, maxLength: 80 })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  {...register("Email", {
+                    required: true,
+                    pattern: /^\S+@\S+$/i,
+                  })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>Message</Label>
+                <Textarea
+                  type="text"
+                  {...register("Message", { required: true })}
+                />
+              </div>
             </div>
-            <a
-              href="mailto:garagegloauto@gmail.com"
-              className="flex-1 text-center text-blue-500 hover:underline"
-            >
-              Garagegloauto@gmail.com
-            </a>
-          </div>
-          <textarea placeholder="Message" />
-          <button type="submit" className="self-center">
+          </form>
+        </CardContent>
+        <CardFooter className="flex-col gap-2">
+          <Button type="submit" form="contact-form" className="mx-auto">
             Submit
-          </button>
-        </form>
-      </div>
+          </Button>
+        </CardFooter>
+      </Card>
     </section>
   );
 }

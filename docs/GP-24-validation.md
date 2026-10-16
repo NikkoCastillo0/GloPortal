@@ -13,7 +13,21 @@ The existing appointment components were completed on `feat/GP-24-appointment-fi
 - Superseded requests cannot replace current results. Loading, error and empty states are distinct.
 - Narrow screens contain horizontal table scrolling in a keyboard-focusable region.
 
-These interpretations still require confirmation against Jira GP-24, GP-11 and linked tickets. Those tickets were inaccessible in this session. In particular, `Contains` ownership is unknown, so it was left unimplemented. The Figma file identifier and connected design access were unavailable; node 201:245 and the mobile equivalent were not inspected. No claim of Figma fidelity is made.
+## Confirmed Jira scope
+
+Jira GP-24, parent GP-11, and sibling tickets GP-22, GP-23, GP-25, GP-26, GP-27 and GP-220 were read after the Atlassian connection became available. GP-24 requires the filter dropdown, applying its selected option to Supabase, resetting pagination on filter changes, and displaying records according to the selected filter. GP-11 confirms completed appointments and six records per page. Neither specifies date direction or a different job-count definition; the choices above document the implementation.
+
+| Element | Ticket ownership | GP-24 handling |
+| --- | --- | --- |
+| Filter dropdown / Supabase filter / pagination reset | [GP-24](https://nikkocastillo.atlassian.net/browse/GP-24) | Implemented and fixture tested |
+| Contains search input and search query | [GP-25](https://nikkocastillo.atlassian.net/browse/GP-25) | Outside GP-24; deliberately left unimplemented |
+| Table and its loading/error/empty/responsive behavior | [GP-22](https://nikkocastillo.atlassian.net/browse/GP-22) | Existing uncommitted integration retained and tested |
+| Pagination controls and page queries | [GP-23](https://nikkocastillo.atlassian.net/browse/GP-23) | Existing uncommitted integration retained; filter reset verified |
+| Edit Appointments button and destination | [GP-26](https://nikkocastillo.atlassian.net/browse/GP-26) | Separate dependency; no navigation implemented |
+| Admin authorization and restricted data access | [GP-27](https://nikkocastillo.atlassian.net/browse/GP-27) | Separate dependency; no production route or auth changes |
+| Overall page structure and heading | [GP-220](https://nikkocastillo.atlassian.net/browse/GP-220) | Supplied heading corrected at existing page integration point |
+
+Figma is connected, but the file URL/key has not been provided or found in the repository or tickets. The node identifier 201:245 alone does not identify a file. Desktop and mobile nodes remain uninspected pending that locator; no claim of Figma fidelity is made.
 
 ## Local preview
 
@@ -47,4 +61,4 @@ The repository's existing package-lock.json was malformed before this work (incl
 
 A read-only zero-row request to the configured Supabase view failed to connect. The actual deployed schema, presence of the view, SQL execution, authenticated RLS behavior, Pacific-date derivation and live counts/order remain unverified. Applying the migration requires separate authorization. Live verification remains blocked by that dependency and reachable authenticated Supabase access.
 
-Before release: confirm Jira scope (including `Contains`, date semantics and job-count semantics), inspect desktop/mobile Figma, authorize and validate the migration against the actual schema, then verify real data with the appropriate role. No production route was added; protected-route integration remains separate. Jira status is unchanged.
+Before release: inspect desktop/mobile Figma once its file URL is supplied, authorize and validate the migration against the actual schema, then verify real data with the appropriate role. The parent story's search, edit-navigation and authorization requirements remain dependencies on GP-25, GP-26 and GP-27 respectively. No production route was added; protected-route integration remains separate. Jira GP-24 remains In Progress; no Jira issue was edited.

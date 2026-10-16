@@ -1,11 +1,19 @@
 import { createServer } from 'vite'
 import { queryFixtures } from './appointment-fixtures.mjs'
 
-const port = Number(process.env.GP24_PREVIEW_PORT || 4174)
+const isTest = process.argv.includes('--test')
+const port = isTest ? 4175 : Number(process.env.GP24_PREVIEW_PORT || 4174)
 const origin = `http://127.0.0.1:${port}`
 const live = process.argv.includes('--live')
 const entry = '\0gp24-preview'
 const server = await createServer({
+  // Different Vite configurations must not invalidate each other's optimizer files.
+  cacheDir: `node_modules/.vite-gp24-${isTest ? 'test' : live ? 'live' : 'fixtures'}`,
+  // Optimize the virtual entry's dependencies, not the unrelated homepage in index.html.
+  optimizeDeps: {
+    noDiscovery: true,
+    include: ['react', 'react-dom/client', 'react/jsx-dev-runtime', 'lucide-react', '@supabase/supabase-js'],
+  },
   server: { host: '127.0.0.1', port, strictPort: true, open: false },
   ...(!live && { define: {
     'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(`${origin}/__gp24-api`),

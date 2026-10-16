@@ -61,6 +61,23 @@ The browser suite covers all five sorts, query ordering, displayed records, pagi
 
 The repository's existing package-lock.json was malformed before this work (including a missing closing object before the nested content-type entry). npm regenerated it while adding Playwright. The build retains the existing large-chunk warning. npm audit reports seven high-severity findings in the existing shadcn tooling dependency chain; unrelated dependency upgrades were not attempted.
 
+### Browser preview isolation follow-up
+
+The intermittent first (1280px) test stalled before filter assertions because the test configuration could reuse the long-running manual preview. That server shared Vite's `node_modules/.vite` optimizer cache with the normal application server and other preview instances. Diagnostic Vite logs showed a different server configuration deleting/replacing that cache; requests for the older server's React dependency URLs then returned HTTP 504. A standalone desktop run could pass when the cache was warm, so this was not a desktop filtering defect.
+
+The preview now uses distinct optimizer caches for fixtures, live preview and tests. Playwright always owns a separate fixture server on port 4175 (`--test`), never reusing the manual/live preview on port 4174. Optimization includes only the virtual entry's dependencies instead of scanning the homepage. Native bundling is limited to one thread in the test server. The existing 30-second timeout, all assertions and filtering/application logic are unchanged.
+
+A cold isolated run exposed laptop-wide memory exhaustion in Rolldown/Node. After stopping the old agent-started manual preview and using a smaller temporary Node heap, all 12 tests passed with one worker (29.6 seconds):
+
+```powershell
+$env:NODE_OPTIONS='--max-old-space-size=256 --max-semi-space-size=8'
+npm run test:appointments -- --workers=1
+```
+
+The NODE_OPTIONS value was applied only to the verification command's process environment, not saved to project/environment files. Manual previews still use `npm run preview:appointments` and port 4174. Browser results remain synthetic fixture verification.
+
+Reviewed AppointmentTable and AppointmentPagination: existing query/state wiring is necessary to exercise GP-24 filter reset but overlaps GP-22/GP-23 ownership; neither was changed in this follow-up. The lockfile adds only the three Playwright packages and has no existing package version upgrades, but the earlier regeneration removed optional platform entries and substantial resolved/integrity metadata. That broader lockfile churn warrants teammate/portability review; it was not changed as part of this browser fix.
+
 ## Database and remaining dependencies
 
 On October 16, 2026, the user authorized this migration on the team's shared development project **GloPortal-Dev**, reference `pokpsxfzgnduhxaqdtci`. CLI account access was verified: the management query ran as `postgres` with CREATE privilege on public. The live PostgreSQL 17.11 schema, constraints, joins, table grants, RLS policies and `private.is_admin()` matched the migration dependencies. All four prerequisite versions were present, and the target view did not exist. A dry run listed only GP-24. No other project was modified.

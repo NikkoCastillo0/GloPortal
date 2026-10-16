@@ -5,9 +5,9 @@ import menuIcon from '../../assets/Hamburger-Menu.svg'
 //for future use of buttons and scrolling to sections
 const customerNav=[
     {label: 'Home', href: '#home'},
-    {label: 'Services', href: '#Services'},
-    {label: 'Calendar', href: '#Calendar'},
-    {label: 'Contact', href: '#Contact'}
+    {label: 'Services', href: '#services'},
+    {label: 'Calendar', href: '#calendar'},
+    {label: 'Contact', href: '#contact'}
 ]
 
 export default function Header({role='customer', isHome=false, isSignedIn=false}){
@@ -26,9 +26,10 @@ export default function Header({role='customer', isHome=false, isSignedIn=false}
     return(
         <header 
             className="
+                sticky top-0 z-50
                 grid min-h-[70px] grid-cols-[1fr_auto] items-center
                 bg-[#323232] px-[14px] py-2
-                shadow-[0_4pc_10px_rgba(0,0,0,0.35)]
+                shadow-[0_5px_8px_rgba(0,0,0,0.35)]
                 md: min-h-[85px] md:grid-cols-[auto_1fr_auto] md:px-[18px]
                 lg: min-h-[100px] lg:px-6    
             "

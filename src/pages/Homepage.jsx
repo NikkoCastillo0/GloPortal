@@ -11,17 +11,17 @@ export default function Homepage(){
         <>
             <Header 
                 role="customer" 
-                isHome={false} 
+                isHome={true} 
                 isSignedIn={false}
             />
             <main>
             <div className="homepage-about">
-                <Hero />
+                <Hero id="home"/>
                 <BusinessHighlights />
             </div>
-                <ServiceCarousel/>
-                <CalendarPreview/>
-                <ContactSection/>
+                <ServiceCarousel id="services"/>
+                <CalendarPreview id="calendar"/>
+                <ContactSection id="contact"/>
             </main>
             <Footer/>
         </>

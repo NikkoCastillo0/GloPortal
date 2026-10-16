@@ -22,7 +22,10 @@ export default function ContactSection() {
   console.log(errors);
 
   return (
-    <section className="grid grid-cols-2 gap-4">
+    <section 
+      className="grid grid-cols-2 gap-4"
+      id="contact"
+    >
       <img
         src={ContactImage}
         alt="Mechanic working on a tire"

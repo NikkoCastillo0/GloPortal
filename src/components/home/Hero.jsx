@@ -3,7 +3,13 @@ import "./Hero.css";
 
 export default function Hero() {
   return (
-    <section className="hero" aria-label="Garage Glo tire service">
+    <section 
+      id="home"
+      className="
+        hero
+        scroll-mt-[500px]
+      " 
+      aria-label="Garage Glo tire service">
       <img
         src={tireServiceImage}
         alt="Mechanic working on a vehicle tire"

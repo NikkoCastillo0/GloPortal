@@ -1,8 +1,7 @@
 import Homepage from './pages/Homepage.jsx'
-import './App.css'
+import ViewAppointments from './pages/ViewAppointments.jsx'
+
 
 export default function App() {
-  return <Homepage/>
+  return <Homepage />;
 }
-
-

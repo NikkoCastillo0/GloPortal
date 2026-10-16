@@ -149,3 +149,8 @@ tbody{
   background-color:rgb(93, 93, 93);
   color: black;
 }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}

@@ -1,5 +1,7 @@
+import { ChevronDown } from 'lucide-react'
+
 const filterOptions = [
-  { value: 'date', label: 'by date' },
+  { value: 'date', label: 'Filter by date' },
   { value: 'az', label: 'A-Z' },
   { value: 'za', label: 'Z-A' },
   { value: 'most-jobs', label: 'Most jobs' },
@@ -9,11 +11,11 @@ const filterOptions = [
 export default function AppointmentFilters({ value, onChange, date, onDateChange }) {
   return (
     <div className="flex flex-wrap items-end gap-4">
-      <label className="grid gap-1">
+      <label className="relative block w-[374px] max-w-full">
         <span className="sr-only">Filter appointments</span>
         <select
           aria-label="Filter appointments"
-          className="min-h-11 rounded border bg-white px-3 py-2"
+          className="h-[46px] w-full appearance-none rounded-[22.697px] border-[2.837px] border-[#d9d9d9] bg-white py-0 pl-3 pr-11 text-[clamp(20px,2.65vw,45.394px)] leading-none text-[#323232] focus-visible:outline-2 focus-visible:outline-offset-2"
           value={value}
           onChange={(event) => onChange(event.target.value)}
         >
@@ -23,6 +25,10 @@ export default function AppointmentFilters({ value, onChange, date, onDateChange
             </option>
           ))}
         </select>
+        <ChevronDown
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 top-1/2 size-6 -translate-y-1/2 text-[#1e1e1e]"
+        />
       </label>
       <label className="grid gap-1">
         <span>Appointment date (Pacific time)</span>

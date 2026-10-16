@@ -6,7 +6,7 @@ The existing appointment components were completed on `feat/GP-24-appointment-fi
 
 - The heading is `All Appointments`, following the supplied design requirement.
 - Completed records are queried through Supabase with exact counts and six records per page.
-- `by date` sorts earliest first; A–Z and Z–A sort by customer surname then first name.
+- `Filter by date` sorts earliest first; A–Z and Z–A sort by customer surname then first name.
 - Most jobs / Least jobs sort by the customer's lifetime completed appointment count visible under RLS, then name/date/ID for deterministic pagination.
 - An optional date input filters by the appointment's calendar day in America/Los_Angeles. PostgreSQL derives the date, including DST; clearing it restores all dates.
 - Every sort/date change resets pagination to page one. Pagination is disabled while loading and at its boundaries.
@@ -27,7 +27,13 @@ Jira GP-24, parent GP-11, and sibling tickets GP-22, GP-23, GP-25, GP-26, GP-27 
 | Admin authorization and restricted data access | [GP-27](https://nikkocastillo.atlassian.net/browse/GP-27) | Separate dependency; no production route or auth changes |
 | Overall page structure and heading | [GP-220](https://nikkocastillo.atlassian.net/browse/GP-220) | Supplied heading corrected at existing page integration point |
 
-Figma is connected, but the file URL/key has not been provided or found in the repository or tickets. The node identifier 201:245 alone does not identify a file. Desktop and mobile nodes remain uninspected pending that locator; no claim of Figma fidelity is made.
+## Figma review
+
+Inspected [View Appointments, node 201:245](https://www.figma.com/design/si0Vi5qSdqIA1twxEzf78m/GloPortal?node-id=201-245) using design context and its screenshot, plus the filter node 203:608. The supplied URL's node 115:147 is the Contact Section; the original appointment node was used for this task. The heading matches `All Appointments`. The dropdown now uses the design's `Filter by date` wording, 374px maximum width, 46px height, 22.697px corner radius and 2.837px #d9d9d9 border. The chevron reuses the installed lucide-react component. Text scales down at smaller widths and uses #323232 for readable contrast rather than the design's pale placeholder color.
+
+Both available pages (Main Page 0:1 and Styling Guide 2:4) were inspected for a mobile counterpart. No mobile View Appointments frame exists in their returned structure. Responsive behavior was therefore tested at 1280px, 768px and 390px, without claiming a match to an unavailable mobile design.
+
+Out-of-scope differences remain: GP-25 owns Contains, GP-26 owns Edit Appointments, GP-220 owns overall page/heading typography and GP-219 owns the shared header. GP-22 owns table styling and the design's Location column (no location field exists in the checked-in schema). GP-23 owns the pagination placement beside the filters. Those teammates' components and layout were not restyled during this design follow-up. The optional Pacific date input is a functional extension requested for date filtering; it is not shown in the Figma frame. Full-screen pixel fidelity is not claimed.
 
 ## Local preview
 
@@ -61,4 +67,4 @@ The repository's existing package-lock.json was malformed before this work (incl
 
 A read-only zero-row request to the configured Supabase view failed to connect. The actual deployed schema, presence of the view, SQL execution, authenticated RLS behavior, Pacific-date derivation and live counts/order remain unverified. Applying the migration requires separate authorization. Live verification remains blocked by that dependency and reachable authenticated Supabase access.
 
-Before release: inspect desktop/mobile Figma once its file URL is supplied, authorize and validate the migration against the actual schema, then verify real data with the appropriate role. The parent story's search, edit-navigation and authorization requirements remain dependencies on GP-25, GP-26 and GP-27 respectively. No production route was added; protected-route integration remains separate. Jira GP-24 remains In Progress; no Jira issue was edited.
+Before release: authorize and validate the migration against the actual schema, then verify real data with the appropriate role. The parent story's search, edit-navigation and authorization requirements remain dependencies on GP-25, GP-26 and GP-27 respectively. A mobile reference is needed for mobile design fidelity. No production route was added; protected-route integration remains separate. Jira GP-24 remains In Progress; no Jira issue was edited.

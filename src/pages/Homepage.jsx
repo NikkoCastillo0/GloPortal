@@ -6,6 +6,27 @@ import CalendarPreview from "../components/home/CalendarPreview.jsx";
 import ContactSection from "../components/home/ContactSection.jsx";
 import Footer from "../components/home/Footer.jsx";
 
+export default function Homepage(){
+    return(
+        <>
+            <Header 
+                role="customer" 
+                isHome={false} 
+                isSignedIn={false}
+            />
+            <main>
+            <div className="homepage-about">
+                <Hero />
+                <BusinessHighlights />
+            </div>
+                <ServiceCarousel/>
+                <CalendarPreview/>
+                <ContactSection/>
+            </main>
+            <Footer/>
+        </>
+    )
+}
 export default function Homepage() {
   return (
     <>

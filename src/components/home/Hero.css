@@ -1,0 +1,67 @@
+
+/*About section */
+.homepage-about {
+  background-color: #999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  padding: 40px;
+}
+
+/*tire image*/
+.hero {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 420px;
+  height: 300px;
+  object-fit: cover;
+}
+
+/* Business highlights */
+.business-highlights {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  max-width: 400px;
+}
+
+.business-highlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  color: #222222;
+  font-size: 16px;
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
+  .homepage-about {
+    flex-direction: column;
+    gap: 25px;
+    padding: 25px 15px;
+  }
+
+  .hero,
+  .business-highlights {
+    width: 100%;
+  }
+
+  .hero-image {
+    height: auto;
+    max-width: 100%;
+  }
+
+  .business-highlights {
+    gap: 25px;
+  }
+}

@@ -1,6 +1,5 @@
 import garageGloLogo from '../../assets/GarageGloLogo.svg'
 import menuIcon from '../../assets/Hamburger-Menu.svg'
-import './Header.css'
 
 //set up label and refereces
 //for future use of buttons and scrolling to sections
@@ -25,25 +24,85 @@ export default function Header({role='customer', isHome=false, isSignedIn=false}
     }
 
     return(
-        <header className="site-header" aria-label="Site header">
+        <header 
+            className="
+                grid min-h-[70px] grid-cols-[1fr_auto] items-center
+                bg-[#323232] px-[14px] py-2
+                shadow-[0_4pc_10px_rgba(0,0,0,0.35)]
+                md: min-h-[85px] md:grid-cols-[auto_1fr_auto] md:px-[18px]
+                lg: min-h-[100px] lg:px-6    
+            "
+        >
             {/* Inserting logo png */}
-            <a href="/" className="garage-glo-logo" aria-label="GloPortal home">
-                <img src={garageGloLogo} alt="Garage Glo Logo" />
+            <a href="/" 
+                className="garage-glo-logo" 
+                aria-label="GloPortal home"
+            >
+                <img 
+                    src={garageGloLogo} 
+                    alt="Garage Glo Logo" 
+                    className="
+                        block h-[60px] w-[60px] object-contain
+                        md:h-[72px] md:w-[72px]
+                        lg:h-[90px] lg:w-[90px]
+                    "
+                />
             </a>
 
             {/* Inserting navigation when needed */}
             {showCustomerNav && 
-            (<nav aria-label="Homepage navigation">
+            (<nav 
+                aria-label="Homepage navigation"
+                className="
+                    hidden items-center justify-self-end
+                    gap-5 md:flex
+                    md:mr-15
+                    lg:mr-20 lg:gap-[54px]
+                "
+            >
+
                 {customerNav.map((link) => (
-                    <a key={link.label} href={link.href}>
+                    <a 
+                        key={link.label} 
+                        href={link.href}
+                        className="
+                            whitespace-nowrap text-xl font-semibold
+                            text-[#D9D9D9] no-underline
+                            hover:text-white
+                            md:text-[22px]
+                            lg:text-[38px]
+                        "
+                    >
                         {link.label}
                     </a>
                 ))}
-            </nav>)}
+            </nav>)
+            }
 
             {/* Inserting hamburger menu */}
-            <button className="menu-button" aria-label='menu-button' onClick={() => console.log('Menu button clicked')}>
-                <img src={menuIcon} alt="Menu" />
+            <button 
+                type="button"
+                className="
+                    col-start-2 flex h-[42px] w-[42px]
+                    cursor-pointer items-center justify-center
+                    justify-self-end
+                    border-none bg-transparent p-0
+                    md: col-start-3
+                    md:h-12 md:w-12
+                    lg:h-[60px] lg:w-[60px]
+                " 
+                aria-label='menu-button' 
+                onClick={() => console.log('Menu button clicked')}
+            >
+                <img 
+                    src={menuIcon} 
+                    alt="Menu" 
+                    className="
+                        block h-42px] w-[42px]
+                        md:h-12 md:w-12
+                        lg:h-[60px] lg:w-[60px]
+                    "
+                />
             </button>
         </header>
     )

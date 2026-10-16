@@ -80,7 +80,11 @@ function ServiceCarousel({ services = defaultServices, title = 'Our Services' })
   }
 
   return (
-    <section className="service-carousel" aria-labelledby={headingId}>
+    <section
+      id="services"
+      className="service-carousel"
+      aria-labelledby={headingId}
+    >
       <div className="service-carousel__header">
         <h2 className="service-carousel__heading" id={headingId}>
           {title}

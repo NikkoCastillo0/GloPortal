@@ -1,34 +1,143 @@
+import { useState } from "react";
+import emailjs from "@emailjs/browser";
 import ContactImage from "../../assets/ContactImage.png";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "../ui/textarea";
+
+import { useForm } from "react-hook-form";
 
 export default function ContactSection() {
+  const [submissionStatus, setSubmissionStatus] = useState("");
+  const sendEmail = async (data) => {
+    setSubmissionStatus("sending");
+
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          name: data.name,
+          email: data.email,
+          message: data.message,
+        },
+        { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY },
+      );
+      setSubmissionStatus("success");
+    } catch (error) {
+      console.error("Failed to send contact form:", error);
+      setSubmissionStatus("error");
+    }
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   return (
-    <section className="flex w-full flex-col items-center gap-8 p-8 md:flex-row">
+    <section className="grid grid-cols-2 gap-4" id="contact">
       <img
         src={ContactImage}
         alt="Mechanic working on a tire"
-        className="w-1/3 md:w-2/5 lg:w-1/3"
+        className="w-64 mx-auto rounded-lg"
       />
-      <div className="flex w-full flex-col justify-center md:flex-1">
-        <h1 className="p-5 mb-5 text-center text-3xl font-bold">Contact</h1>
-        <form className="flex flex-col gap-4">
-          <div className="flex flex-col gap-4 md:flex-row">
-            <div className="flex flex-1 flex-col gap-4">
-              <input type="text" name="name" id="name" placeholder="Name" />
-              <input type="email" name="email" id="email" placeholder="Email" />
+      <Card size="sm" className="w-full mx-auto">
+        <CardHeader>
+          <h2 className="text-2xl font-bold">Contact</h2>
+        </CardHeader>
+        <CardContent>
+          <form id="contact-form" onSubmit={handleSubmit(sendEmail)}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="contact-name">Name</Label>
+                </div>
+                <Input
+                  id="contact-name"
+                  type="text"
+                  {...register("name", {
+                    required: "Please enter your name.",
+                    maxLength: {
+                      value: 80,
+                      message: "Name must be 80 characters or fewer.",
+                    },
+                  })}
+                  aria-invalid={Boolean(errors.name)}
+                />
+                {errors.name && (
+                  <p className="text-sm text-destructive" role="alert">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="contact-email">Email</Label>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  {...register("email", {
+                    required: "Please enter your email.",
+                    pattern: {
+                      value: /^\S+@\S+$/i,
+                      message: "Please enter a valid email address.",
+                    },
+                  })}
+                  aria-invalid={Boolean(errors.email)}
+                />
+                {errors.email && (
+                  <p className="text-sm text-destructive" role="alert">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="contact-message">Message</Label>
+                <Textarea
+                  id="contact-message"
+                  type="text"
+                  {...register("message", {
+                    required: "Please enter a message.",
+                  })}
+                  name="message"
+                  aria-invalid={Boolean(errors.message)}
+                />
+                {errors.message && (
+                  <p className="text-sm text-destructive" role="alert">
+                    {errors.message.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <a
-              href="mailto:garagegloauto@gmail.com"
-              className="flex-1 text-center text-blue-500 hover:underline"
-            >
-              Garagegloauto@gmail.com
-            </a>
-          </div>
-          <textarea placeholder="Message" />
-          <button type="submit" className="self-center">
-            Submit
-          </button>
-        </form>
-      </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex-col gap-2">
+          <Button
+            type="submit"
+            form="contact-form"
+            className="mx-auto"
+            disabled={submissionStatus === "sending"}
+          >
+            {submissionStatus === "sending" ? "Sending..." : "Submit"}
+          </Button>
+          {submissionStatus === "success" && (
+            <p role="status">Your message has been sent.</p>
+          )}
+          {submissionStatus === "error" && (
+            <p className="text-sm text-destructive" role="alert">
+              Sorry, your message could not be sent. Please try again.
+            </p>
+          )}
+        </CardFooter>
+      </Card>
     </section>
   );
 }

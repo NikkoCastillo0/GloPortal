@@ -30,6 +30,17 @@ const server = await createServer({
         import ViewAppointments from '/src/pages/ViewAppointments.jsx';
         createRoot(document.getElementById('root')).render(React.createElement(ViewAppointments));`
     },
+    transform(code, id) {
+      // Synthetic identity only in the isolated fixture server, never --live.
+      if (!live && id.replaceAll('\\', '/').endsWith('/src/lib/supabase.js')) {
+        return `import { createClient } from '@supabase/supabase-js';
+          const client = createClient(${JSON.stringify(`${origin}/__gp24-api`)}, 'synthetic-key');
+          export const supabase = { from: (...args) => client.from(...args), auth: {
+            getUser: async () => ({ data: { user: new URLSearchParams(location.search).get('auth') === 'anonymous' ? null : { id: 'synthetic-admin' } }, error: null }),
+            onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } })
+          } };`
+      }
+    },
     configureServer(vite) {
       vite.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url, origin)
@@ -40,6 +51,12 @@ const server = await createServer({
             <title>GP-24 isolated preview</title></head><body>
             <aside style="padding:12px;background:#fff0b3;color:#111">${live ? 'LIVE DATA PREVIEW — requires an authenticated Supabase session and applied migration.' : 'SYNTHETIC TEST FIXTURES — not live Supabase data.'}</aside>
             <div id="root"></div><script type="module" src="/@id/virtual:gp24-preview"></script></body></html>`))
+          return
+        }
+        if (!live && url.pathname === '/__gp24-api/rest/v1/profiles') {
+          res.setHeader('Content-Type', 'application/json')
+          const auth = new URL(req.headers.referer || origin).searchParams.get('auth')
+          res.end(JSON.stringify({ role: auth === 'customer' ? 'customer' : 'admin' }))
           return
         }
         if (!live && url.pathname === '/__gp24-api/rest/v1/appointment_filter_records') {

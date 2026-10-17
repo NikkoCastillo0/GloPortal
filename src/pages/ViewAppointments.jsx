@@ -12,6 +12,7 @@ export default function ViewAppointments() {
   const [accessStatus, setAccessStatus] = useState('loading')
   const [filter, setFilter] = useState('date')
   const [date, setDate] = useState('')
+  const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -126,6 +127,11 @@ export default function ViewAppointments() {
           value={filter}
           onChange={handleFilterChange}
           date={date}
+          search={search}
+          onSearchChange={(value) => {
+            setSearch(value)
+            setPage(1)
+          }}
           onDateChange={(nextDate) => {
             setDate(nextDate)
             setPage(1)
@@ -134,6 +140,7 @@ export default function ViewAppointments() {
 
         <AppointmentTable
           filter={filter}
+          search={search}
           date={date}
           page={page}
           pageSize={PAGE_SIZE}

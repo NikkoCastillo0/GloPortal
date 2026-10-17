@@ -1,5 +1,6 @@
+
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../../lib/supabase.js'
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   dateStyle: 'short',
@@ -22,6 +23,7 @@ const columns = [
   'Vehicle',
   'Price',
   'Notes',
+  'Actions',
 ]
 
 function formatDate(value) {
@@ -140,10 +142,18 @@ export default function AppointmentTable({
   }, [filter, date, page, pageSize, onTotalCountChange, onLoadingChange])
 
   return (
-    <div aria-busy={isLoading} className="max-w-full overflow-x-auto rounded border" tabIndex={0} role="region" aria-label="Appointments">
+    <div
+      aria-busy={isLoading}
+      className="max-w-full overflow-x-auto rounded border"
+      tabIndex={0}
+      role="region"
+      aria-label="Appointments"
+    >
       {errorMessage && <p role="alert">{errorMessage}</p>}
+
       <table className="w-full text-left text-sm">
         <caption className="sr-only">Completed appointments</caption>
+
         <thead>
           <tr>
             {columns.map((column) => (
@@ -153,10 +163,13 @@ export default function AppointmentTable({
             ))}
           </tr>
         </thead>
+
         <tbody>
           {isLoading ? (
             <tr>
-              <td colSpan={columns.length}><span role="status">Loading appointments...</span></td>
+              <td colSpan={columns.length}>
+                <span role="status">Loading appointments...</span>
+              </td>
             </tr>
           ) : appointments.length > 0 ? (
             appointments.map((appointment) => (
@@ -170,11 +183,25 @@ export default function AppointmentTable({
                 <td>{appointment.vehicle}</td>
                 <td>{formatPrice(appointment.quoted_price_cents)}</td>
                 <td>{appointment.notes}</td>
+
+                <td>
+                  <a
+                    href={`/appointments/${appointment.id}/edit`}
+                    className="inline-block rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700"
+                    aria-label={`Edit appointment for ${appointment.first_name} ${appointment.last_name}`}
+                  >
+                    Edit Appointment
+                  </a>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={columns.length}>{errorMessage ? 'Appointments could not be loaded.' : 'No completed appointments found.'}</td>
+              <td colSpan={columns.length}>
+                {errorMessage
+                  ? 'Appointments could not be loaded.'
+                  : 'No completed appointments found.'}
+              </td>
             </tr>
           )}
         </tbody>

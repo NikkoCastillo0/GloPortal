@@ -6,7 +6,7 @@ export const appointments = Array.from({ length: 17 }, (_, index) => ({
   status: 'completed',
   last_name: ['Zulu', 'Alpha', 'River', 'Baker'][index % 4],
   first_name: `Test ${String(index).padStart(2, '0')}`,
-  email: `fixture${index}@example.invalid`,
+  email: index === 0 ? 'special+tag,(quoted)"\\_*%@example.invalid' : `fixture${index}@example.invalid`,
   phone: '555-0100',
   service_name: 'Fixture detail service',
   vehicle: '2024 Test Vehicle',
@@ -20,6 +20,17 @@ export function queryFixtures(params) {
     (!params.has('appointment_date') || row.appointment_date === params.get('appointment_date').slice(3))
     && row.status === params.get('status')?.slice(3)
   ))
+  const search = params.get('or')
+  if (search) {
+    // Interpret REST syntax independently of the production query builder.
+    const texts = [...search.matchAll(/(first_name|last_name|email|phone)\.imatch\.("(?:\\.|[^"\\])*")/g)]
+      .map(([, field, encoded]) => {
+        return { field, regex: new RegExp(JSON.parse(encoded), 'i') }
+      })
+    const bounds = /appointment_date\.gte\.([\d-]+),appointment_date\.lt\.([\d-]+)/.exec(search)
+    rows = rows.filter((row) => texts.some(({ field, regex }) => regex.test(row[field] ?? ''))
+      || (bounds && row.appointment_date >= bounds[1] && row.appointment_date < bounds[2]))
+  }
   const orders = (params.get('order') || '').split(',').filter(Boolean)
   rows = rows.toSorted((left, right) => {
     for (const order of orders) {

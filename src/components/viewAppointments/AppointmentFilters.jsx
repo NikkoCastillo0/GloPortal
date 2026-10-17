@@ -8,7 +8,7 @@ const filterOptions = [
   { value: 'least-jobs', label: 'Least jobs' },
 ]
 
-export default function AppointmentFilters({ value, onChange, date, onDateChange }) {
+export default function AppointmentFilters({ value, onChange, date, onDateChange, search, onSearchChange }) {
   return (
     <div className="flex flex-wrap items-end gap-4">
       <label className="relative block w-[374px] max-w-full">
@@ -29,6 +29,22 @@ export default function AppointmentFilters({ value, onChange, date, onDateChange
           aria-hidden="true"
           className="pointer-events-none absolute right-3 top-1/2 size-6 -translate-y-1/2 text-[#1e1e1e]"
         />
+      </label>
+      <label className="block w-[487px] max-w-full">
+        <span className="sr-only">Search appointments</span>
+        <input
+          type="search"
+          aria-label="Search appointments"
+          aria-describedby="appointment-search-help"
+          placeholder="Contains"
+          title="Search name, email, phone or date (YYYY-MM-DD or M/D/YY)"
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+          className="h-[46px] w-full min-w-0 rounded-[22.697px] border-[2.837px] border-[#d9d9d9] bg-white px-3 py-0 text-[clamp(20px,2.65vw,45.394px)] leading-none text-[#323232] placeholder:text-[#b3b3b3] focus-visible:outline-2 focus-visible:outline-offset-2"
+        />
+        <span id="appointment-search-help" className="sr-only">
+          Search name, email or phone. Dates use YYYY, YYYY-MM, YYYY-MM-DD or M/D/YY in Pacific time.
+        </span>
       </label>
       <label className="grid gap-1">
         <span>Appointment date (Pacific time)</span>

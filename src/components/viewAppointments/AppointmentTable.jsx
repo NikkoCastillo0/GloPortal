@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from 'react'
+import { appointmentSearchFilter } from '../../lib/appointmentSearch.js'
 import { supabase } from '../../lib/supabase.js'
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -71,6 +72,7 @@ function getSortOrder(query, filter) {
 
 export default function AppointmentTable({
   filter,
+  search = '',
   date,
   page,
   pageSize,
@@ -97,6 +99,9 @@ export default function AppointmentTable({
 
         // The view derives this date in Pacific time, including DST boundaries.
         if (date) query = query.eq('appointment_date', date)
+
+        const searchFilter = appointmentSearchFilter(search)
+        if (searchFilter) query = query.or(searchFilter)
 
         query = getSortOrder(query, filter)
 
@@ -139,7 +144,7 @@ export default function AppointmentTable({
     return () => {
       isCurrentRequest = false
     }
-  }, [filter, date, page, pageSize, onTotalCountChange, onLoadingChange])
+  }, [filter, search, date, page, pageSize, onTotalCountChange, onLoadingChange])
 
   return (
     <div

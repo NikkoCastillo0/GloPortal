@@ -1,7 +1,5 @@
 
-import { useEffect, useState } from 'react'
-
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Header from '../components/home/Header.jsx'
 import AppointmentFilters from '../components/viewAppointments/AppointmentFilters.jsx'
 import AppointmentPagination from '../components/viewAppointments/AppointmentPagination.jsx'
@@ -11,149 +9,146 @@ import { supabase } from '../lib/supabase.js'
 const PAGE_SIZE = 6
 
 export default function ViewAppointments() {
-    const [accessStatus, setAccessStatus] = useState('loading')
+  const [accessStatus, setAccessStatus] = useState('loading')
+  const [filter, setFilter] = useState('date')
+  const [date, setDate] = useState('')
+  const [page, setPage] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        let active = true
-        let verificationId = 0
+  const updateTotalCount = useCallback((count) => {
+    setTotalCount(count)
+  }, [])
 
-        async function verifyAdmin() {
-            const currentVerification = ++verificationId
+  const handleFilterChange = (nextFilter) => {
+    setFilter(nextFilter)
+    setPage(1)
+  }
 
-            if (active) {
-                setAccessStatus('loading')
-            }
+  useEffect(() => {
+    let active = true
+    let verificationId = 0
 
-            try {
-                const { data: userData, error: userError } =
-                    await supabase.auth.getUser()
+    async function verifyAdmin() {
+      const currentVerification = ++verificationId
 
-                if (!active || currentVerification !== verificationId) {
-                    return
-                }
+      if (active) {
+        setAccessStatus('loading')
+      }
 
-                if (userError || !userData.user) {
-                    setAccessStatus('denied')
-                    return
-                }
+      try {
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser()
 
-                const { data: profile, error: profileError } =
-                    await supabase
-                        .from('profiles')
-                        .select('role')
-                        .eq('id', userData.user.id)
-                        .single()
+        if (!active || currentVerification !== verificationId) return
 
-                if (!active || currentVerification !== verificationId) {
-                    return
-                }
-
-                if (profileError || profile?.role !== 'admin') {
-                    setAccessStatus('denied')
-                    return
-                }
-
-                setAccessStatus('authorized')
-            } catch (error) {
-                console.error('Admin verification failed:', error)
-
-                if (active && currentVerification === verificationId) {
-                    setAccessStatus('denied')
-                }
-            }
+        if (userError || !userData.user) {
+          setAccessStatus('denied')
+          return
         }
 
-        verifyAdmin()
+        const { data: profile, error: profileError } =
+          await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', userData.user.id)
+            .single()
 
-        const { data: authListener } =
-            supabase.auth.onAuthStateChange(() => {
-                // Schedule verification outside the auth callback.
-                queueMicrotask(() => {
-                    if (active) {
-                        verifyAdmin()
-                    }
-                })
-            })
+        if (!active || currentVerification !== verificationId) return
 
-        return () => {
-            active = false
-            verificationId++
-            authListener.subscription.unsubscribe()
+        if (profileError || profile?.role !== 'admin') {
+          setAccessStatus('denied')
+          return
         }
-    }, [])
 
-    if (accessStatus === 'loading') {
-        return (
-            <main>
-                <p>Verifying administrator access...</p>
-            </main>
-        )
+        setAccessStatus('authorized')
+      } catch (error) {
+        console.error('Admin verification failed:', error)
+
+        if (active && currentVerification === verificationId) {
+          setAccessStatus('denied')
+        }
+      }
     }
 
-    if (accessStatus !== 'authorized') {
-        return (
-            <main>
-                <h1>Access Denied</h1>
-                <p>
-                    You must be signed in as an administrator
-                    to view all appointment records.
-                </p>
-            </main>
-        )
-    const [filter, setFilter] = useState('date')
-    const [date, setDate] = useState('')
-    const [page, setPage] = useState(1)
-    const [totalCount, setTotalCount] = useState(0)
-    const [isLoading, setIsLoading] = useState(true)
-    const updateTotalCount = useCallback((count) => {
-        setTotalCount(count)
-    }, [])
+    verifyAdmin()
 
-    const handleFilterChange = (nextFilter) => {
-        setFilter(nextFilter)
-        setPage(1)
+    const { data: authListener } =
+      supabase.auth.onAuthStateChange(() => {
+        queueMicrotask(() => {
+          if (active) {
+            verifyAdmin()
+          }
+        })
+      })
+
+    return () => {
+      active = false
+      verificationId++
+      authListener.subscription.unsubscribe()
     }
+  }, [])
 
+  if (accessStatus === 'loading') {
     return (
-        <>
-            <Header
-                role="admin"
-                isHome={false}
-                isSignedIn={true}
-            />
-
-            <main>
-                <h1>View All Appointment Records</h1>
-            <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-8">
-                <h1 className="text-3xl font-semibold">All Appointments</h1>
-
-                <AppointmentFilters
-                    value={filter}
-                    onChange={handleFilterChange}
-                    date={date}
-                    onDateChange={(nextDate) => {
-                        setDate(nextDate)
-                        setPage(1)
-                    }}
-                />
-
-                <AppointmentTable
-                    filter={filter}
-                    date={date}
-                    page={page}
-                    pageSize={PAGE_SIZE}
-                    onTotalCountChange={updateTotalCount}
-                    onLoadingChange={setIsLoading}
-                />
-
-                <AppointmentPagination
-                    page={page}
-                    pageSize={PAGE_SIZE}
-                    totalCount={totalCount}
-                    isLoading={isLoading}
-                    onPageChange={setPage}
-                />
-            </main>
-        </>
+      <main>
+        <p>Verifying administrator access...</p>
+      </main>
     )
+  }
+
+  if (accessStatus !== 'authorized') {
+    return (
+      <main>
+        <h1>Access Denied</h1>
+        <p>
+          You must be signed in as an administrator
+          to view all appointment records.
+        </p>
+      </main>
+    )
+  }
+
+  return (
+    <>
+      <Header
+        role="admin"
+        isHome={false}
+        isSignedIn={true}
+      />
+
+      <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-8">
+        <h1 className="text-3xl font-semibold">
+          All Appointments
+        </h1>
+
+        <AppointmentFilters
+          value={filter}
+          onChange={handleFilterChange}
+          date={date}
+          onDateChange={(nextDate) => {
+            setDate(nextDate)
+            setPage(1)
+          }}
+        />
+
+        <AppointmentTable
+          filter={filter}
+          date={date}
+          page={page}
+          pageSize={PAGE_SIZE}
+          onTotalCountChange={updateTotalCount}
+          onLoadingChange={setIsLoading}
+        />
+
+        <AppointmentPagination
+          page={page}
+          pageSize={PAGE_SIZE}
+          totalCount={totalCount}
+          isLoading={isLoading}
+          onPageChange={setPage}
+        />
+      </main>
+    </>
+  )
 }

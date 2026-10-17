@@ -1,15 +1,13 @@
-import {
-  CircleGauge,
-  Wrench,
-  CalendarCheck,
-  MapPin
-} from "lucide-react";
+import tireIcon from "../../assets/home icons/Tire Icon 1.svg";
+import toolsIcon from "../../assets/home icons/Tools icon 1.svg";
+import bookingIcon from "../../assets/home icons/Booking icon 1.svg";
+import mapPinIcon from "../../assets/home icons/map pin icon 1.svg";
 
 const highlights = [
-  { icon: CircleGauge, label: "Quality Tire Service" },
-  { icon: Wrench, label: "Fast Service" },
-  { icon: CalendarCheck, label: "Easy Booking" },
-  { icon: MapPin, label: "Locally Owned" }
+  { icon: tireIcon, label: "Quality Tire Service" },
+  { icon: toolsIcon, label: "Fast Service" },
+  { icon: bookingIcon, label: "Easy Booking" },
+  { icon: mapPinIcon, label: "Locally Owned" }
 ];
 
 export default function BusinessHighlights() {
@@ -18,9 +16,16 @@ export default function BusinessHighlights() {
       className="business-highlights"
       aria-label="Why choose Garage Glo"
     >
-      {highlights.map(({ icon: Icon, label }) => (
+      {highlights.map(({ icon, label }) => (
         <div className="business-highlight" key={label}>
-          <Icon size={32} aria-hidden="true" />
+          <img
+            src={icon}
+            alt=""
+            aria-hidden="true"
+            width={113}
+            height={86}
+            className="business-highlight-icon"
+          />
           <span>{label}</span>
         </div>
       ))}

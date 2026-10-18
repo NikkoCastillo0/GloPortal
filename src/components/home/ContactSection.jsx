@@ -11,6 +11,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
+import { FacebookIcon } from "@/components/icons/simple-icons-facebook";
+import { InstagramIcon } from "@/components/icons/simple-icons-instagram";
 
 import { useForm } from "react-hook-form";
 
@@ -44,15 +46,40 @@ export default function ContactSection() {
   } = useForm();
 
   return (
-    <section className="grid grid-cols-2 gap-4" id="contact">
+    <section
+      className="grid grid-cols-1 gap-6 p-4 sm:p-6 md:grid-cols-2 md:gap-8 md:p-8"
+      id="contact"
+    >
       <img
         src={ContactImage}
         alt="Mechanic working on a tire"
-        className="w-64 mx-auto rounded-lg"
+        className="my-auto w-full max-w-64 mx-auto rounded-lg"
       />
       <Card size="sm" className="w-full mx-auto">
         <CardHeader>
           <h2 className="text-2xl font-bold">Contact</h2>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <a
+              href="https://www.facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FacebookIcon className="text-white" />
+            </a>
+            <a
+              href="https://www.instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InstagramIcon className="text-white" />
+            </a>
+            <a
+              href="mailto:Garagegloauto@gmail.com"
+              className="text-white hover:underline"
+            >
+              Garagegloauto@gmail.com
+            </a>
+          </div>
         </CardHeader>
         <CardContent>
           <form id="contact-form" onSubmit={handleSubmit(sendEmail)}>

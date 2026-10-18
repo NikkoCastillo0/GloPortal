@@ -40,7 +40,22 @@
   gap: 8px;
   text-align: center;
   color: #222222;
-  font-size: 16px;
+  font-size: 19px;
+  font-weight: 650;
+}
+
+.business-highlight-icon {
+  display: block;
+  width: 113px;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Keep the desktop photo and highlights centered as one group. */
+@media (min-width: 769px) {
+  .hero {
+    max-width: 420px;
+  }
 }
 
 /* Mobile layout */

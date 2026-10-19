@@ -1,142 +1,206 @@
 
 import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabase'
+import { appointmentSearchFilter } from '../../lib/appointmentSearch.js'
+import { supabase } from '../../lib/supabase.js'
 
-export default function AppointmentTable() {
-    const [appointments, setAppointments] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [isAdmin, setIsAdmin] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  dateStyle: 'short',
+  timeStyle: 'short',
+  timeZone: 'America/Los_Angeles',
+})
 
-    useEffect(() => {
-        let active = true
+const priceFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+})
 
-        async function getAppointments() {
-            const { data: { user }, error: authError } =
-                await supabase.auth.getUser()
+const columns = [
+  'Date',
+  'Last Name',
+  'First Name',
+  'E-Mail',
+  'Phone',
+  'Service',
+  'Vehicle',
+  'Price',
+  'Notes',
+]
 
-            if (!active) return
+function formatDate(value) {
+  return value ? dateFormatter.format(new Date(value)) : '-'
+}
 
-            if (authError || !user) {
-                setLoading(false)
-                return
-            }
+function formatPrice(value) {
+  return value == null ? '-' : priceFormatter.format(value / 100)
+}
 
-            const { data: profile, error: profileError } =
-                await supabase
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', user.id)
-                    .single()
+function getSortOrder(query, filter) {
+  switch (filter) {
+    case 'az':
+      return query
+        .order('last_name', { ascending: true })
+        .order('first_name', { ascending: true })
+        .order('starts_at', { ascending: true })
+        .order('id', { ascending: true })
+    case 'za':
+      return query
+        .order('last_name', { ascending: false })
+        .order('first_name', { ascending: false })
+        .order('starts_at', { ascending: true })
+        .order('id', { ascending: true })
+    case 'most-jobs':
+      return query
+        .order('completed_job_count', { ascending: false })
+        .order('last_name', { ascending: true })
+        .order('first_name', { ascending: true })
+        .order('starts_at', { ascending: true })
+        .order('id', { ascending: true })
+    case 'least-jobs':
+      return query
+        .order('completed_job_count', { ascending: true })
+        .order('last_name', { ascending: true })
+        .order('first_name', { ascending: true })
+        .order('starts_at', { ascending: true })
+        .order('id', { ascending: true })
+    default:
+      return query
+        .order('starts_at', { ascending: true })
+        .order('id', { ascending: true })
+  }
+}
 
-            if (!active) return
+export default function AppointmentTable({
+  filter,
+  search = '',
+  date,
+  page,
+  pageSize,
+  onTotalCountChange,
+  onLoadingChange,
+}) {
+  const [appointments, setAppointments] = useState([])
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
-            if (profileError || profile?.role !== 'admin') {
-                setLoading(false)
-                return
-            }
+  useEffect(() => {
+    let isCurrentRequest = true
 
-            setIsAdmin(true)
+    async function loadAppointments() {
+      setIsLoading(true)
+      onLoadingChange(true)
+      setErrorMessage('')
 
-            const { data, error } = await supabase
-                .from('appointments')
-                .select(
-                    'id, starts_at, ends_at, status, notes, quoted_price_cents'
-                )
-                .order('starts_at', { ascending: true })
+      try {
+        let query = supabase
+          .from('appointment_filter_records')
+          .select('*', { count: 'exact' })
+          .eq('status', 'completed')
 
-            if (!active) return
+        // The view derives this date in Pacific time, including DST boundaries.
+        if (date) query = query.eq('appointment_date', date)
 
-            if (error) {
-                console.error(error)
-                setErrorMessage('Unable to load appointments.')
-            } else {
-                setAppointments(data ?? [])
-            }
+        const searchFilter = appointmentSearchFilter(search)
+        if (searchFilter) query = query.or(searchFilter)
 
-            setLoading(false)
+        query = getSortOrder(query, filter)
+
+        const { data, count, error } = await query.range(
+          (page - 1) * pageSize,
+          page * pageSize - 1,
+        )
+
+        if (!isCurrentRequest) return
+
+        if (error) {
+          setAppointments([])
+          onTotalCountChange(0)
+          setErrorMessage(`Unable to load appointments: ${error.message}`)
+          return
         }
 
-        getAppointments()
+        setAppointments(data ?? [])
+        onTotalCountChange(count ?? 0)
+      } catch (error) {
+        if (!isCurrentRequest) return
 
-        return () => {
-            active = false
+        setAppointments([])
+        onTotalCountChange(0)
+        setErrorMessage(
+          `Unable to load appointments: ${
+            error instanceof Error ? error.message : 'An unexpected error occurred.'
+          }`,
+        )
+      } finally {
+        if (isCurrentRequest) {
+          setIsLoading(false)
+          onLoadingChange(false)
         }
-    }, [])
-
-    if (loading) {
-        return <p>Loading appointments...</p>
+      }
     }
 
-    if (!isAdmin) {
-        return <p>Only administrators can view appointment records.</p>
+    loadAppointments()
+
+    return () => {
+      isCurrentRequest = false
     }
+  }, [filter, search, date, page, pageSize, onTotalCountChange, onLoadingChange])
 
-    if (errorMessage) {
-        return <p role="alert">{errorMessage}</p>
-    }
+  return (
+    <div
+      aria-busy={isLoading}
+      className="max-w-full overflow-x-auto rounded border"
+      tabIndex={0}
+      role="region"
+      aria-label="Appointments"
+    >
+      {errorMessage && <p role="alert">{errorMessage}</p>}
 
-    return (
-        <div>
-            <h2>Appointment Records</h2>
+      <table className="w-full text-left text-sm">
+        <caption className="sr-only">Completed appointments</caption>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Status</th>
-                        <th>Price</th>
-                        <th>Notes</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th key={column} scope="col">
+                {column}
+              </th>
+            ))}
+          </tr>
+        </thead>
 
-                <tbody>
-                    {appointments.map((row) => (
-                        <tr key={row.id}>
-                            <td>
-                                {new Date(row.starts_at).toLocaleDateString()}
-                            </td>
+        <tbody>
+          {isLoading ? (
+            <tr>
+              <td colSpan={columns.length}>
+                <span role="status">Loading appointments...</span>
+              </td>
+            </tr>
+          ) : appointments.length > 0 ? (
+            appointments.map((appointment) => (
+              <tr key={appointment.id}>
+                <td>{formatDate(appointment.starts_at)}</td>
+                <td>{appointment.last_name}</td>
+                <td>{appointment.first_name}</td>
+                <td>{appointment.email}</td>
+                <td>{appointment.phone}</td>
+                <td>{appointment.service_name}</td>
+                <td>{appointment.vehicle}</td>
+                <td>{formatPrice(appointment.quoted_price_cents)}</td>
+                <td>{appointment.notes}</td>
 
-                            <td>
-                                {new Date(row.starts_at).toLocaleTimeString()}
-                            </td>
-
-                            <td>
-                                {new Date(row.ends_at).toLocaleTimeString()}
-                            </td>
-
-                            <td>{row.status}</td>
-
-                            <td>
-                                {row.quoted_price_cents == null
-                                    ? 'Not quoted'
-                                    : `$${(row.quoted_price_cents / 100).toFixed(2)}`}
-                            </td>
-
-                            <td>{row.notes || 'No notes'}</td>
-
-                            <td>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        window.location.href =
-                                            `/appointments/${row.id}/edit`
-                                    }}
-                                >
-                                    Edit Appointment
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-
-            {appointments.length === 0 && (
-                <p>No appointments found.</p>
-            )}
-        </div>
-    )
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={columns.length}>
+                {errorMessage
+                  ? 'Appointments could not be loaded.'
+                  : 'No completed appointments found.'}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  )
 }

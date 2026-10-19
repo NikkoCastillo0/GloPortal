@@ -1,10 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
+import "./CalendarPreview.css";
 
 const SHOP_TIMEZONE = "America/Los_Angeles";
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-// Get the current date in Garage Glo's timezone.
 function getShopToday() {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: SHOP_TIMEZONE,
@@ -12,14 +12,10 @@ function getShopToday() {
     month: "2-digit",
     day: "2-digit",
   }).formatToParts(new Date());
-
-  const part = (type) =>
-    parts.find((item) => item.type === type)?.value;
-
+  const part = (type) => parts.find((item) => item.type === type)?.value;
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
-// Convert a database timestamp to California time.
 function formatTime(timestamp) {
   return new Date(timestamp).toLocaleTimeString("en-US", {
     timeZone: SHOP_TIMEZONE,
@@ -28,351 +24,290 @@ function formatTime(timestamp) {
   });
 }
 
+function formatDate(dateString) {
+  // Noon local time avoids dates changing when the browser is in a different zone.
+  return new Date(`${dateString}T12:00:00`).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default function CalendarPreview() {
   const [currentMonth, setCurrentMonth] = useState(() => {
     const [year, month] = getShopToday().split("-").map(Number);
     return new Date(year, month - 1, 1);
   });
-
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
 
-  // Database state
   const [services, setServices] = useState([]);
   const [selectedServiceId, setSelectedServiceId] = useState("");
   const [slots, setSlots] = useState([]);
-
-  // UI state
   const [loadingServices, setLoadingServices] = useState(true);
   const [loadingSlots, setLoadingSlots] = useState(false);
-  const [error, setError] = useState(null);
+  const [slotsError, setSlotsError] = useState(null);
+  const [servicesError, setServicesError] = useState(null);
+  const [monthAvailability, setMonthAvailability] = useState({});
+  const [loadingMonth, setLoadingMonth] = useState(true);
+  const [monthError, setMonthError] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [bookingNotice, setBookingNotice] = useState(false);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
-
   const today = getShopToday();
-
+  const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
   const monthName = currentMonth.toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
   });
-
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
   const calendarDays = [
     ...Array(firstDay).fill(null),
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
-  const weekdays = [
-    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
-  ];
-
-  const currentMonthKey =
-    `${year}-${String(month + 1).padStart(2, "0")}`;
-
-  const canGoBack = currentMonthKey > today.slice(0, 7);
-
-  // ========================================
-  // LOAD SERVICES FROM SUPABASE
-  // ========================================
-
   useEffect(() => {
     let cancelled = false;
 
     async function loadServices() {
-      const { data, error: serviceError } = await supabase
+      const { data, error } = await supabase
         .from("services")
-        .select("id, name, duration_minutes, price_cents")
+        .select("id, name, duration_minutes")
         .eq("active", true)
         .order("name");
 
       if (cancelled) return;
-
-      if (serviceError) {
-        setError(serviceError.message);
+      if (error) {
+        setServicesError(error.message);
       } else {
         setServices(data ?? []);
         setSelectedServiceId(data?.[0]?.id ?? "");
       }
-
       setLoadingServices(false);
     }
 
     loadServices();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
-  // ========================================
-  // LOAD AVAILABILITY FROM SUPABASE
-  // ========================================
+  // One RPC request checks the whole month across all active services.
+  // A day is unavailable only when *none* of the services can be booked.
+  useEffect(() => {
+    if (loadingServices) return;
+    let cancelled = false;
+
+    async function loadMonth() {
+      setLoadingMonth(true);
+      setMonthError(null);
+      setMonthAvailability({});
+      if (services.length === 0) {
+        setLoadingMonth(false);
+        return;
+      }
+
+      const { data, error } = await supabase.rpc("get_month_availability", {
+        p_month: `${monthKey}-01`,
+      });
+      if (cancelled) return;
+
+      if (error) {
+        // Do not mark dates as fully booked when we cannot check them.
+        setMonthError("Unable to check the month. Select a date to try daily availability.");
+      } else {
+        setMonthAvailability(Object.fromEntries(
+          (data ?? []).map(({ available_date, has_available_times }) => [
+            available_date, has_available_times,
+          ]),
+        ));
+      }
+      setLoadingMonth(false);
+    }
+
+    loadMonth();
+    return () => { cancelled = true; };
+  }, [monthKey, loadingServices, services.length, refreshKey]);
 
   useEffect(() => {
     if (!selectedDate || !selectedServiceId) return;
-
     let cancelled = false;
 
     async function loadAvailability() {
       setLoadingSlots(true);
-      setError(null);
+      setSlotsError(null);
       setSlots([]);
-
-      const { data, error: availabilityError } =
-        await supabase.rpc("get_available_times", {
-          p_date: selectedDate,
-          p_service_id: selectedServiceId,
-        });
-
+      const { data, error } = await supabase.rpc("get_available_times", {
+        p_date: selectedDate,
+        p_service_id: selectedServiceId,
+      });
       if (cancelled) return;
-
-      if (availabilityError) {
-        setError(availabilityError.message);
+      if (error) {
+        setSlotsError(error.message);
       } else {
         setSlots(data ?? []);
       }
-
       setLoadingSlots(false);
     }
 
     loadAvailability();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [selectedDate, selectedServiceId, refreshKey]);
-
-  // ========================================
-  // CALENDAR INTERACTIONS
-  // ========================================
 
   function changeMonth(amount) {
     setCurrentMonth(new Date(year, month + amount, 1));
     setSelectedDate(null);
     setSelectedTime(null);
     setSlots([]);
-    setError(null);
+    setLoadingSlots(false);
+    setSlotsError(null);
+    setBookingNotice(false);
   }
 
   function selectDay(day) {
-    const dateString =
-      `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
+    const dateString = `${monthKey}-${String(day).padStart(2, "0")}`;
     setSelectedDate(dateString);
     setSelectedTime(null);
     setSlots([]);
-    setLoadingSlots(Boolean(selectedServiceId));
+    setSlotsError(null);
+    setBookingNotice(false);
   }
 
   function changeService(serviceId) {
     setSelectedServiceId(serviceId);
     setSelectedTime(null);
     setSlots([]);
-    setLoadingSlots(Boolean(selectedDate && serviceId));
+    setBookingNotice(false);
   }
 
-  const selectedDateLabel = selectedDate
-    ? new Date(`${selectedDate}T12:00:00`)
-      .toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
-    : null;
+  function refreshAvailability() {
+    setSelectedTime(null);
+    setBookingNotice(false);
+    setRefreshKey((value) => value + 1);
+  }
 
-  // ========================================
-  // RENDER
-  // ========================================
+  const anyAvailableSlots = slots.some((slot) => slot.is_available);
+  const selectedDateLabel = selectedDate ? formatDate(selectedDate) : null;
 
   return (
-    <section id="calendar" className="bg-gray-400 px-4 py-12">
-      <div className="mx-auto max-w-2xl rounded-lg bg-white p-6 text-gray-900 shadow-lg">
+    <section id="calendar" className="calendar-preview" aria-labelledby="calendar-preview-title">
+      <div className="calendar-preview__container">
+        <h2 id="calendar-preview-title" className="calendar-preview__title">Find a time</h2>
+        <p className="calendar-preview__description">Choose an available appointment time.</p>
 
-        {/* MONTH NAVIGATION */}
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">{monthName}</h2>
+        <div className="calendar-preview__card">
+          <div className="calendar-preview__month-heading">
+            <h3 className="calendar-preview__month-name">{monthName}</h3>
+            <div className="calendar-preview__arrows">
+              <button type="button" disabled={monthKey <= today.slice(0, 7)}
+                onClick={() => changeMonth(-1)} aria-label="Previous month">&lt;</button>
+              <button type="button" onClick={() => changeMonth(1)}
+                aria-label="Next month">&gt;</button>
+            </div>
+          </div>
 
-          <div className="flex gap-4">
-            <button
-              type="button"
-              disabled={!canGoBack}
-              onClick={() => changeMonth(-1)}
-              aria-label="Previous month"
-              className="cursor-pointer text-2xl disabled:cursor-not-allowed disabled:opacity-30"
-            >
-              &lt;
-            </button>
+          <div className="calendar-preview__grid" aria-label={`Calendar for ${monthName}`}>
+            {WEEKDAYS.map((day) => (
+              <span key={day} className="calendar-preview__weekday">{day}</span>
+            ))}
+            {calendarDays.map((day, index) => {
+              if (day === null) {
+                return <span key={`blank-${index}`} aria-hidden="true" />;
+              }
+              const dateString = `${monthKey}-${String(day).padStart(2, "0")}`;
+              const isPast = dateString < today;
+              const isUnavailable = !isPast && !loadingMonth && !monthError &&
+                monthAvailability[dateString] === false;
+              const isSelected = selectedDate === dateString;
+              const availabilityLabel = isPast ? "Past date"
+                : isUnavailable ? "No available appointments"
+                  : loadingMonth ? "Checking availability" : "Select to view times";
 
-            <button
-              type="button"
-              onClick={() => changeMonth(1)}
-              aria-label="Next month"
-              className="cursor-pointer text-2xl"
-            >
-              &gt;
-            </button>
+              return (
+                <button key={dateString} type="button"
+                  disabled={isPast || isUnavailable || loadingServices || services.length === 0}
+                  onClick={() => selectDay(day)}
+                  aria-pressed={isSelected}
+                  aria-label={`${formatDate(dateString)}: ${availabilityLabel}`}
+                  title={availabilityLabel}
+                  className={`calendar-preview__day${isPast ? " calendar-preview__day--past" : ""}${isUnavailable ? " calendar-preview__day--unavailable" : ""}${isSelected ? " calendar-preview__day--selected" : ""}`}>
+                  {day}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="calendar-preview__legend">
+            <span><span className="calendar-preview__legend-swatch calendar-preview__legend-swatch--available" /> Available</span>
+            <span><span className="calendar-preview__legend-swatch calendar-preview__legend-swatch--unavailable" /> Unavailable</span>
+            <span><span className="calendar-preview__legend-swatch calendar-preview__legend-swatch--past" /> Past</span>
+          </div>
+          {loadingMonth && !loadingServices && (
+            <p className="calendar-preview__helper" role="status">Checking this month's availability...</p>
+          )}
+          {monthError && <p className="calendar-preview__warning" role="status">{monthError}</p>}
+
+          <div className="calendar-preview__details">
+            {loadingServices ? (
+              <p className="calendar-preview__helper">Loading services...</p>
+            ) : servicesError ? (
+              <p role="alert" className="calendar-preview__error">{servicesError}</p>
+            ) : services.length === 0 ? (
+              <p className="calendar-preview__helper">No services are available right now.</p>
+            ) : !selectedDate ? (
+              <p className="calendar-preview__helper">Select a date to see appointment times.</p>
+            ) : (
+              <>
+                <div className="calendar-preview__details-heading">
+                  <h4>{selectedDateLabel}</h4>
+                  <button type="button" onClick={refreshAvailability} disabled={loadingSlots}
+                    className="calendar-preview__refresh">Refresh</button>
+                </div>
+                <label className="calendar-preview__field-label" htmlFor="booking-service">Service</label>
+                <select id="booking-service" value={selectedServiceId}
+                  onChange={(event) => changeService(event.target.value)}
+                  className="calendar-preview__service">
+                  {services.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name} ({service.duration_minutes} min)
+                    </option>
+                  ))}
+                </select>
+
+                {loadingSlots ? (
+                  <p className="calendar-preview__helper" role="status">Loading times...</p>
+                ) : slotsError ? (
+                  <p role="alert" className="calendar-preview__error">{slotsError}</p>
+                ) : !anyAvailableSlots ? (
+                  <p className="calendar-preview__helper">No available times for this service on this date. Try another service or day.</p>
+                ) : (
+                  <div className="calendar-preview__slots" aria-label="Appointment times">
+                    {slots.map((slot) => (
+                      <button key={slot.slot_start} type="button"
+                        disabled={!slot.is_available}
+                        aria-pressed={selectedTime === slot.slot_start}
+                        onClick={() => { setSelectedTime(slot.slot_start); setBookingNotice(false); }}
+                        className={`calendar-preview__slot${selectedTime === slot.slot_start ? " calendar-preview__slot--selected" : ""}`}>
+                        {formatTime(slot.slot_start)}{!slot.is_available && " - Taken"}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
 
-        {/* SERVICE SELECTOR */}
-        <div className="mb-6">
-          <label
-            htmlFor="booking-service"
-            className="mb-2 block text-sm font-semibold"
-          >
-            Select a Service
-          </label>
-
-          <select
-            id="booking-service"
-            value={selectedServiceId}
-            disabled={loadingServices || services.length === 0}
-            onChange={(event) => changeService(event.target.value)}
-            className="w-full rounded-md border border-gray-300 bg-white p-3"
-          >
-            {loadingServices && (
-              <option value="">Loading services...</option>
-            )}
-
-            {!loadingServices && services.length === 0 && (
-              <option value="">No services available</option>
-            )}
-
-            {services.map((service) => (
-              <option key={service.id} value={service.id}>
-                {service.name} ({service.duration_minutes} min)
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* MONTHLY CALENDAR */}
-        <div className="grid grid-cols-7 gap-1 text-center sm:gap-2">
-          {weekdays.map((day) => (
-            <div key={day} className="py-2 text-xs font-semibold sm:text-sm">
-              {day}
-            </div>
-          ))}
-
-          {calendarDays.map((day, index) => {
-            if (day === null) {
-              return <div key={`empty-${index}`} />;
-            }
-
-            const dateString =
-              `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-            const isPast = dateString < today;
-            const isSelected = selectedDate === dateString;
-
-            return (
-              <button
-                key={day}
-                type="button"
-                disabled={isPast}
-                aria-pressed={isSelected}
-                onClick={() => selectDay(day)}
-                className={`min-h-10 rounded border border-gray-200 text-sm
-                  ${isPast
-                    ? "cursor-not-allowed bg-gray-100 text-gray-400"
-                    : isSelected
-                      ? "bg-gray-900 text-white"
-                      : "bg-white hover:bg-gray-200"
-                  }`}
-              >
-                {day}
-              </button>
-            );
-          })}
-        </div>
-
-        <p className="mt-4 text-xs text-gray-500">
-          Select a date to check appointment availability.
-        </p>
-
-        {/* DAILY AVAILABILITY */}
-        <div className="mt-6 border-t border-gray-200 pt-6">
-
-          {!selectedDate ? (
-            <p className="text-center text-gray-600">
-              Select a date to view available times.
-            </p>
-          ) : (
-            <>
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-lg font-semibold">
-                  {selectedDateLabel}
-                </h3>
-
-                <button
-                  type="button"
-                  disabled={loadingSlots}
-                  onClick={() => {
-                    setSelectedTime(null);
-                    setLoadingSlots(true);
-                    setRefreshKey((value) => value + 1);
-                  }}
-                  className="rounded border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100 disabled:opacity-50"
-                >
-                  Refresh
-                </button>
-              </div>
-
-              {loadingSlots ? (
-                <p className="text-gray-500">
-                  Loading availability...
-                </p>
-              ) : error ? null : slots.length === 0 ? (
-                <p className="text-gray-500">
-                  No appointment times are offered for this date.
-                </p>
-              ) : (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {slots.map((slot) => (
-                    <button
-                      key={slot.slot_start}
-                      type="button"
-                      disabled={!slot.is_available}
-                      aria-pressed={
-                        selectedTime === slot.slot_start
-                      }
-                      onClick={() =>
-                        setSelectedTime(slot.slot_start)
-                      }
-                      className={`rounded-md border px-3 py-3 text-sm
-                        ${!slot.is_available
-                          ? "cursor-not-allowed bg-gray-200 text-gray-500"
-                          : selectedTime === slot.slot_start
-                            ? "bg-gray-900 text-white"
-                            : "bg-white hover:bg-gray-100"
-                        }`}
-                    >
-                      {formatTime(slot.slot_start)}
-                      {!slot.is_available && " - Unavailable"}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {selectedTime && !loadingSlots && (
-                <p className="mt-5 text-center font-medium text-green-700">
-                  Selected appointment time: {formatTime(selectedTime)}
-                </p>
-              )}
-            </>
-          )}
-
-          {error && (
-            <p role="alert" className="mt-4 text-sm text-red-600">
-              Error: {error}
-            </p>
-          )}
-        </div>
+        <button className="calendar-preview__book" type="button"
+          disabled={!selectedDate || !selectedTime || loadingSlots || !!slotsError}
+          onClick={() => setBookingNotice(true)}>Book Now</button>
+        {bookingNotice && (
+          <p className="calendar-preview__notice" role="status">
+            Booking page coming soon. Your selection ({selectedDateLabel}, {formatTime(selectedTime)}) is saved on this page for now.
+          </p>
+        )}
       </div>
     </section>
   );

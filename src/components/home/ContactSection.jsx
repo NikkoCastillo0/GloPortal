@@ -53,7 +53,7 @@ export default function ContactSection() {
       <img
         src={ContactImage}
         alt="Mechanic working on a tire"
-        className="my-auto w-full max-w-64 mx-auto rounded-lg"
+        className="my-auto w-full max-w-64 mx-auto rounded-lg drop-shadow-md/50"
       />
       <Card
         size="sm"

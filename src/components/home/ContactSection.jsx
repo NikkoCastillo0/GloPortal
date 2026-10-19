@@ -47,7 +47,7 @@ export default function ContactSection() {
 
   return (
     <section
-      className="grid grid-cols-1 gap-6 p-4 sm:p-6 md:grid-cols-2 md:gap-8 md:p-8"
+      className="grid grid-cols-1 gap-6 p-4 sm:p-6 md:grid-cols-2 md:gap-8 md:p-8 bg-white"
       id="contact"
     >
       <img
@@ -55,27 +55,30 @@ export default function ContactSection() {
         alt="Mechanic working on a tire"
         className="my-auto w-full max-w-64 mx-auto rounded-lg"
       />
-      <Card size="sm" className="w-full mx-auto">
+      <Card
+        size="sm"
+        className="w-full mx-auto bg-white text-gray-900 ring-black/10"
+      >
         <CardHeader>
           <h2 className="text-2xl font-bold">Contact</h2>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <a
-              href="https://www.facebook.com"
+              href="https://www.facebook.com/people/Adrian-Castillo/pfbid0bBajtMLE75WpaB3zoQUTnw7jBKmomRgwfxsZEbNP6ctE3fVxxY8xnS6cEqPwfKiRl/?mibextid=wwXIfr"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FacebookIcon className="text-white" />
+              <FacebookIcon className="text-gray-900" />
             </a>
             <a
-              href="https://www.instagram.com"
+              href="https://www.instagram.com/garageglo/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <InstagramIcon className="text-white" />
+              <InstagramIcon className="text-gray-900" />
             </a>
             <a
               href="mailto:Garagegloauto@gmail.com"
-              className="text-white hover:underline"
+              className="text-gray-900 hover:underline"
             >
               Garagegloauto@gmail.com
             </a>
@@ -91,6 +94,7 @@ export default function ContactSection() {
                 <Input
                   id="contact-name"
                   type="text"
+                  className="border-gray-300 bg-white text-gray-900 dark:border-gray-300 dark:bg-white dark:text-gray-900"
                   {...register("name", {
                     required: "Please enter your name.",
                     maxLength: {
@@ -111,6 +115,7 @@ export default function ContactSection() {
                 <Input
                   id="contact-email"
                   type="email"
+                  className="border-gray-300 bg-white text-gray-900 dark:border-gray-300 dark:bg-white dark:text-gray-900"
                   {...register("email", {
                     required: "Please enter your email.",
                     pattern: {
@@ -131,6 +136,7 @@ export default function ContactSection() {
                 <Textarea
                   id="contact-message"
                   type="text"
+                  className="border-gray-300 bg-white text-gray-900 dark:border-gray-300 dark:bg-white dark:text-gray-900"
                   {...register("message", {
                     required: "Please enter a message.",
                   })}
@@ -150,7 +156,7 @@ export default function ContactSection() {
           <Button
             type="submit"
             form="contact-form"
-            className="mx-auto"
+            className="mx-auto bg-gray-900 text-white hover:bg-gray-700"
             disabled={submissionStatus === "sending"}
           >
             {submissionStatus === "sending" ? "Sending..." : "Submit"}

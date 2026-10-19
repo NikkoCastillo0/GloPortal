@@ -6,31 +6,72 @@ export default function EditAppointment() {
     const [access, setAccess] = useState('loading')
 
     useEffect(() => {
+        let active = true
+        let verificationId = 0
+
         async function checkAdmin() {
-            const { data: { user }, error: authError } =
-                await supabase.auth.getUser()
+            const currentVerification = ++verificationId
+            setAccess('loading')
 
-            if (authError || !user) {
-                setAccess('denied')
-                return
+            try {
+                const { data: { user }, error: authError } =
+                    await supabase.auth.getUser()
+
+                if (!active || currentVerification !== verificationId) return
+
+                if (authError || !user) {
+                    setAccess('denied')
+                    return
+                }
+
+                const { data: profile, error: profileError } =
+                    await supabase
+                        .from('profiles')
+                        .select('role')
+                        .eq('id', user.id)
+                        .single()
+
+                if (!active || currentVerification !== verificationId) return
+
+                setAccess(
+                    profileError || profile?.role !== 'admin'
+                        ? 'denied'
+                        : 'allowed'
+                )
+            } catch {
+                if (active && currentVerification === verificationId) {
+                    setAccess('denied')
+                }
             }
-
-            const { data: profile, error: profileError } =
-                await supabase
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', user.id)
-                    .single()
-
-            if (profileError || profile?.role !== 'admin') {
-                setAccess('denied')
-                return
-            }
-
-            setAccess('allowed')
         }
 
+        const { data: { subscription } } =
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (!active) return
+
+                const scheduledVerification = ++verificationId
+
+                if (event === 'SIGNED_OUT' || !session) {
+                    setAccess('denied')
+                    return
+                }
+
+                setAccess('loading')
+                // Recheck outside the auth callback; ignore superseded events.
+                queueMicrotask(() => {
+                    if (active && scheduledVerification === verificationId) {
+                        checkAdmin()
+                    }
+                })
+            })
+
         checkAdmin()
+
+        return () => {
+            active = false
+            verificationId++
+            subscription.unsubscribe()
+        }
     }, [])
 
     if (access === 'loading') {

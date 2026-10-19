@@ -24,7 +24,6 @@ const columns = [
   'Vehicle',
   'Price',
   'Notes',
-  'Actions',
 ]
 
 function formatDate(value) {
@@ -189,15 +188,6 @@ export default function AppointmentTable({
                 <td>{formatPrice(appointment.quoted_price_cents)}</td>
                 <td>{appointment.notes}</td>
 
-                <td>
-                  <a
-                    href={`/appointments/${appointment.id}/edit`}
-                    className="inline-block rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700"
-                    aria-label={`Edit appointment for ${appointment.first_name} ${appointment.last_name}`}
-                  >
-                    Edit Appointment
-                  </a>
-                </td>
               </tr>
             ))
           ) : (

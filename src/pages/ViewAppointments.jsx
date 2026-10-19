@@ -120,10 +120,17 @@ export default function ViewAppointments() {
       />
 
       <main className="appointments-page">
-        <h1 className="text-3xl font-semibold">
-          All Appointments
-        </h1>
-
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h1 className="text-3xl font-semibold">
+            All Appointments
+          </h1>
+          <a
+            href="/appointments/edit"
+            className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#323232] px-6 py-3 font-semibold text-white"
+          >
+            Edit Appointments
+          </a>
+        </div>
         <div className="appointment-toolbar">
           <AppointmentFilters
             value={filter}

@@ -6,7 +6,11 @@ import EditAppointment from './pages/EditAppointment.jsx'
 export default function App() {
     const path = window.location.pathname
 
-    if (/^\/appointments\/[^/]+\/edit\/?$/.test(path)) {
+    if (
+        path === '/appointments/edit' ||
+        path === '/appointments/edit/' ||
+        /^\/appointments\/[^/]+\/edit\/?$/.test(path)
+    ) {
         return <EditAppointment />
     }
 

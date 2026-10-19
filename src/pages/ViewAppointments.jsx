@@ -119,9 +119,17 @@ export default function ViewAppointments() {
       />
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-8">
-        <h1 className="text-3xl font-semibold">
-          All Appointments
-        </h1>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h1 className="text-3xl font-semibold">
+            All Appointments
+          </h1>
+          <a
+            href="/appointments/edit"
+            className="ml-auto inline-flex shrink-0 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            Edit Appointments
+          </a>
+        </div>
 
         <AppointmentFilters
           value={filter}

@@ -11,7 +11,13 @@ export default function Homepage() {
     <>
       <Header role="customer" isHome={true} isSignedIn={false} />
       <main>
-        <div className="homepage-about">
+        <div
+          className="
+            flex items-center justify-center gap-[60px] bg-[#999999] p-[40px]
+            [@media(max-width:768px)]:flex-col [@media(max-width:768px)]:gap-[25px]
+            [@media(max-width:768px)]:px-[15px] [@media(max-width:768px)]:py-[25px]
+          "
+        >
           <Hero id="home" />
           <BusinessHighlights />
         </div>

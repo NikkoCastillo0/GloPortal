@@ -1,3 +1,5 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+
 export default function AppointmentPagination({
   page,
   pageSize,
@@ -9,7 +11,7 @@ export default function AppointmentPagination({
   const displayedCount = Math.min(page * pageSize, totalCount)
 
   return (
-    <nav aria-label="Appointment table pagination" className="flex items-center justify-end gap-4">
+    <nav aria-label="Appointment table pagination" className="appointment-pagination">
       <button
         type="button"
         className="min-h-11 min-w-11 rounded border disabled:opacity-40"
@@ -17,7 +19,7 @@ export default function AppointmentPagination({
         disabled={isLoading || page <= 1}
         onClick={() => onPageChange(page - 1)}
       >
-        &larr;
+        <ChevronLeft aria-hidden="true" />
       </button>
       <span aria-live="polite">
         {displayedCount} of {totalCount}
@@ -29,7 +31,7 @@ export default function AppointmentPagination({
         disabled={isLoading || page >= totalPages}
         onClick={() => onPageChange(page + 1)}
       >
-        &rarr;
+        <ChevronRight aria-hidden="true" />
       </button>
     </nav>
   )

@@ -4,6 +4,7 @@ import Header from '../components/home/Header.jsx'
 import AppointmentFilters from '../components/viewAppointments/AppointmentFilters.jsx'
 import AppointmentPagination from '../components/viewAppointments/AppointmentPagination.jsx'
 import AppointmentTable from '../components/viewAppointments/AppointmentTable.jsx'
+import './ViewAppointments.css'
 import { supabase } from '../lib/supabase.js'
 
 const PAGE_SIZE = 6
@@ -118,25 +119,39 @@ export default function ViewAppointments() {
         isSignedIn={true}
       />
 
-      <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-8">
+      <main className="appointments-page">
         <h1 className="text-3xl font-semibold">
           All Appointments
         </h1>
 
-        <AppointmentFilters
-          value={filter}
-          onChange={handleFilterChange}
-          date={date}
-          search={search}
-          onSearchChange={(value) => {
-            setSearch(value)
-            setPage(1)
-          }}
-          onDateChange={(nextDate) => {
-            setDate(nextDate)
-            setPage(1)
-          }}
-        />
+        <div className="appointment-toolbar">
+          <AppointmentFilters
+            value={filter}
+            onChange={handleFilterChange}
+            date={date}
+            search={search}
+            onSearchChange={(value) => {
+              setSearch(value)
+              setPage(1)
+            }}
+            onDateChange={(nextDate) => {
+              setDate(nextDate)
+              setPage(1)
+            }}
+          />
+
+          <AppointmentPagination
+            page={page}
+            pageSize={PAGE_SIZE}
+            totalCount={totalCount}
+            isLoading={isLoading}
+            onPageChange={setPage}
+          />
+        </div>
+
+        {(filter === 'most-jobs' || filter === 'least-jobs') && (
+          <p className="appointment-sort-help">Ordered by each customer's total completed appointments, across all dates.</p>
+        )}
 
         <AppointmentTable
           filter={filter}
@@ -146,14 +161,6 @@ export default function ViewAppointments() {
           pageSize={PAGE_SIZE}
           onTotalCountChange={updateTotalCount}
           onLoadingChange={setIsLoading}
-        />
-
-        <AppointmentPagination
-          page={page}
-          pageSize={PAGE_SIZE}
-          totalCount={totalCount}
-          isLoading={isLoading}
-          onPageChange={setPage}
         />
       </main>
     </>

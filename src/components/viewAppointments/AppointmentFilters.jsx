@@ -10,7 +10,7 @@ const filterOptions = [
 
 export default function AppointmentFilters({ value, onChange, date, onDateChange, search, onSearchChange }) {
   return (
-    <div className="flex flex-wrap items-end gap-4">
+    <div className="appointment-filters">
       <label className="relative block w-[374px] max-w-full">
         <span className="sr-only">Filter appointments</span>
         <select
@@ -46,25 +46,27 @@ export default function AppointmentFilters({ value, onChange, date, onDateChange
           Search name, email or phone. Dates use YYYY, YYYY-MM, YYYY-MM-DD or M/D/YY in Pacific time.
         </span>
       </label>
-      <label className="grid gap-1">
-        <span>Appointment date (Pacific time)</span>
-        <input
-          type="date"
-          aria-label="Appointment date"
-          value={date}
-          className="min-h-11 max-w-full rounded border bg-white px-3 py-2"
-          onChange={(event) => onDateChange(event.target.value)}
-        />
-      </label>
-      {date && (
-        <button
-          type="button"
-          className="min-h-11 rounded border px-3"
-          onClick={() => onDateChange('')}
-        >
-          Clear date
-        </button>
-      )}
+      <div className="appointment-date-filter">
+        <label className="grid gap-1">
+          <span>Appointment date (Pacific time)</span>
+          <input
+            type="date"
+            aria-label="Appointment date"
+            value={date}
+            className="min-h-11 max-w-full rounded border bg-white px-3 py-2"
+            onChange={(event) => onDateChange(event.target.value)}
+          />
+        </label>
+        {date && (
+          <button
+            type="button"
+            className="min-h-11 rounded border px-3"
+            onClick={() => onDateChange('')}
+          >
+            Clear date
+          </button>
+        )}
+      </div>
     </div>
   )
 }

@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import ServiceCard from './ServiceCard.jsx'
-import tireMountAndBalanceImage from '../assets/services/tire-mount-and-balance.png'
-import tirePlugPatchImage from '../assets/services/tire-plug-patch.png'
-import wheelBalancingImage from '../assets/services/wheel-balancing.jpg'
-import tpmsServiceImage from '../assets/services/tpms-service.jpg'
+import tireMountAndBalanceImage from '../assets/services/tire-mount-photo.png'
+import tirePlugPatchImage from '../assets/services/tire-patch-photo.png'
+import wheelBalancingImage from '../assets/services/wheel-balancing-photo.png'
+import tpmsServiceImage from '../assets/services/tpms-photo.png'
 import './ServiceCarousel.css'
 
 const defaultServices = [

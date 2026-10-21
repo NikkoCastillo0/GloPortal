@@ -10,8 +10,8 @@ const customerNav=[
     {label: 'Contact', href: '#contact'}
 ]
 
-export default function Header({role='customer', isHome=false, isSignedIn=false}){
-    const showCustomerNav=role==='customer' && isHome
+export default function Header({role='customer', isHome=false, isSignedIn=false, showNavigation=isHome}){
+    const showCustomerNav=role==='customer' && showNavigation
 
     //This determines what type of menu should be displayed
     let menuType
@@ -65,7 +65,7 @@ export default function Header({role='customer', isHome=false, isSignedIn=false}
                 {customerNav.map((link) => (
                     <a 
                         key={link.label} 
-                        href={link.href}
+                        href={isHome ? link.href : `/${link.href}`}
                         className="
                             whitespace-nowrap text-xl font-semibold
                             text-[#D9D9D9] no-underline

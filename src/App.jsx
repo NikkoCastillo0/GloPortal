@@ -10,6 +10,7 @@ export default function App() {
 
     if (path === '/login' || path === '/login/') {
         return <Login />
+    }
     if (path === '/booking' || path === '/booking/') {
         return <MonthlyBooking />
     }

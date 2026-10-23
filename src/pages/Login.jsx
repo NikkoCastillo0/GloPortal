@@ -2,6 +2,8 @@ import Header from '../components/home/Header.jsx'
 import './Login.css'
 import { supabase } from '../lib/supabase.js'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -13,6 +15,8 @@ export default function Login() {
   const emailEmptyCheck = email.trim() !== '';
   const passwordEmptyCheck = password.trim() !== '';
 
+  const [role, setRole] = useState('');
+
   const logInFunction = async () => {
     try{
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -21,12 +25,34 @@ export default function Login() {
       })
 
       if (error) throw error;
+
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+        setRole(profile.role);
+
     } catch (er) {
-
+        console.error(er) // TODO in GP-83: Display authentication error messaging
     } finally{
-
+      
     }
   }
+
+  const navigate = useNavigate();
+
+  useEffect(() =>{
+  if (role === 'customer') {
+    navigate('/customerportal', { replace: true})
+  }
+  if (role === 'admin') {
+    navigate('/adminportal', { replace: true}) //replace prevents going back to login page if back button is used
+  }
+  }, [role])
 
   const emailBlur = (e) =>{
     if (emailEmptyCheck === false || emailValid === false){

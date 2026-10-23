@@ -4,6 +4,7 @@ import ViewAppointments from './pages/ViewAppointments.jsx'
 import EditAppointment from './pages/EditAppointment.jsx'
 import Login from './pages/Login.jsx'
 import MonthlyBooking from './pages/MonthlyBooking.jsx'
+import SignUp from "./pages/SignUp.jsx"
 
 export default function App() {
     const path = window.location.pathname
@@ -11,6 +12,11 @@ export default function App() {
     if (path === '/login' || path === '/login/') {
         return <Login />
     }
+    
+    if (path === '/signup' || path === '/signup/') {
+        return <SignUp />
+    }
+    
     if (path === '/booking' || path === '/booking/') {
         return <MonthlyBooking />
     }

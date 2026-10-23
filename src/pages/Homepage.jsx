@@ -1,10 +1,10 @@
-import Header from "../components/home/Header.jsx";
+import Header from "../components/layout/Header.jsx";
 import Hero from "../components/home/Hero.jsx";
 import BusinessHighlights from "../components/home/BusinessHighlights.jsx";
 import ServiceCarousel from "../components/ServiceCarousel.jsx";
 import CalendarPreview from "../components/home/CalendarPreview.jsx";
 import ContactSection from "../components/home/ContactSection.jsx";
-import Footer from "../components/home/Footer.jsx";
+import Footer from "../components/layout/Footer.jsx";
 
 export default function Homepage() {
   return (

@@ -1,4 +1,4 @@
-import Header from '../components/home/Header.jsx'
+import Header from '../components/layout/Header.jsx'
 import './Login.css'
 import { supabase } from '../lib/supabase.js'
 import { useState } from 'react'

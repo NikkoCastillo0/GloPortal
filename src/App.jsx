@@ -4,6 +4,7 @@ import ViewAppointments from './pages/ViewAppointments.jsx'
 import EditAppointment from './pages/EditAppointment.jsx'
 import Login from './pages/Login.jsx'
 import MonthlyBooking from './pages/MonthlyBooking.jsx'
+import SignUp from "./pages/SignUp.jsx"
 import CustomerPortal from './pages/CustomerPortal.jsx'
 import AdminPortal from './pages/AdminPortal.jsx'
 

@@ -1,0 +1,99 @@
+.monthly-booking {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: #323232;
+  background: #fff;
+}
+
+.monthly-booking__main {
+  flex: 1;
+  padding: clamp(24px, 3.82vw, 66px) 16px clamp(48px, 9.38vw, 162px);
+}
+
+.monthly-booking__container {
+  width: 100%;
+  max-width: 1285px;
+  margin: 0 auto;
+}
+
+.monthly-booking__calendar {
+  min-width: 0;
+}
+
+.monthly-booking__placeholder {
+  display: grid;
+  place-items: center;
+  min-height: clamp(240px, 47.34vw, 818px);
+  margin: 0;
+  padding: clamp(24px, 4vw, 48px);
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+  background: #fff;
+  text-align: center;
+}
+
+.monthly-booking__selectors {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(24px, 2.78vw, 48px);
+  margin-top: clamp(32px, 3.82vw, 66px);
+  padding-top: clamp(16px, 1.85vw, 32px);
+  padding-inline: clamp(0px, 2.6vw, 45px);
+}
+
+.monthly-booking__date-field {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.16vw, 20px);
+  width: 100%;
+  max-width: 570px;
+  font-size: clamp(20px, 2.78vw, 48px);
+  line-height: 1.2;
+}
+
+.monthly-booking__date-control {
+  position: relative;
+}
+
+.monthly-booking__date-control select {
+  appearance: none;
+  width: 100%;
+  min-height: clamp(60px, 6.71vw, 116px);
+  padding: 12px clamp(48px, 5.2vw, 90px) 12px clamp(20px, 2.6vw, 45px);
+  border: 3px solid #d9d9d9;
+  border-radius: clamp(12px, 1.39vw, 24px);
+  background: #fff;
+  color: #b3b3b3;
+  font: inherit;
+  opacity: 1;
+  -webkit-text-fill-color: #b3b3b3;
+  cursor: not-allowed;
+}
+
+.monthly-booking__date-chevron {
+  position: absolute;
+  top: 50%;
+  right: clamp(20px, 2.6vw, 45px);
+  width: clamp(20px, 1.74vw, 30px);
+  height: clamp(20px, 1.74vw, 30px);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.monthly-booking__select-time {
+  width: 396px;
+  max-width: 100%;
+  min-height: clamp(48px, 4.63vw, 80px);
+  padding: 5px 20px;
+  border: 3px solid #000;
+  border-radius: 40px;
+  background: #323232;
+  color: #fff;
+  font-size: clamp(24px, 2.78vw, 48px);
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: 0 4px 2px #0004;
+  cursor: not-allowed;
+}

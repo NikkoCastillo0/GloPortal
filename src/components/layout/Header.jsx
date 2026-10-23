@@ -1,5 +1,7 @@
 import garageGloLogo from '../../assets/GarageGloLogo.svg'
 import menuIcon from '../../assets/Hamburger-Menu.svg'
+import { useState } from 'react'
+import MenuOverlay from '../navigation/not-logged-in-menuOverlay'
 
 //set up label and refereces
 //for future use of buttons and scrolling to sections
@@ -10,8 +12,9 @@ const customerNav=[
     {label: 'Contact', href: '#contact'}
 ]
 
-export default function Header({role='customer', isHome=false, isSignedIn=false, showNavigation=isHome}){
-    const showCustomerNav=role==='customer' && showNavigation
+export default function Header({role='customer', isHome=false, isSignedIn=false}){
+    const showCustomerNav=role==='customer' && isHome
+    const [isMenuOpen, setIsMenuOpen]=useState(false)
 
     //This determines what type of menu should be displayed
     let menuType
@@ -30,8 +33,8 @@ export default function Header({role='customer', isHome=false, isSignedIn=false,
                 grid min-h-[70px] grid-cols-[1fr_auto] items-center
                 bg-[#323232] px-[14px] py-2
                 shadow-[0_5px_8px_rgba(0,0,0,0.35)]
-                md: min-h-[85px] md:grid-cols-[auto_1fr_auto] md:px-[18px]
-                lg: min-h-[100px] lg:px-6    
+                md:min-h-[85px] md:grid-cols-[auto_1fr_auto] md:px-[18px]
+                lg:min-h-[100px] lg:px-6    
             "
         >
             {/* Inserting logo png */}
@@ -88,23 +91,28 @@ export default function Header({role='customer', isHome=false, isSignedIn=false,
                     cursor-pointer items-center justify-center
                     justify-self-end
                     border-none bg-transparent p-0
-                    md: col-start-3
+                    md:col-start-3
                     md:h-12 md:w-12
                     lg:h-[60px] lg:w-[60px]
                 " 
-                aria-label='menu-button' 
-                onClick={() => console.log('Menu button clicked')}
+                aria-label='Open menu' 
+                onClick={() => setIsMenuOpen(true)}
             >
                 <img 
                     src={menuIcon} 
                     alt="Menu" 
                     className="
-                        block h-42px] w-[42px]
+                        block h-[42px] w-[42px]
                         md:h-12 md:w-12
                         lg:h-[60px] lg:w-[60px]
                     "
                 />
             </button>
+
+            <MenuOverlay
+                isOpen={isMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
+            />
         </header>
     )
 }

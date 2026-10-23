@@ -11,6 +11,7 @@ import AdminPortal from './pages/AdminPortal.jsx'
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
     {path: "/login", element: <Login />},
+    {path: "/signup", element: <SignUp />},
     {path: "/customerportal", element: <CustomerPortal />},
     {path: "/adminportal", element: <AdminPortal />},
     {path: "/viewappointments", element: <ViewAppointments />},

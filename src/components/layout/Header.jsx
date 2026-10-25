@@ -12,8 +12,8 @@ const customerNav=[
     {label: 'Contact', href: '#contact'}
 ]
 
-export default function Header({role='customer', isHome=false, isSignedIn=false}){
-    const showCustomerNav=role==='customer' && isHome
+export default function Header({role='customer', isHome=false, isSignedIn=false, showNavigation=false}){
+    const showCustomerNav=role==='customer' && (isHome || showNavigation)
     const [isMenuOpen, setIsMenuOpen]=useState(false)
 
     //This determines what type of menu should be displayed

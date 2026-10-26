@@ -1,4 +1,5 @@
 import Header from "../components/layout/Header.jsx";
+import { Link } from "react-router-dom";
 
 const labelClassName =
   "mb-1.5 block text-[1.05rem] font-medium text-[#2a2a2a] sm:text-[1.08rem]";
@@ -70,6 +71,15 @@ export default function SignUp() {
             </button>
           </div>
         </form>
+        <p className="mt-4 text-center text-sm text-[#2a2a2a]">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="rounded-sm font-medium underline underline-offset-4 hover:text-[#1a1a1a] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2f2f2f]"
+          >
+            Log in
+          </Link>
+        </p>
       </div>
     </div>
   );

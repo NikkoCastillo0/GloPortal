@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Header from "../components/layout/Header.jsx";
 import Hero from "../components/home/Hero.jsx";
 import BusinessHighlights from "../components/home/BusinessHighlights.jsx";
@@ -7,6 +8,22 @@ import ContactSection from "../components/home/ContactSection.jsx";
 import Footer from "../components/layout/Footer.jsx";
 
 export default function Homepage() {
+  useEffect(() => {
+    if (!window.location.hash) return;
+
+    let cancelled = false;
+    const images = Array.from(document.images, (image) => image.decode().catch(() => {}));
+
+    // Images and fonts can move the sections after the initial browser fragment jump.
+    Promise.all([document.fonts.ready, ...images]).then(() => {
+      if (!cancelled) {
+        document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ behavior: "instant" });
+      }
+    });
+
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <>
       <Header role="customer" isHome={true} isSignedIn={false} />

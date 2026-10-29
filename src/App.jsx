@@ -7,15 +7,16 @@ import MonthlyBooking from './pages/MonthlyBooking.jsx'
 import SignUp from "./pages/SignUp.jsx"
 import CustomerPortal from './pages/CustomerPortal.jsx'
 import AdminPortal from './pages/AdminPortal.jsx'
+import RouteAccess from './components/auth/RouteAccess.jsx'
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
-    {path: "/login", element: <Login />},
+    {path: "/login", element: <RouteAccess key="login"><Login /></RouteAccess>},
     {path: "/signup", element: <SignUp />},
-    {path: "/customerportal", element: <CustomerPortal />},
-    {path: "/adminportal", element: <AdminPortal />},
-    {path: "/viewappointments", element: <ViewAppointments />},
-    {path: "/editappointment", element: <EditAppointment />},
+    {path: "/customerportal", element: <RouteAccess key="customerportal" requiredRole="customer"><CustomerPortal /></RouteAccess>},
+    {path: "/adminportal", element: <RouteAccess key="adminportal" requiredRole="admin"><AdminPortal /></RouteAccess>},
+    {path: "/viewappointments", element: <RouteAccess key="viewappointments" requiredRole="admin"><ViewAppointments /></RouteAccess>},
+    {path: "/editappointment", element: <RouteAccess key="editappointment" requiredRole="admin"><EditAppointment /></RouteAccess>},
     {path: "/monthlybooking", element: <MonthlyBooking />}
 
   ])

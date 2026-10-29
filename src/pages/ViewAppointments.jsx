@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
-import Header from '../components/home/Header.jsx'
+import Header from '../components/layout/Header.jsx'
 import AppointmentFilters from '../components/viewAppointments/AppointmentFilters.jsx'
 import AppointmentPagination from '../components/viewAppointments/AppointmentPagination.jsx'
 import AppointmentTable from '../components/viewAppointments/AppointmentTable.jsx'

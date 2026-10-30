@@ -130,7 +130,7 @@
   }
 
   .login-page > header {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
     min-height: calc(187 * var(--login-unit));
     padding: calc(18 * var(--login-unit)) calc(55 * var(--login-unit));
     background: #323232;
@@ -151,10 +151,6 @@
     font-size: calc(48 * var(--login-unit));
     font-weight: 600;
     line-height: 1.25;
-  }
-
-  .login-page > header > button {
-    display: none;
   }
 
   .login-main {

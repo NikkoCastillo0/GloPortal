@@ -141,13 +141,13 @@
     height: calc(151 * var(--login-unit));
   }
 
-  .login-page > header nav {
+  .login-page > header > nav {
     display: flex;
     gap: calc(100 * var(--login-unit));
     margin-right: calc(180 * var(--login-unit));
   }
 
-  .login-page > header nav a {
+  .login-page > header > nav a {
     font-size: calc(48 * var(--login-unit));
     font-weight: 600;
     line-height: 1.25;

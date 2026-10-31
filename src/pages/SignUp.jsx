@@ -2,6 +2,7 @@ import Header from "../components/layout/Header.jsx";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase.js";
+import { validateSignUp } from "../lib/signUpValidation.js";
 import { getSignUpFeedback } from "../lib/signUpFeedback.js";
 
 const labelClassName =
@@ -17,6 +18,7 @@ function SignUpField({
   value,
   onChange,
   autoComplete,
+  error,
 }) {
   return (
     <div>
@@ -32,8 +34,15 @@ function SignUpField({
         value={value}
         onChange={onChange}
         autoComplete={autoComplete}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${id}-error` : undefined}
         required
       />
+      {error && (
+        <p id={`${id}-error`} className="mt-1 text-sm text-red-700">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -51,9 +60,14 @@ export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const updateField = (field) => (event) => {
-    setFormData((current) => ({ ...current, [field]: event.target.value }));
+    const nextFormData = { ...formData, [field]: event.target.value };
+    setFormData(nextFormData);
+    if (Object.keys(fieldErrors).length > 0) {
+      setFieldErrors(validateSignUp(nextFormData).errors);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -62,8 +76,18 @@ export default function SignUp() {
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage("Passwords do not match.");
+    const validation = validateSignUp(formData);
+    setFieldErrors(validation.errors);
+    if (!validation.isValid) {
+      const firstInvalidField = Object.keys(validation.errors)[0];
+      const fieldIds = {
+        firstName: "first-name",
+        lastName: "last-name",
+        confirmPassword: "confirm-password",
+      };
+      event.currentTarget.elements
+        .namedItem(fieldIds[firstInvalidField] ?? firstInvalidField)
+        ?.focus();
       return;
     }
 
@@ -115,7 +139,12 @@ export default function SignUp() {
           Sign Up
         </h1>
 
-        <form className="space-y-4" onSubmit={handleSubmit} aria-busy={isSubmitting}>
+<form
+  className="space-y-4"
+  onSubmit={handleSubmit}
+  noValidate
+  aria-busy={isSubmitting}
+>
           {errorMessage && (
             <p role="alert" className="text-center text-sm text-red-700">
               {errorMessage}
@@ -134,6 +163,7 @@ export default function SignUp() {
               autoComplete="given-name"
               value={formData.firstName}
               onChange={updateField("firstName")}
+              error={fieldErrors.firstName}
             />
             <SignUpField
               id="last-name"
@@ -142,6 +172,7 @@ export default function SignUp() {
               autoComplete="family-name"
               value={formData.lastName}
               onChange={updateField("lastName")}
+              error={fieldErrors.lastName}
             />
           </div>
           <SignUpField
@@ -152,6 +183,7 @@ export default function SignUp() {
             autoComplete="email"
             value={formData.email}
             onChange={updateField("email")}
+            error={fieldErrors.email}
           />
           <SignUpField
             id="phone"
@@ -161,6 +193,7 @@ export default function SignUp() {
             autoComplete="tel"
             value={formData.phone}
             onChange={updateField("phone")}
+            error={fieldErrors.phone}
           />
           <SignUpField
             id="password"
@@ -170,6 +203,7 @@ export default function SignUp() {
             autoComplete="new-password"
             value={formData.password}
             onChange={updateField("password")}
+            error={fieldErrors.password}
           />
           <SignUpField
             id="confirm-password"
@@ -179,6 +213,7 @@ export default function SignUp() {
             autoComplete="new-password"
             value={formData.confirmPassword}
             onChange={updateField("confirmPassword")}
+            error={fieldErrors.confirmPassword}
           />
 
           <div className="pt-2 text-center">

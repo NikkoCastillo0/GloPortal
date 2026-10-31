@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase.js";
 import { validateSignUp } from "../lib/signUpValidation.js";
+import { getSignUpFeedback } from "../lib/signUpFeedback.js";
 
 const labelClassName =
   "mb-1.5 block text-[1.05rem] font-medium text-[#2a2a2a] sm:text-[1.08rem]";
@@ -71,6 +72,7 @@ export default function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (isSubmitting) return;
     setErrorMessage("");
     setSuccessMessage("");
 
@@ -91,7 +93,7 @@ export default function SignUp() {
 
     setIsSubmitting(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const result = await supabase.auth.signUp({
         email: formData.email.trim(),
         password: formData.password,
         options: {
@@ -103,23 +105,18 @@ export default function SignUp() {
         },
       });
 
-      if (error) throw error;
+      const feedback = getSignUpFeedback(result, formData.email);
+      if (feedback.status === "error") {
+        setErrorMessage(feedback.message);
+        return;
+      }
 
-      if (data.session) {
+      if (!feedback.requiresEmailConfirmation) {
         navigate("/customerportal", { replace: true });
         return;
       }
 
-      if (data.user?.identities?.length === 0) {
-        setErrorMessage(
-          "An account with this email may already exist. Try logging in or use a different email address."
-        );
-        return;
-      }
-
-      setSuccessMessage(
-        `Your account was created. Check ${formData.email.trim()} for a confirmation link, then confirm your email before logging in.`
-      );
+      setSuccessMessage(feedback.message);
       setFormData((current) => ({
         ...current,
         password: "",
@@ -127,16 +124,7 @@ export default function SignUp() {
       }));
     } catch (error) {
       console.error("Sign up failed:", error);
-      if (
-        error.code === "over_email_send_rate_limit" ||
-        error.message?.toLowerCase().includes("email rate limit exceeded")
-      ) {
-        setErrorMessage(
-          "Too many signup emails have been requested. Please wait before trying again, and check your inbox and spam folder for a confirmation email."
-        );
-      } else {
-        setErrorMessage("Unable to create your account. Please try again.");
-      }
+      setErrorMessage(getSignUpFeedback({ data: null, error }).message);
     } finally {
       setIsSubmitting(false);
     }
@@ -151,7 +139,12 @@ export default function SignUp() {
           Sign Up
         </h1>
 
-        <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+<form
+  className="space-y-4"
+  onSubmit={handleSubmit}
+  noValidate
+  aria-busy={isSubmitting}
+>
           {errorMessage && (
             <p role="alert" className="text-center text-sm text-red-700">
               {errorMessage}

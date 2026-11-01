@@ -154,3 +154,9 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 90px;
 }
+
+@media (min-width: 64rem) {
+  html {
+    scroll-padding-top: 122px;
+  }
+}

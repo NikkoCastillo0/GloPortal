@@ -125,7 +125,7 @@ export default function ViewAppointments() {
             All Appointments
           </h1>
           <a
-            href="/appointments/edit"
+            href="/editappointments"
             className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#323232] px-6 py-3 font-semibold text-white"
           >
             Edit Appointments

@@ -28,7 +28,7 @@ export default function MenuOverlay({ isOpen, onClose }) {
             <nav className="mt-6 flex flex-col gap-2 text-lg">
                 <div className="flex flex-col gap-2 md:hidden">
                     <a
-                        href="#home"
+                        href="/"
                         onClick={onClose}
                         className="rounded-lg px-4 py-3 font-semibold text-black transition hover:bg-gray-100"
                     >
@@ -36,7 +36,7 @@ export default function MenuOverlay({ isOpen, onClose }) {
                     </a>
 
                     <a
-                        href="#services"
+                        href="/#services"
                         onClick={onClose}
                         className="rounded-lg px-4 py-3 font-semibold text-black transition hover:bg-gray-100"
                     >
@@ -44,7 +44,7 @@ export default function MenuOverlay({ isOpen, onClose }) {
                     </a>
 
                     <a
-                        href="#calendar"
+                        href="/#calendar"
                         onClick={onClose}
                         className="rounded-lg px-4 py-3 font-semibold text-black transition hover:bg-gray-100"
                     >
@@ -52,7 +52,7 @@ export default function MenuOverlay({ isOpen, onClose }) {
                     </a>
 
                     <a
-                        href="#contact"
+                        href="/#contact"
                         onClick={onClose}
                         className="rounded-lg px-4 py-3 font-semibold text-black transition hover:bg-gray-100"
                     >

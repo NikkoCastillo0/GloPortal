@@ -4,12 +4,14 @@ import { supabase } from '../lib/supabase.js'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import ErrorPopup from '../components/error/ErrorPopup.jsx'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
+  const [emailError, setEmailError] = useState('') // for error displayed under email text field
+  const [passwordError, setPasswordError] = useState('') // for error displayed under password text field
+  const [errorMessage, setErrorMessage] = useState('') // for error in the error popup
   
   const emailValid = email.includes('@') && email.includes('.')
   const emailEmptyCheck = email.trim() !== '';
@@ -18,6 +20,8 @@ export default function Login() {
   const [role, setRole] = useState('');
 
   const logInFunction = async () => {
+    setErrorMessage('')
+
     try{
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -37,7 +41,13 @@ export default function Login() {
         setRole(profile.role);
 
     } catch (er) {
-        console.error(er) // TODO in GP-83: Display authentication error messaging
+        console.error(er)
+        if (er.code === 'invalid_credentials') { //email or password error
+          setErrorMessage('The email or password you entered is incorrect. Please try again.')
+        }
+        else{ // auth error
+          setErrorMessage('An error has occurred. Please try again later.')
+        }
     } finally{
       
     }
@@ -75,6 +85,12 @@ export default function Login() {
   return (
     <div className="login-page">
       <Header role="customer" showNavigation />
+      {errorMessage && (
+        <ErrorPopup
+          text={errorMessage}
+          onClose={() => setErrorMessage('')}
+        />
+      )}
 
       <main className="login-main">
         <section className="login-card" aria-labelledby="login-title">

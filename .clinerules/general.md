@@ -1,4 +1,5 @@
 # General project rules
+
 - This project uses React, Tailwind CSS, Supabase, and EmailJS.
 - Follow the existing folder structyre and naming conventions.
 - Reus existing utilities and components before creating new ones.

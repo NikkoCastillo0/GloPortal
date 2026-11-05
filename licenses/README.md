@@ -18,6 +18,6 @@ If you are developing a production application, we recommend using TypeScript wi
 ## Third-Party Licenses
 
 All third-party package and asset licensing information can be found here:
+
 - [THIRD-PARTY-LICENSES](./licenses/THIRD-PARTY-LICENSES.md)
 - [ASSET-ATTRIBUTION](./licenses/ASSET-ATTRIBUTIONS.md)
-

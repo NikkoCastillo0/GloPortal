@@ -20,13 +20,13 @@ Jira does not specify case sensitivity, wildcard semantics, date syntax, debounc
 
 ## Implemented behavior
 
-- Contains searches first name, last name, email or phone, using case-insensitive literal substrings. Leading/trailing whitespace is trimmed; empty/whitespace-only input removes search criteria. Names are searched in each existing name column; there is no new combined-full-name column.
-- Dates accept YYYY, YYYY-MM, YYYY-MM-DD, M/D/YY, M/D/YYYY and the equivalent hyphen-separated US date. Two-digit years mean 2000–2099. Year/month search uses date ranges; complete dates search one day. Dates use the existing Pacific appointment_date column. Invalid dates do not generate invalid database date operands. Arbitrary date fragments or time-of-day text are not interpreted as dates.
-- Only Jira's explicitly named fields are searched. Service, vehicle, price, notes, IDs and role fields are excluded.
-- Changes query Supabase immediately and reset page one. Existing sort/date filters combine with search, six-row server pagination and exact filtered counts. Clearing search retains other filters.
-- The existing request cleanup guard prevents superseded results, counts, loading state or errors from replacing current state. Existing loading, empty and error states remain distinct.
-- Uses Supabase's query builder with a fixed allowlist and .or() for text/date alternatives; no raw SQL. Text uses PostgREST imatch with escaped regular-expression characters and separately quoted/escaped PostgREST values, making punctuation literal. See [PostgREST operators](https://docs.postgrest.org/en/stable/references/api/tables_views.html#operators). No database migrations, policies, grants, records or users were changed.
-- Existing administrator verification, auth listener, security-invoker view and RLS remain in place. Search is unavailable until the existing admin check authorizes access.
+* Contains searches first name, last name, email or phone, using case-insensitive literal substrings. Leading/trailing whitespace is trimmed; empty/whitespace-only input removes search criteria. Names are searched in each existing name column; there is no new combined-full-name column.
+* Dates accept YYYY, YYYY-MM, YYYY-MM-DD, M/D/YY, M/D/YYYY and the equivalent hyphen-separated US date. Two-digit years mean 2000–2099. Year/month search uses date ranges; complete dates search one day. Dates use the existing Pacific appointment_date column. Invalid dates do not generate invalid database date operands. Arbitrary date fragments or time-of-day text are not interpreted as dates.
+* Only Jira's explicitly named fields are searched. Service, vehicle, price, notes, IDs and role fields are excluded.
+* Changes query Supabase immediately and reset page one. Existing sort/date filters combine with search, six-row server pagination and exact filtered counts. Clearing search retains other filters.
+* The existing request cleanup guard prevents superseded results, counts, loading state or errors from replacing current state. Existing loading, empty and error states remain distinct.
+* Uses Supabase's query builder with a fixed allowlist and .or() for text/date alternatives; no raw SQL. Text uses PostgREST imatch with escaped regular-expression characters and separately quoted/escaped PostgREST values, making punctuation literal. See [PostgREST operators](https://docs.postgrest.org/en/stable/references/api/tables_views.html#operators). No database migrations, policies, grants, records or users were changed.
+* Existing administrator verification, auth listener, security-invoker view and RLS remain in place. Search is unavailable until the existing admin check authorizes access.
 
 ## Figma inspection and design status
 
@@ -87,7 +87,7 @@ npm run build
 npm run preview:appointments
 ```
 
-Open http://127.0.0.1:4174/__gp24/ for the synthetic preview; Ctrl+C stops it. Keep it distinct from Playwright's owned server on port 4175. --live uses actual authentication and does not bypass RLS.
+Open <http://127.0.0.1:4174/__gp24/> for the synthetic preview; Ctrl+C stops it. Keep it distinct from Playwright's owned server on port 4175. --live uses actual authentication and does not bypass RLS.
 
 After review and accounting for the remaining authenticated live-verification limitation, stage only these files and submit yourself:
 
@@ -101,12 +101,11 @@ git push -u origin feat/GP-25-contains-search
 
 In GitHub, create your PR with base **develop**, compare **feat/GP-25-contains-search**, and title **GP-25: Add appointment contains search**. Describe the fixed search fields/date formats, server counts/pagination and preserved filters/authentication. Include the browser results and distinguish fixture validation, anonymous denial and pending authenticated live verification. The local build blocker is resolved; note only the existing chunk-size warning. Review the diff before submitting. Update Jira yourself according to the team's process.
 
-
 ## Build-blocker investigation and repair
 
 The build failure was a pre-existing local dependency installation gap, not a GP-25 regression. Commit 7a956ed introduced the ContactSection EmailJS import and dependency declaration before this feature branch. Both tracked package files already specify @emailjs/browser ^5.0.3; the lockfile pins 5.0.3 with a resolved archive and SHA-512 integrity value. The package directory was absent locally. The similarly named emailjs package was also absent, but ContactSection imports the browser SDK; installing the SMTP package is unnecessary for this build.
 
-Installed @vitejs/plugin-react 6.1.2 and vite 8.3.4 match the existing lockfile and their declared ranges. npm uses https://registry.npmjs.org/, offline=false and legacy-peer-deps=false; no project/user npmrc was present. The exact prior npm log, 2026-10-17T19_48_35_499Z-debug-0.log, records ETARGET: No matching version found for @vitejs/plugin-react@^6.1.1. Fresh npm metadata now lists 6.1.1 and 6.1.2, and @emailjs/browser 5.0.3. The earlier resolution failure is not reproducible in this fresh metadata lookup; its historical cache/registry cause cannot be determined conclusively from that message alone. No registry or npm settings were changed.
+Installed @vitejs/plugin-react 6.1.2 and vite 8.3.4 match the existing lockfile and their declared ranges. npm uses <https://registry.npmjs.org/>, offline=false and legacy-peer-deps=false; no project/user npmrc was present. The exact prior npm log, 2026-10-17T19_48_35_499Z-debug-0.log, records ETARGET: No matching version found for @vitejs/plugin-react@^6.1.1. Fresh npm metadata now lists 6.1.1 and 6.1.2, and @emailjs/browser 5.0.3. The earlier resolution failure is not reproducible in this fresh metadata lookup; its historical cache/registry cause cannot be determined conclusively from that message alone. No registry or npm settings were changed.
 
 Smallest fix: downloaded only the browser-5.0.3.tgz URL already recorded in package-lock.json, verified its SHA-512 against the lockfile, checked the archive manifest (correct package/version, no runtime dependencies), and safely extracted only its package contents into the previously missing node_modules/@emailjs/browser directory. This restored the exact locked dependency without npm resolving/reinstalling the entire dependency graph. No install scripts ran. The archive was kept in the OS temporary directory, not the repository.
 

@@ -2,9 +2,9 @@ import Header from '../components/layout/Header.jsx'
 import './Login.css'
 import { supabase } from '../lib/supabase.js'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import ErrorPopup from '../components/error/ErrorPopup.jsx'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -84,7 +84,7 @@ export default function Login() {
 
   return (
     <div className="login-page">
-      <Header role="customer" showNavigation />
+      <Header role="customer" showNavigation={false} />
       {errorMessage && (
         <ErrorPopup
           text={errorMessage}
@@ -137,7 +137,12 @@ export default function Login() {
           disabled={!emailValid ||!emailEmptyCheck || !passwordEmptyCheck}>Log In</button>
 
           {/* Mobile Figma copy; signup navigation belongs to its own subtask. */}
-          <p className="login-signup">New to Garage Glo? Sign up</p>
+          <p className="login-signup">
+            New to Garage Glo?{" "}
+            <Link to="/signup" className="login-signup-link">
+              Sign up
+            </Link>
+          </p>
         </section>
       </main>
     </div>

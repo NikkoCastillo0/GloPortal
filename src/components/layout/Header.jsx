@@ -1,7 +1,8 @@
+import { useId, useRef, useState } from 'react'
+import CustomerMenuOverlay from '../navigation/CustomerMenuOverlay'
+import MenuOverlay from '../navigation/not-logged-in-menuOverlay'
 import garageGloLogo from '../../assets/GarageGloLogo.svg'
 import menuIcon from '../../assets/Hamburger-Menu.svg'
-import { useState } from 'react'
-import MenuOverlay from '../navigation/not-logged-in-menuOverlay'
 
 //set up label and refereces
 //for future use of buttons and scrolling to sections
@@ -12,19 +13,13 @@ const customerNav=[
     {label: 'Contact', href: '#contact'}
 ]
 
-export default function Header({role='customer', isHome=false, isSignedIn=false, showNavigation=false}){
+export default function Header({role='customer', isHome=false, isSignedIn=false, showNavigation=false, customerMenuContent}){
     const showCustomerNav=role==='customer' && (isHome || showNavigation)
     const [isMenuOpen, setIsMenuOpen]=useState(false)
 
-    //This determines what type of menu should be displayed
-    let menuType
-    if(role==='admin'){
-        menuType='admin'
-    } else if(isSignedIn){
-        menuType='signedIn-customer'
-    } else{
-        menuType='guest-customer'
-    }
+    const showCustomerMenu = role === 'customer' && isSignedIn
+    const menuId = useId()
+    const menuTriggerRef = useRef(null)
 
     return(
         <header 
@@ -85,6 +80,7 @@ export default function Header({role='customer', isHome=false, isSignedIn=false,
 
             {/* Inserting hamburger menu */}
             <button 
+                ref={menuTriggerRef}
                 type="button"
                 className="
                     col-start-2 flex h-[42px] w-[42px]
@@ -96,6 +92,9 @@ export default function Header({role='customer', isHome=false, isSignedIn=false,
                     lg:h-[60px] lg:w-[60px]
                 " 
                 aria-label='Open menu' 
+                aria-haspopup={showCustomerMenu ? 'dialog' : undefined}
+                aria-expanded={showCustomerMenu ? isMenuOpen : undefined}
+                aria-controls={showCustomerMenu && isMenuOpen ? menuId : undefined}
                 onClick={() => setIsMenuOpen(true)}
             >
                 <img 
@@ -109,10 +108,21 @@ export default function Header({role='customer', isHome=false, isSignedIn=false,
                 />
             </button>
 
-            <MenuOverlay
-                isOpen={isMenuOpen}
-                onClose={() => setIsMenuOpen(false)}
-            />
+            {showCustomerMenu ? (
+                <CustomerMenuOverlay
+                    id={menuId}
+                    isOpen={isMenuOpen}
+                    onClose={() => setIsMenuOpen(false)}
+                    returnFocusRef={menuTriggerRef}
+                >
+                    {customerMenuContent}
+                </CustomerMenuOverlay>
+            ) : (
+                <MenuOverlay
+                    isOpen={isMenuOpen}
+                    onClose={() => setIsMenuOpen(false)}
+                />
+            )}
         </header>
     )
 }

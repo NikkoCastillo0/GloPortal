@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 
 export default defineConfig({
   testDir: '.',
-  testMatch: 'customer-menu.spec.mjs',
+  testMatch: 'customer-menu.mjs',
   outputDir: '../test-results/gp160',
   workers: 2,
   use: { baseURL: 'http://127.0.0.1:4180', channel: 'chrome', serviceWorkers: 'block' },

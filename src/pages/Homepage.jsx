@@ -5,7 +5,6 @@ import BusinessHighlights from "../components/home/BusinessHighlights.jsx";
 import ServiceCarousel from "../components/home/ServiceCarousel.jsx";
 import CalendarPreview from "../components/home/CalendarPreview.jsx";
 import ContactSection from "../components/home/ContactSection.jsx";
-import Footer from "../components/layout/Footer.jsx";
 
 export default function Homepage() {
   useEffect(() => {
@@ -42,7 +41,6 @@ export default function Homepage() {
         <CalendarPreview id="calendar" />
         <ContactSection id="contact" />
       </main>
-      <Footer />
     </>
   );
 }

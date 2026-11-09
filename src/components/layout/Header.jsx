@@ -13,7 +13,7 @@ const customerNav=[
 ]
 
 export default function Header({role='customer', isHome=false, isSignedIn=false, showNavigation=false}){
-    const showCustomerNav=role==='customer' && (isHome || showNavigation)
+    const showCustomerNav=isHome || showNavigation
     const [isMenuOpen, setIsMenuOpen]=useState(false)
 
     //This determines what type of menu should be displayed

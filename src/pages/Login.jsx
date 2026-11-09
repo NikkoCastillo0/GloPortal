@@ -1,90 +1,111 @@
 import Header from '../components/layout/Header.jsx'
-import './Login.css'
 import { supabase } from '../lib/supabase.js'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ErrorPopup from '../components/error/ErrorPopup.jsx'
 import { Link, useNavigate } from 'react-router-dom'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [emailError, setEmailError] = useState('') // for error displayed under email text field
-  const [passwordError, setPasswordError] = useState('') // for error displayed under password text field
-  const [errorMessage, setErrorMessage] = useState('') // for error in the error popup
-  
-  const emailValid = email.includes('@') && email.includes('.')
-  const emailEmptyCheck = email.trim() !== '';
-  const passwordEmptyCheck = password.trim() !== '';
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [role, setRole] = useState('')
 
-  const [role, setRole] = useState('');
+  const navigate = useNavigate()
+  const emailValid = email.includes('@') && email.includes('.')
+  const emailEmptyCheck = email.trim() !== ''
+  const passwordEmptyCheck = password.trim() !== ''
 
   const logInFunction = async () => {
     setErrorMessage('')
 
-    try{
-      const { data, error } = await supabase.auth.signInWithPassword({
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
       })
 
-      if (error) throw error;
+      if (error) throw error
 
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
 
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', user.id)
-        .single();
+        .single()
 
-        setRole(profile.role);
-
+      setRole(profile.role)
     } catch (er) {
-        console.error(er)
-        if (er.code === 'invalid_credentials') { //email or password error
-          setErrorMessage('The email or password you entered is incorrect. Please try again.')
-        }
-        else{ // auth error
-          setErrorMessage('An error has occurred. Please try again later.')
-        }
-    } finally{
-      
+      console.error(er)
+
+      if (er.code === 'invalid_credentials') {
+        setErrorMessage(
+          'The email or password you entered is incorrect. Please try again.',
+        )
+      } else {
+        setErrorMessage('An error has occurred. Please try again later.')
+      }
     }
   }
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (role === 'customer') {
+      navigate('/customerportal', { replace: true })
+    }
 
-  useEffect(() =>{
-  if (role === 'customer') {
-    navigate('/customerportal', { replace: true})
-  }
-  if (role === 'admin') {
-    navigate('/adminportal', { replace: true}) //replace prevents going back to login page if back button is used
-  }
-  }, [role])
+    if (role === 'admin') {
+      navigate('/adminportal', { replace: true })
+    }
+  }, [role, navigate])
 
-  const emailBlur = (e) =>{
-    if (emailEmptyCheck === false || emailValid === false){
+  const emailBlur = () => {
+    if (!emailEmptyCheck || !emailValid) {
       setEmailError('Please enter a valid email address')
-    }
-    else {
+    } else {
       setEmailError('')
     }
   }
 
-  const passwordBlur = (e) =>{
-    if (passwordEmptyCheck === false){
+  const passwordBlur = () => {
+    if (!passwordEmptyCheck) {
       setPasswordError('Please enter your password')
-    }
-    else {
+    } else {
       setPasswordError('')
     }
   }
 
   return (
-    <div className="login-page">
+    <div
+      className="
+        min-h-[100svh] bg-[#999999] text-[#242424]
+        [font-family:Inter,'Inter_Variable',sans-serif]
+        [&>header]:min-h-[82px] [&>header]:px-[18px] [&>header]:py-[11px]
+        [&>header]:bg-[#303030] [&>header]:shadow-none
+        [&>header_.garage-glo-logo_img]:h-[60px]
+        [&>header_.garage-glo-logo_img]:w-[64px]
+        md:[--login-unit:min(.65px,0.05787037vw,0.055vh)]
+        md:bg-[#919191] md:text-[#1e1e1e]
+        md:[&>header]:grid-cols-[auto_1fr_auto]
+        md:[&>header]:min-h-[calc(187_*_var(--login-unit))]
+        md:[&>header]:px-[calc(55_*_var(--login-unit))]
+        md:[&>header]:py-[calc(18_*_var(--login-unit))]
+        md:[&>header]:bg-[#323232]
+        md:[&>header_.garage-glo-logo_img]:h-[calc(151_*_var(--login-unit))]
+        md:[&>header_.garage-glo-logo_img]:w-[calc(170_*_var(--login-unit))]
+        md:[&>header>nav]:flex
+        md:[&>header>nav]:gap-[calc(100_*_var(--login-unit))]
+        md:[&>header>nav]:mr-[calc(180_*_var(--login-unit))]
+        md:[&>header>nav_a]:text-[calc(48_*_var(--login-unit))]
+        md:[&>header>nav_a]:font-semibold
+        md:[&>header>nav_a]:leading-[1.25]
+      "
+    >
       <Header role="customer" showNavigation={false} />
+
       {errorMessage && (
         <ErrorPopup
           text={errorMessage}
@@ -92,13 +113,41 @@ export default function Login() {
         />
       )}
 
-      <main className="login-main">
-        <section className="login-card" aria-labelledby="login-title">
-          <h1 id="login-title">Log In</h1>
+      <main className="px-[18px] py-[44px] md:px-0 md:pt-[calc(95_*_var(--login-unit))] md:pb-[calc(370_*_var(--login-unit))]">
+        <section
+          className="
+            mx-auto w-full rounded-[24px] bg-[#ececec]
+            px-5 pt-7 pb-[30px]
+            md:w-[calc(1454_*_var(--login-unit))]
+            md:rounded-[calc(120_*_var(--login-unit))]
+            md:bg-[#ebebeb]
+            md:px-[calc(227_*_var(--login-unit))]
+            md:pt-[calc(113_*_var(--login-unit))]
+            md:pb-[calc(133_*_var(--login-unit))]
+          "
+          aria-labelledby="login-title"
+        >
+          <h1
+            id="login-title"
+            className="
+              mb-6 text-center text-[28px] font-bold leading-[34px]
+              md:mb-[calc(32_*_var(--login-unit))]
+              md:text-[calc(64_*_var(--login-unit))]
+              md:leading-[calc(78_*_var(--login-unit))]
+              md:text-black
+            "
+          >
+            Log In
+          </h1>
 
-          <div className="login-fields">
-            <div className="login-field">
-              <label htmlFor="login-email">Email</label>
+          <div className="grid gap-[22px] md:gap-[calc(92_*_var(--login-unit))]">
+            <div className="grid min-w-0 gap-[10px] md:gap-[calc(30_*_var(--login-unit))]">
+              <label
+                htmlFor="login-email"
+                className="text-base font-normal leading-5 md:text-[calc(48_*_var(--login-unit))] md:leading-[calc(58_*_var(--login-unit))]"
+              >
+                Email
+              </label>
               <input
                 id="login-email"
                 name="email"
@@ -108,14 +157,34 @@ export default function Login() {
                 spellCheck={false}
                 placeholder="you@example.com"
                 value={email}
-                onChange={e => setEmail(e.target.value)} //onChange always updates
-                onBlur={emailBlur} // onBlur updates when clicked off from
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={emailBlur}
+                className="
+                  box-border h-10 w-full min-w-0 rounded-lg border border-[#d9d9d9]
+                  bg-white px-4 text-base text-[#242424]
+                  placeholder:text-[#b3b3b3] placeholder:opacity-100
+                  focus-visible:outline-2 focus-visible:outline-offset-[3px]
+                  focus-visible:outline-[#323232]
+                  md:h-[calc(120_*_var(--login-unit))]
+                  md:rounded-[calc(24_*_var(--login-unit))]
+                  md:border-[calc(3_*_var(--login-unit))]
+                  md:px-[calc(32_*_var(--login-unit))]
+                  md:text-[calc(36_*_var(--login-unit))]
+                  md:placeholder:text-transparent
+                "
               />
-              {emailError && <p className="login-error">{emailError}</p>}
+              {emailError && (
+                <p className="text-[20px] text-[red]">{emailError}</p>
+              )}
             </div>
 
-            <div className="login-field">
-              <label htmlFor="login-password">Password</label>
+            <div className="grid min-w-0 gap-[10px] md:gap-[calc(30_*_var(--login-unit))]">
+              <label
+                htmlFor="login-password"
+                className="text-base font-normal leading-5 md:text-[calc(48_*_var(--login-unit))] md:leading-[calc(58_*_var(--login-unit))]"
+              >
+                Password
+              </label>
               <input
                 id="login-password"
                 name="password"
@@ -123,22 +192,57 @@ export default function Login() {
                 autoComplete="current-password"
                 placeholder="Enter password"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 onBlur={passwordBlur}
+                className="
+                  box-border h-10 w-full min-w-0 rounded-lg border border-[#d9d9d9]
+                  bg-white px-4 text-base text-[#242424]
+                  placeholder:text-[#b3b3b3] placeholder:opacity-100
+                  focus-visible:outline-2 focus-visible:outline-offset-[3px]
+                  focus-visible:outline-[#323232]
+                  md:h-[calc(120_*_var(--login-unit))]
+                  md:rounded-[calc(24_*_var(--login-unit))]
+                  md:border-[calc(3_*_var(--login-unit))]
+                  md:px-[calc(32_*_var(--login-unit))]
+                  md:text-[calc(36_*_var(--login-unit))]
+                  md:placeholder:text-transparent
+                "
               />
-              {passwordError && <p className="login-error">{passwordError}</p>}
+              {passwordError && (
+                <p className="text-[20px] text-[red]">{passwordError}</p>
+              )}
             </div>
           </div>
 
-          <button 
-          className="login-button" 
-          type="button" 
-          onClick={logInFunction} 
-          disabled={!emailValid ||!emailEmptyCheck || !passwordEmptyCheck}>Log In</button>
+          <button
+            className="
+              mx-auto mt-[22px] block h-12 w-[180px] max-w-full
+              cursor-pointer rounded-full border-0 bg-[#2c2c2c]
+              px-4 text-base font-normal text-[#f5f5f5]
+              focus-visible:outline-2 focus-visible:outline-offset-[3px]
+              focus-visible:outline-[#323232]
+              disabled:cursor-not-allowed disabled:bg-[#656565]
+              md:mt-[calc(133_*_var(--login-unit))]
+              md:h-[calc(120_*_var(--login-unit))]
+              md:w-[calc(219_*_var(--login-unit))]
+              md:rounded-lg md:text-[calc(36_*_var(--login-unit))]
+              md:font-semibold
+            "
+            type="button"
+            onClick={logInFunction}
+            disabled={!emailValid || !emailEmptyCheck || !passwordEmptyCheck}
+          >
+            Log In
+          </button>
 
-          {/* Mobile Figma copy; signup navigation belongs to its own subtask. */}
-          <p className="login-signup">
-            New to Garage Glo?{" "}
+          <p
+            className="
+              mt-5 text-center text-[13px] leading-4 text-[#757575]
+              md:mt-[calc(28_*_var(--login-unit))]
+              md:text-[clamp(13px,1.3889vw,24px)] md:leading-[1.5]
+            "
+          >
+            New to Garage Glo?{' '}
             <Link to="/signup" className="login-signup-link">
               Sign up
             </Link>

@@ -8,7 +8,7 @@ const server = await createServer({
   cacheDir: 'node_modules/.vite-gp160-preview',
   optimizeDeps: {
     noDiscovery: true,
-    include: ['react', 'react-dom/client', 'react/jsx-dev-runtime', '@base-ui/react/dialog', 'lucide-react'],
+    include: ['react', 'react-dom/client', 'react/jsx-dev-runtime', 'react-router-dom', '@base-ui/react/dialog', 'lucide-react'],
   },
   server: { host: '127.0.0.1', port, strictPort: true, open: false },
   plugins: [{

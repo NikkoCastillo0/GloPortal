@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from 'react'
 import CustomerMenuOverlay from '../navigation/CustomerMenuOverlay'
+import CustomerNavigationLinks from '../navigation/CustomerNavigationLinks.jsx'
 import MenuOverlay from '../navigation/not-logged-in-menuOverlay'
 import garageGloLogo from '../../assets/GarageGloLogo.svg'
 import menuIcon from '../../assets/Hamburger-Menu.svg'
@@ -115,7 +116,7 @@ export default function Header({role='customer', isHome=false, isSignedIn=false,
                     onClose={() => setIsMenuOpen(false)}
                     returnFocusRef={menuTriggerRef}
                 >
-                    {customerMenuContent}
+                    {customerMenuContent ?? <CustomerNavigationLinks onNavigate={() => setIsMenuOpen(false)} />}
                 </CustomerMenuOverlay>
             ) : (
                 <MenuOverlay

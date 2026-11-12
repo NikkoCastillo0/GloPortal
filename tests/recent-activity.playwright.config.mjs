@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 export default defineConfig({
   testDir: '.',
   testMatch: 'recent-activity.mjs',
-  outputDir: '../test-results/gp183',
+  outputDir: process.env.GP183_APP_ROOT ? '../test-results/gp183-develop' : '../test-results/gp183',
   workers: 2,
   use: { baseURL: 'http://127.0.0.1:4193', channel: 'chrome', serviceWorkers: 'block' },
   webServer: {

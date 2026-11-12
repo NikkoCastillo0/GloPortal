@@ -1,9 +1,17 @@
 import { test, expect } from '@playwright/test'
 
 async function openActivity(page, scenario = 'mixed') {
-  await page.goto('/customerportal?activity=' + scenario)
-  await expect(page.getByRole('heading', { name: 'Customer Dashboard', exact: true })).toBeVisible()
+  await page.goto('/__gp183/?activity=' + scenario)
+  await expect(page.getByRole('heading', { name: 'Recent Activity preview', exact: true })).toBeVisible()
   return page.getByRole('region', { name: 'Recent Activity', exact: true })
+}
+
+async function expectResponsiveLayout(page, card) {
+  const actionsBox = await page.getByRole('region', { name: 'Quick Actions', exact: true }).boundingBox()
+  const cardBox = await card.boundingBox()
+  if (page.viewportSize().width < 768) expect(cardBox.y).toBeGreaterThanOrEqual(actionsBox.y + actionsBox.height)
+  else expect(cardBox.x).toBeGreaterThan(actionsBox.x + actionsBox.width)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
 }
 
 test.beforeEach(async ({ page }) => {
@@ -59,8 +67,6 @@ test('empty, omitted, and null activity data show the existing empty-state messa
     const card = await openActivity(page, scenario)
     await expect(card.getByText('No recent activity to show.', { exact: true })).toBeVisible()
     await expect(card.getByRole('list')).toHaveCount(0)
-    await expect(page.getByRole('region', { name: 'Next Appointment', exact: true })).toContainText('Tire Patch')
-    await expect(page.getByRole('region', { name: 'My Vehicles', exact: true })).toContainText('2022 Toyota Camry')
   }
 })
 
@@ -93,7 +99,7 @@ test('long descriptions, identifiers, and timestamps wrap without clipping or ho
   await card.screenshot({ path: testInfo.outputPath('recent-activity-long.png') })
 })
 
-test('the existing card appearance and responsive dashboard layout are preserved', async ({ page }, testInfo) => {
+test('the existing card appearance and responsive two-column layout are preserved', async ({ page }, testInfo) => {
   const card = await openActivity(page)
   await page.evaluate(() => document.fonts.ready)
   const heading = card.getByRole('heading', { name: 'Recent Activity', exact: true })
@@ -111,12 +117,20 @@ test('the existing card appearance and responsive dashboard layout are preserved
     if (previousBox) expect(box.y - previousBox.y - previousBox.height).toBe(16)
     previousBox = box
   }
-  const actionsBox = await page.getByRole('region', { name: 'Quick Actions', exact: true }).boundingBox()
-  const cardBox = await card.boundingBox()
-  if (page.viewportSize().width < 768) expect(cardBox.y).toBeGreaterThanOrEqual(actionsBox.y + actionsBox.height)
-  else expect(cardBox.x).toBeGreaterThan(actionsBox.x + actionsBox.width)
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  await expectResponsiveLayout(page, card)
   await card.screenshot({ path: testInfo.outputPath('recent-activity.png') })
+})
+
+test('the real customer dashboard keeps Recent Activity beside its neighboring cards', async ({ page }) => {
+  // Scenario parameters belong only to the component preview, never the real route.
+  await page.goto('/customerportal?activity=long')
+  await expect(page.getByRole('heading', { name: 'Customer Dashboard', exact: true })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Next Appointment', exact: true })).toContainText('Tire Patch')
+  await expect(page.getByRole('region', { name: 'My Vehicles', exact: true })).toContainText('2022 Toyota Camry')
+  const card = page.getByRole('region', { name: 'Recent Activity', exact: true })
+  await expect(card).toBeVisible()
+  await expect(card).not.toContainText('APPOINTMENT'.repeat(12))
+  await expectResponsiveLayout(page, card)
 })
 
 test('unchanged dashboard access checks handle loading, signed-out, denied, and admin states', async ({ page }) => {
@@ -130,7 +144,8 @@ test('unchanged dashboard access checks handle loading, signed-out, denied, and 
   await expect(page.getByRole('region', { name: 'Recent Activity', exact: true })).toHaveCount(0)
   await page.goto('/customerportal?role=admin')
   await expect(page).toHaveURL('http://127.0.0.1:4193/adminportal')
-  await openActivity(page)
+  await page.goto('/customerportal')
+  await expect(page.getByRole('heading', { name: 'Customer Dashboard', exact: true })).toBeVisible()
   for (const name of ['Next Appointment', 'My Vehicles', 'Quick Actions', 'Recent Activity']) {
     await expect(page.getByRole('region', { name, exact: true })).toBeVisible()
   }

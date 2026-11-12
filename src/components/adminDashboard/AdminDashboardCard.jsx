@@ -1,4 +1,7 @@
-export default function AdminDashboardCard({ title, actionLabel, children, className = '' }) {
+import { useNavigate } from 'react-router-dom'
+
+export default function AdminDashboardCard({ title, actionLabel, children, className = '', navigateTo }) {
+  const navigate = useNavigate()
   const titleId = `admin-${title.toLowerCase().replaceAll(' ', '-')}`
 
   return (
@@ -18,9 +21,8 @@ export default function AdminDashboardCard({ title, actionLabel, children, class
         </div>
         <button
           type="button"
-          disabled
-          title="Navigation is not available yet"
-          className="min-h-12 w-full rounded-full bg-[#323232] px-3 py-2 text-base text-white disabled:cursor-not-allowed md:border-2 md:border-black md:text-xl md:font-semibold md:shadow-sm xl:text-3xl"
+          onClick={() => navigate(navigateTo)}
+          className="min-h-12 w-full rounded-full bg-[#323232] px-3 py-2 text-base text-white disabled:cursor-not-allowed md:border-2 md:border-black md:text-xl md:font-semibold md:shadow-sm xl:text-3xl cursor-pointer"
         >
           {actionLabel}
         </button>

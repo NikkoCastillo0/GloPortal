@@ -6,6 +6,7 @@ import QuickActions from '../components/dashboard/QuickActions.jsx'
 import RecentActivity from '../components/dashboard/RecentActivity.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
+import SignOutMenuButton from '../components/navigation/SignOutMenuButton.jsx'
 
 export default function CustomerPortal() {
   const [dashboardData, setDashboardData] = useState({
@@ -15,45 +16,9 @@ export default function CustomerPortal() {
   })
   const [isDashboardLoading, setIsDashboardLoading] = useState(true)
   const [accessStatus, setAccessStatus] = useState('loading')
-  const [isSigningOut, setIsSigningOut] = useState(false)
-  const [signOutError, setSignOutError] = useState(null)
   const navigate = useNavigate()
 
-  const handleSignOut = async () => {
-    setIsSigningOut(true)
-    setSignOutError(null)
-
-    try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-
-      navigate('/', { replace: true })
-    } catch (error) {
-      console.error('Failed to sign out:', error)
-      setSignOutError(
-        error instanceof Error ? error.message : 'Unable to sign out. Please try again.',
-      )
-    } finally {
-      setIsSigningOut(false)
-    }
-  }
-
-  const customerMenuContent = (
-    <>
-      <div>
-        <button
-          type="button"
-          onClick={handleSignOut}
-          disabled={isSigningOut}
-          aria-busy={isSigningOut}
-          className="w-full rounded-lg bg-black px-4 py-3 text-center font-semibold text-white transition hover:bg-gray-700 disabled:opacity-70"
-        >
-          {isSigningOut ? 'Signing out...' : 'Sign out'}
-        </button>
-      </div>
-      {signOutError && <p role="alert">{signOutError}</p>}
-    </>
-  )
+  const customerMenuContent = <SignOutMenuButton />
 
   const loadDashboardData = useCallback(async () => {
     setIsDashboardLoading(true)

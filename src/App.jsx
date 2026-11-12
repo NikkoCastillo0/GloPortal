@@ -7,6 +7,10 @@ import MonthlyBooking from './pages/MonthlyBooking.jsx'
 import SignUp from "./pages/SignUp.jsx"
 import CustomerPortal from './pages/CustomerPortal.jsx'
 import AdminPortal from './pages/AdminPortal.jsx'
+import EditServices from './pages/EditServices.jsx'
+import ViewCustomers from './pages/ViewCustomers.jsx'
+import ViewInventory from './pages/ViewInventory.jsx'
+import ViewAppointmentRequests from './pages/ViewAppointmentRequests.jsx'
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
@@ -16,7 +20,12 @@ const router = createBrowserRouter([
     {path: "/adminportal", element: <AdminPortal />},
     {path: "/viewappointments", element: <ViewAppointments />},
     {path: "/editappointment", element: <EditAppointment />},
-    {path: "/monthlybooking", element: <MonthlyBooking />}
+    {path: "/monthlybooking", element: <MonthlyBooking />},
+    {path: "/editservices", element: <EditServices />},
+    {path: "/viewcustomers", element: <ViewCustomers />},
+    {path: "/viewinventory", element: <ViewInventory />},
+    {path: "/viewappointmentrequests", element: <ViewAppointmentRequests />}
+
 
   ])
 

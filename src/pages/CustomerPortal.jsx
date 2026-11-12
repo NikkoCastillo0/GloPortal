@@ -1,16 +1,78 @@
-import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/layout/Header.jsx'
 import NextAppointmentCard from '../components/dashboard/NextAppointmentCard.jsx'
 import VehicleCard from '../components/dashboard/VehicleCard.jsx'
 import QuickActions from '../components/dashboard/QuickActions.jsx'
 import RecentActivity from '../components/dashboard/RecentActivity.jsx'
-import { mockCustomerDashboardData } from '../mock/customerDashboardMock.js'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 
 export default function CustomerPortal() {
+  const [dashboardData, setDashboardData] = useState({
+    nextAppointment: null,
+    vehicle: null,
+    recentActivities: [],
+  })
+  const [isDashboardLoading, setIsDashboardLoading] = useState(true)
   const [accessStatus, setAccessStatus] = useState('loading')
   const navigate = useNavigate()
+
+  const loadDashboardData = useCallback(async () => {
+    setIsDashboardLoading(true)
+    try {
+      //get the currently signed in user
+      const {data: userData, error: userError} = await supabase.auth.getUser()
+
+      if(userError) throw userError
+
+      const user=userData.user
+      if(!user) throw new Error('No user is currently signed in.')
+
+      const { data: appointment, error: appointmentError } = await supabase
+        .from('appointments')
+        .select(`
+          id,
+          starts_at,
+          ends_at,
+          status,
+          vehicles ( make, model, year, license_plate ),
+          services ( name )
+        `)
+        .eq('customer_id', user.id)
+        .gte('starts_at', new Date().toISOString())
+        .order('starts_at', { ascending: true })
+        .limit(1)
+        .maybeSingle()
+      if (appointmentError) throw appointmentError
+
+      setDashboardData({
+        nextAppointment: appointment
+          ? {
+              serviceName: appointment.services?.name ?? 'Service',
+              date: new Date(appointment.starts_at).toLocaleDateString(),
+              time: new Date(appointment.starts_at).toLocaleTimeString([], {
+                hour: 'numeric',
+                minute: '2-digit',
+              }),
+              status: appointment.status,
+            }
+          : null,
+        vehicle: appointment?.vehicles
+          ? {
+              year: appointment.vehicles.year,
+              make: appointment.vehicles.make,
+              model: appointment.vehicles.model,
+              licensePlate: appointment.vehicles.license_plate,
+            }
+          : null,
+        recentActivities: [],
+      })
+    } catch (error) {
+      console.error('Failed to load customer dashboard:', error)
+    } finally {
+      setIsDashboardLoading(false)
+    }
+    }, [])
 
   useEffect(() => {
     let active = true
@@ -57,6 +119,7 @@ export default function CustomerPortal() {
         }
 
         setAccessStatus('authorized')
+        await loadDashboardData()
       } catch (error) {
         console.error('Customer verification failed:', error)
         if (active && currentVerification === verificationId) {
@@ -89,7 +152,7 @@ export default function CustomerPortal() {
         authListener.subscription.unsubscribe()
       }
     }
-  }, [navigate])
+  }, [navigate, loadDashboardData])
 
   if (accessStatus === 'loading') {
     return (
@@ -124,8 +187,6 @@ export default function CustomerPortal() {
     )
   }
 
-  const { nextAppointment, vehicle, recentActivities } = mockCustomerDashboardData
-
   return (
     <div className="min-h-screen bg-white">
       <Header role="customer" isSignedIn={true} showNavigation={false} />
@@ -140,11 +201,13 @@ export default function CustomerPortal() {
         {/* Primary Dashboard Section - Next Appointment & My Vehicles (Figma Page 25) */}
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           <NextAppointmentCard
-            appointment={nextAppointment}
+            appointment={dashboardData.nextAppointment}
+            isLoading={isDashboardLoading}
             onViewDetails={() => {}}
           />
           <VehicleCard
-            vehicle={vehicle}
+            vehicle={dashboardData.vehicle}
+            isLoading={isDashboardLoading}
             onViewAll={() => {}}
           />
         </div>
@@ -152,7 +215,7 @@ export default function CustomerPortal() {
         {/* Secondary Dashboard Section - Quick Actions & Recent Activity (Figma Page 25) */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <QuickActions />
-          <RecentActivity activities={recentActivities} />
+          <RecentActivity activities={dashboardData.recentActivities} />
         </div>
       </main>
     </div>

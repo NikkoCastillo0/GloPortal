@@ -15,7 +15,45 @@ export default function CustomerPortal() {
   })
   const [isDashboardLoading, setIsDashboardLoading] = useState(true)
   const [accessStatus, setAccessStatus] = useState('loading')
+  const [isSigningOut, setIsSigningOut] = useState(false)
+  const [signOutError, setSignOutError] = useState(null)
   const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true)
+    setSignOutError(null)
+
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+
+      navigate('/', { replace: true })
+    } catch (error) {
+      console.error('Failed to sign out:', error)
+      setSignOutError(
+        error instanceof Error ? error.message : 'Unable to sign out. Please try again.',
+      )
+    } finally {
+      setIsSigningOut(false)
+    }
+  }
+
+  const customerMenuContent = (
+    <>
+      <div>
+        <button
+          type="button"
+          onClick={handleSignOut}
+          disabled={isSigningOut}
+          aria-busy={isSigningOut}
+          className="w-full rounded-lg bg-black px-4 py-3 text-center font-semibold text-white transition hover:bg-gray-700 disabled:opacity-70"
+        >
+          {isSigningOut ? 'Signing out...' : 'Sign out'}
+        </button>
+      </div>
+      {signOutError && <p role="alert">{signOutError}</p>}
+    </>
+  )
 
   const loadDashboardData = useCallback(async () => {
     setIsDashboardLoading(true)
@@ -133,7 +171,12 @@ export default function CustomerPortal() {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!active) return
 
-      if (event === 'SIGNED_OUT' || !session) {
+      if (event === 'SIGNED_OUT') {
+        navigate('/', { replace: true })
+        return
+      }
+
+      if (!session) {
         navigate('/login', { replace: true })
         return
       }
@@ -157,7 +200,12 @@ export default function CustomerPortal() {
   if (accessStatus === 'loading') {
     return (
       <>
-        <Header role="customer" isSignedIn={true} showNavigation={true} />
+        <Header
+          role="customer"
+          isSignedIn={true}
+          showNavigation={true}
+          customerMenuContent={customerMenuContent}
+        />
         <main className="mx-auto max-w-7xl px-4 py-12 text-center" aria-busy="true">
           <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
             Verifying account access...
@@ -189,7 +237,12 @@ export default function CustomerPortal() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header role="customer" isSignedIn={true} showNavigation={false} />
+      <Header
+        role="customer"
+        isSignedIn={true}
+        showNavigation={false}
+        customerMenuContent={customerMenuContent}
+      />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <header className="mb-8">

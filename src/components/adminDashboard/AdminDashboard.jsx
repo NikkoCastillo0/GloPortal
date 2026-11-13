@@ -37,7 +37,10 @@ export default function AdminDashboard({ summary = null, children }) {
       {children}
 
       <div className="grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-x-20 md:gap-y-24">
-        <AdminDashboardCard title="Appointments" actionLabel="View All Appointments" navigateTo="/viewappointments">
+        <AdminDashboardCard title="Appointments" 
+        actionLabel="View All Appointments" 
+        navigateTo="/viewappointments"
+        overview="View and manage all approved appointments.">
           <p className="md:mb-6 md:font-semibold">Today’s Appointments</p>
           {summary ? (
             summary.todayAppointments.length ? (
@@ -68,14 +71,20 @@ export default function AdminDashboard({ summary = null, children }) {
           )}
         </AdminDashboardCard>
 
-        <AdminDashboardCard title="Customers" actionLabel="View All Customers" navigateTo="/viewcustomers">
+        <AdminDashboardCard title="Customers" 
+        actionLabel="View All Customers" 
+        navigateTo="/viewcustomers"
+        overview="View and manage all GarageGlo customers.">
           <div className="text-center text-[22px] font-bold leading-tight md:space-y-8 md:text-xl lg:text-2xl xl:text-3xl">
             <p>Total Customers: {count(summary?.customerCount)}</p>
             <p>Registered Vehicles: {count(summary?.vehicleCount)}</p>
           </div>
         </AdminDashboardCard>
 
-        <AdminDashboardCard title="Inventory" actionLabel="View All Inventory" navigateTo="/viewinventory">
+        <AdminDashboardCard title="Inventory" 
+        actionLabel="View All Inventory" 
+        navigateTo="/viewinventory"
+        overview="View and manage all inventory items.">
           <div className="text-center">
             <p className="md:mb-6 md:font-semibold">Lowest Stock</p>
             {summary ? (
@@ -96,7 +105,10 @@ export default function AdminDashboard({ summary = null, children }) {
           </div>
         </AdminDashboardCard>
 
-        <AdminDashboardCard title="Services" actionLabel="Edit Services" navigateTo="/editservices">
+        <AdminDashboardCard title="Services" 
+        actionLabel="Edit Services" 
+        navigateTo="/editservices"
+        overview="View and edit all available services.">
           <div className="text-center md:space-y-8">
             <p>Active Services: {count(summary?.activeServiceCount)}</p>
             <p>
@@ -112,6 +124,7 @@ export default function AdminDashboard({ summary = null, children }) {
           title="Appointment Requests"
           actionLabel="Review Requests"
           navigateTo="/viewappointmentrequests"
+          overview="Approve and deny any pending customer appointments."
           className="md:col-span-2 md:mx-auto md:w-full md:max-w-5xl"
         >
           <p className="text-center text-[22px] font-bold leading-tight md:text-3xl xl:text-4xl">

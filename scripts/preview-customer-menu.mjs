@@ -61,7 +61,8 @@ const server = await createServer({
                 className: 'm-6 rounded-lg bg-[#323232] p-3 text-white' }, 'Open controlled menu'),
               h(CustomerMenuOverlay, { id: menuId, isOpen, onClose: requestClose, returnFocusRef: triggerRef }, content)
             ) : h(Header, { role: mode === 'admin' ? 'admin' : 'customer',
-              isHome: true, isSignedIn: mode !== 'guest', customerMenuContent: content }),
+              isHome: true, isSignedIn: mode !== 'guest', customerMenuContent: content,
+              adminMenuContent: mode === 'admin' ? content : undefined }),
             h('main', { className: 'min-h-[1800px] bg-[#999999] p-6 text-[#242424]' },
               h('h1', { className: 'text-2xl font-semibold' }, 'Customer menu preview'),
               h('p', { className: 'mt-3' }, 'Local fixture: sample links and actions only.'),

@@ -6,19 +6,22 @@ const serviceFixture = `
   const role = params.get('role') || 'customer';
   const access = params.get('access') || 'authorized';
   const empty = { data: [], count: 0, error: null };
+  let signedOut = false;
   export const supabase = {
     auth: {
       getUser: async () => {
         if (access === 'loading') return new Promise(() => {});
-        return { data: { user: access === 'signed-out' ? null : { id: 'navigation-preview-user' } }, error: null };
+        return { data: { user: access === 'signed-out' || signedOut ? null : { id: 'navigation-preview-user' } }, error: null };
       },
+      signOut: async () => { signedOut = true; return { error: null }; },
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
       signInWithPassword: async () => ({ data: null, error: { message: 'Sign-in is disabled in this local preview.' } }),
       signUp: async () => ({ data: null, error: { message: 'Sign-up is disabled in this local preview.' } }),
     },
     from: () => ({
       select() { return this; }, eq() { return this; }, order() { return this; },
-      or() { return this; }, gte() { return this; }, lt() { return this; },
+      or() { return this; }, gte() { return this; }, lt() { return this; }, limit() { return this; },
+      maybeSingle: async () => ({ data: null, error: null }),
       single: async () => ({ data: { role: access === 'denied' ? 'unknown' : role }, error: null }),
       range: async () => empty,
       then(resolve, reject) { return Promise.resolve(empty).then(resolve, reject); },

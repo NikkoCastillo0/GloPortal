@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 
-export default function AdminDashboardCard({ title, actionLabel, children, className = '', navigateTo }) {
+export default function AdminDashboardCard({ title, actionLabel, children, className = '', navigateTo, overview }) {
   const navigate = useNavigate()
   const titleId = `admin-${title.toLowerCase().replaceAll(' ', '-')}`
 
   return (
     <section
+      title={overview}
       aria-labelledby={titleId}
       className={`flex min-w-0 flex-col overflow-hidden rounded-[18px] border border-[#cccccc] bg-[#d9d9d9] md:rounded-md ${className}`}
     >

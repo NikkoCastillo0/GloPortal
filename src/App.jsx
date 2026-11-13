@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import SiteLayout from './components/layout/SiteLayout.jsx'
 import Homepage from './pages/Homepage.jsx'
 import ViewAppointments from './pages/ViewAppointments.jsx'
 import EditAppointment from './pages/EditAppointment.jsx'

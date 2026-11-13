@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { useNavigate } from 'react-router-dom'
+import SignOutMenuButton from '../components/navigation/SignOutMenuButton.jsx'
 
 export default function AdminPortal() {
     const [accessStatus, setAccessStatus] = useState('Loading')
@@ -96,7 +97,12 @@ export default function AdminPortal() {
 
   return (
     <div className="min-h-screen bg-[#f6f6f4] text-[#323232] md:bg-white">
-      <Header role="admin" isSignedIn={true} showNavigation={true} />
+      <Header
+        role="admin"
+        isSignedIn={true}
+        showNavigation={true}
+        adminMenuContent={<SignOutMenuButton clearCacheOnSignOut />}
+      />
       <AdminDashboard />
     </div>
   )

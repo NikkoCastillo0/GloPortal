@@ -17,7 +17,7 @@ export default function AdminDashboardCard({ title, actionLabel, children, class
         {title}
       </h2>
       <div className="flex flex-1 flex-col gap-4 p-4 md:gap-6 md:p-6">
-        <div className="flex flex-1 flex-col justify-center text-[15px] leading-relaxed md:min-h-44 md:text-center md:text-xl lg:text-2xl xl:text-3xl">
+        <div className="flex flex-1 flex-col justify-center text-[15px] leading-relaxed [overflow-wrap:anywhere] md:min-h-44 md:text-center md:text-xl lg:text-2xl xl:text-3xl">
           {children}
         </div>
         <button

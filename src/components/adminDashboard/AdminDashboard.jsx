@@ -1,16 +1,17 @@
-import AdminDashboardCard from './AdminDashboardCard.jsx'
+import AdminDashboardCard from "./AdminDashboardCard.jsx";
 
-const appointmentTime = new Intl.DateTimeFormat('en-US', {
-  timeZone: 'America/Los_Angeles',
-  hour: 'numeric',
-  minute: '2-digit',
-})
+const appointmentTime = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/Los_Angeles",
+  hour: "numeric",
+  minute: "2-digit",
+});
 
 export default function AdminDashboard({ summary = null, children }) {
-  const count = (value) => value == null ? '—' : value.toLocaleString('en-US')
+  const count = (value) =>
+    value == null ? "—" : value.toLocaleString("en-US");
 
   return (
-    <main className="mx-auto max-w-[1530px] px-5 pb-10 pt-7 md:px-12 md:py-16">
+    <main className="mx-auto max-w-382.5 px-5 pb-10 pt-7 md:px-12 md:py-16">
       <header className="mb-7 md:sr-only">
         <h1 className="text-[28px] font-bold leading-tight">Admin Dashboard</h1>
         <p className="mt-1 text-[15px] text-[#666666]">
@@ -20,13 +21,15 @@ export default function AdminDashboard({ summary = null, children }) {
 
       <dl className="mb-7 grid grid-cols-3 rounded-[18px] border border-[#cccccc] bg-white p-4 text-center md:hidden">
         {[
-          ['Today', summary?.todayCount],
-          ['Customers', summary?.customerCount],
-          ['Requests', summary?.pendingCount],
+          ["Today", summary?.todayCount],
+          ["Customers", summary?.customerCount],
+          ["Requests", summary?.pendingCount],
         ].map(([label, value]) => (
           <div key={label} className="flex flex-col-reverse gap-1">
             <dt className="text-xs text-[#666666]">{label}</dt>
-            <dd className="text-[28px] font-bold leading-tight">{count(value)}</dd>
+            <dd className="text-[28px] font-bold leading-tight">
+              {count(value)}
+            </dd>
           </div>
         ))}
       </dl>
@@ -45,16 +48,24 @@ export default function AdminDashboard({ summary = null, children }) {
                       <time dateTime={appointment.startsAt}>
                         {appointmentTime.format(new Date(appointment.startsAt))}
                       </time>
-                      {' · '}{appointment.serviceName}
+                      {" · "}
+                      {appointment.serviceName}
                     </li>
                   ))}
                 </ul>
                 {summary.todayCount > summary.todayAppointments.length && (
-                  <p className="mt-2 text-sm">Showing {summary.todayAppointments.length} of {count(summary.todayCount)}</p>
+                  <p className="mt-2 text-sm">
+                    Showing {summary.todayAppointments.length} of{" "}
+                    {count(summary.todayCount)}
+                  </p>
                 )}
               </>
-            ) : <p>No appointments today.</p>
-          ) : <p>—</p>}
+            ) : (
+              <p>No appointments today.</p>
+            )
+          ) : (
+            <p>—</p>
+          )}
         </AdminDashboardCard>
 
         <AdminDashboardCard title="Customers" actionLabel="View All Customers" navigateTo="/viewcustomers">
@@ -71,18 +82,29 @@ export default function AdminDashboard({ summary = null, children }) {
               summary.lowestStock.length ? (
                 <ul>
                   {summary.lowestStock.map((item) => (
-                    <li key={item.id}>{item.name}: {count(item.quantity)}</li>
+                    <li key={item.id}>
+                      {item.name}: {count(item.quantity)}
+                    </li>
                   ))}
                 </ul>
-              ) : <p>No inventory items yet.</p>
-            ) : <p>—</p>}
+              ) : (
+                <p>No inventory items yet.</p>
+              )
+            ) : (
+              <p>—</p>
+            )}
           </div>
         </AdminDashboardCard>
 
         <AdminDashboardCard title="Services" actionLabel="Edit Services" navigateTo="/editservices">
           <div className="text-center md:space-y-8">
             <p>Active Services: {count(summary?.activeServiceCount)}</p>
-            <p>Most Popular: {summary ? (summary.popularService ?? 'No completed jobs yet') : '—'}</p>
+            <p>
+              Most Popular:{" "}
+              {summary
+                ? (summary.popularService ?? "No completed jobs yet")
+                : "—"}
+            </p>
           </div>
         </AdminDashboardCard>
 
@@ -93,10 +115,12 @@ export default function AdminDashboard({ summary = null, children }) {
           className="md:col-span-2 md:mx-auto md:w-full md:max-w-5xl"
         >
           <p className="text-center text-[22px] font-bold leading-tight md:text-3xl xl:text-4xl">
-            {summary ? `${count(summary.pendingCount)} ${summary.pendingCount === 1 ? 'request' : 'requests'} waiting review` : '— requests waiting review'}
+            {summary
+              ? `${count(summary.pendingCount)} ${summary.pendingCount === 1 ? "request" : "requests"} waiting review`
+              : "— requests waiting review"}
           </p>
         </AdminDashboardCard>
       </div>
     </main>
-  )
+  );
 }

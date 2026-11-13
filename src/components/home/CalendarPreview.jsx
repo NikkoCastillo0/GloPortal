@@ -43,7 +43,7 @@ export default function CalendarPreview() {
   const [selectedTime, setSelectedTime] = useState(null);
 
   const [services, setServices] = useState([]);
-  const [selectedServiceId, setSelectedServiceId] = useState("");
+  const [selectedServiceIds, setSelectedServiceIds] = useState([]);
   const [slots, setSlots] = useState([]);
   const [loadingServices, setLoadingServices] = useState(true);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -85,7 +85,7 @@ export default function CalendarPreview() {
         setServicesError(error.message);
       } else {
         setServices(data ?? []);
-        setSelectedServiceId(data?.[0]?.id ?? "");
+        setSelectedServiceIds([]);
       }
       setLoadingServices(false);
     }
@@ -109,9 +109,17 @@ export default function CalendarPreview() {
         return;
       }
 
-      const { data, error } = await supabase.rpc("get_month_availability", {
-        p_month: `${monthKey}-01`,
-      });
+      const monthRequest =
+        selectedServiceIds.length === 0
+          ? supabase.rpc("get_month_availability", {
+              p_month: `${monthKey}-01`,
+            })
+          : supabase.rpc("get_month_availability_for_services", {
+              p_month: `${monthKey}-01`,
+              p_service_ids: selectedServiceIds,
+            });
+
+      const { data, error } = await monthRequest;
       if (cancelled) return;
 
       if (error) {
@@ -129,19 +137,19 @@ export default function CalendarPreview() {
 
     loadMonth();
     return () => { cancelled = true; };
-  }, [monthKey, loadingServices, services.length, refreshKey]);
+  }, [monthKey, loadingServices, services.length, selectedServiceIds,refreshKey]);
 
   useEffect(() => {
-    if (!selectedDate || !selectedServiceId) return;
+    if (!selectedDate || selectedServiceIds.length === 0) return;
     let cancelled = false;
 
     async function loadAvailability() {
       setLoadingSlots(true);
       setSlotsError(null);
       setSlots([]);
-      const { data, error } = await supabase.rpc("get_available_times", {
+      const { data, error } = await supabase.rpc("get_available_times_for_services", {
         p_date: selectedDate,
-        p_service_id: selectedServiceId,
+        p_service_ids: selectedServiceIds,
       });
       if (cancelled) return;
       if (error) {
@@ -154,7 +162,7 @@ export default function CalendarPreview() {
 
     loadAvailability();
     return () => { cancelled = true; };
-  }, [selectedDate, selectedServiceId, refreshKey]);
+  }, [selectedDate, selectedServiceIds, refreshKey]);
 
   function changeMonth(amount) {
     setCurrentMonth(new Date(year, month + amount, 1));
@@ -175,10 +183,13 @@ export default function CalendarPreview() {
     setBookingNotice(false);
   }
 
-  function changeService(serviceId) {
-    setSelectedServiceId(serviceId);
+  const changeService = (serviceId) => {
+    setSelectedServiceIds((currentIds) =>
+      currentIds.includes(serviceId) ? currentIds.filter((id) => id !== serviceId) : [...currentIds, serviceId],
+  );
     setSelectedTime(null);
     setSlots([]);
+    setBookingNotice(null);
     setBookingNotice(false);
   }
 
@@ -265,16 +276,22 @@ export default function CalendarPreview() {
                   <button type="button" onClick={refreshAvailability} disabled={loadingSlots}
                     className="calendar-preview__refresh">Refresh</button>
                 </div>
-                <label className="calendar-preview__field-label" htmlFor="booking-service">Service</label>
-                <select id="booking-service" value={selectedServiceId}
-                  onChange={(event) => changeService(event.target.value)}
-                  className="calendar-preview__service">
+                <label className="calendar-preview__field-label" htmlFor="booking-service">Select one or more services</label>
+                <div className="grid gap-2">
                   {services.map((service) => (
-                    <option key={service.id} value={service.id}>
-                      {service.name} ({service.duration_minutes} min)
-                    </option>
+                    <label
+                      key={service.id}
+                      className="flex cursor-pointer items-center gap-2"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedServiceIds.includes(service.id)}
+                        onChange={() => changeService(service.id)}
+                      />
+                      <span>{service.name} ({service.duration_minutes} min)</span>
+                    </label>
                   ))}
-                </select>
+                </div>
 
                 {loadingSlots ? (
                   <p className="calendar-preview__helper" role="status">Loading times...</p>

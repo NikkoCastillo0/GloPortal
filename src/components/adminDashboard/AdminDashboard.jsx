@@ -37,10 +37,7 @@ export default function AdminDashboard({ summary = null, children }) {
       {children}
 
       <div className="grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-x-20 md:gap-y-24">
-        <AdminDashboardCard
-          title="Appointments"
-          actionLabel="View All Appointments"
-        >
+        <AdminDashboardCard title="Appointments" actionLabel="View All Appointments" navigateTo="/viewappointments">
           <p className="md:mb-6 md:font-semibold">Today’s Appointments</p>
           {summary ? (
             summary.todayAppointments.length ? (
@@ -71,14 +68,14 @@ export default function AdminDashboard({ summary = null, children }) {
           )}
         </AdminDashboardCard>
 
-        <AdminDashboardCard title="Customers" actionLabel="View All Customers">
+        <AdminDashboardCard title="Customers" actionLabel="View All Customers" navigateTo="/viewcustomers">
           <div className="text-center text-[22px] font-bold leading-tight md:space-y-8 md:text-xl lg:text-2xl xl:text-3xl">
             <p>Total Customers: {count(summary?.customerCount)}</p>
             <p>Registered Vehicles: {count(summary?.vehicleCount)}</p>
           </div>
         </AdminDashboardCard>
 
-        <AdminDashboardCard title="Inventory" actionLabel="View All Inventory">
+        <AdminDashboardCard title="Inventory" actionLabel="View All Inventory" navigateTo="/viewinventory">
           <div className="text-center">
             <p className="md:mb-6 md:font-semibold">Lowest Stock</p>
             {summary ? (
@@ -99,7 +96,7 @@ export default function AdminDashboard({ summary = null, children }) {
           </div>
         </AdminDashboardCard>
 
-        <AdminDashboardCard title="Services" actionLabel="Edit Services">
+        <AdminDashboardCard title="Services" actionLabel="Edit Services" navigateTo="/editservices">
           <div className="text-center md:space-y-8">
             <p>Active Services: {count(summary?.activeServiceCount)}</p>
             <p>
@@ -114,6 +111,7 @@ export default function AdminDashboard({ summary = null, children }) {
         <AdminDashboardCard
           title="Appointment Requests"
           actionLabel="Review Requests"
+          navigateTo="/viewappointmentrequests"
           className="md:col-span-2 md:mx-auto md:w-full md:max-w-5xl"
         >
           <p className="text-center text-[22px] font-bold leading-tight md:text-3xl xl:text-4xl">

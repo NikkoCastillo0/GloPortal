@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from "react";
 import CustomerMenuOverlay from "../navigation/CustomerMenuOverlay";
+import AdminNavigationLinks from "../navigation/AdminNavigationLinks.jsx";
 import CustomerNavigationLinks from "../navigation/CustomerNavigationLinks.jsx";
 import MenuOverlay from "../navigation/not-logged-in-menuOverlay";
 import garageGloLogo from "../../assets/GarageGloLogo.svg";
@@ -122,7 +123,12 @@ export default function Header({
           returnFocusRef={menuTriggerRef}
           menuLabel={showAdminMenu ? "Admin" : "Customer"}
         >
-          {showAdminMenu ? adminMenuContent : (
+          {showAdminMenu ? (
+            <>
+              <AdminNavigationLinks onNavigate={() => setIsMenuOpen(false)} />
+              {adminMenuContent}
+            </>
+          ) : (
             <>
               {customerMenuContent ?? (
                 <CustomerNavigationLinks onNavigate={() => setIsMenuOpen(false)} />

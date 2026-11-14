@@ -131,7 +131,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex min-h-svh flex-col bg-[#7a7a7a]">
+    <div className="flex min-h-svh flex-col bg-[#919191]">
       <Header role="customer" showNavigation={false} />
 
       <div className="mx-auto mb-4 mt-3 w-[calc(100%-1.5rem)] max-w-170 rounded-3xl bg-[#ebebeb] p-5 shadow-sm sm:mb-0 sm:w-full sm:p-5 lg:p-6 xl:p-8">

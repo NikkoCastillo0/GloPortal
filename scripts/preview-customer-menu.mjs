@@ -8,7 +8,7 @@ const server = await createServer({
   cacheDir: 'node_modules/.vite-gp160-preview',
   optimizeDeps: {
     noDiscovery: true,
-    include: ['react', 'react-dom/client', 'react/jsx-dev-runtime', '@base-ui/react/dialog', 'lucide-react'],
+    include: ['react', 'react-dom/client', 'react/jsx-dev-runtime', 'react-router-dom', '@base-ui/react/dialog', 'lucide-react'],
   },
   server: { host: '127.0.0.1', port, strictPort: true, open: false },
   plugins: [{
@@ -61,7 +61,8 @@ const server = await createServer({
                 className: 'm-6 rounded-lg bg-[#323232] p-3 text-white' }, 'Open controlled menu'),
               h(CustomerMenuOverlay, { id: menuId, isOpen, onClose: requestClose, returnFocusRef: triggerRef }, content)
             ) : h(Header, { role: mode === 'admin' ? 'admin' : 'customer',
-              isHome: true, isSignedIn: mode !== 'guest', customerMenuContent: content }),
+              isHome: true, isSignedIn: mode !== 'guest', customerMenuContent: content,
+              adminMenuContent: mode === 'admin' ? content : undefined }),
             h('main', { className: 'min-h-[1800px] bg-[#999999] p-6 text-[#242424]' },
               h('h1', { className: 'text-2xl font-semibold' }, 'Customer menu preview'),
               h('p', { className: 'mt-3' }, 'Local fixture: sample links and actions only.'),

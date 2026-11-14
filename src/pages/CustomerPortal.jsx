@@ -18,7 +18,7 @@ export default function CustomerPortal() {
   const [accessStatus, setAccessStatus] = useState('loading')
   const navigate = useNavigate()
 
-  const customerMenuContent = <SignOutMenuButton />
+  const customerMenuActions = <SignOutMenuButton />
 
   const loadDashboardData = useCallback(async () => {
     setIsDashboardLoading(true)
@@ -169,7 +169,7 @@ export default function CustomerPortal() {
           role="customer"
           isSignedIn={true}
           showNavigation={true}
-          customerMenuContent={customerMenuContent}
+          customerMenuActions={customerMenuActions}
         />
         <main className="mx-auto max-w-7xl px-4 py-12 text-center" aria-busy="true">
           <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
@@ -206,7 +206,7 @@ export default function CustomerPortal() {
         role="customer"
         isSignedIn={true}
         showNavigation={false}
-        customerMenuContent={customerMenuContent}
+        customerMenuActions={customerMenuActions}
       />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

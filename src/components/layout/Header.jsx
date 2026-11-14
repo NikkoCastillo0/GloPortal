@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from "react";
 import CustomerMenuOverlay from "../navigation/CustomerMenuOverlay";
+import CustomerNavigationLinks from "../navigation/CustomerNavigationLinks.jsx";
 import MenuOverlay from "../navigation/not-logged-in-menuOverlay";
 import garageGloLogo from "../../assets/GarageGloLogo.svg";
 import menuIcon from "../../assets/Hamburger-Menu.svg";
@@ -19,6 +20,7 @@ export default function Header({
   isSignedIn = false,
   showNavigation = false,
   customerMenuContent,
+  customerMenuActions,
   adminMenuContent,
 }) {
   const showCustomerNav = role === "customer" && (isHome || showNavigation);
@@ -37,7 +39,7 @@ export default function Header({
                 bg-[#323232] px-3.5 py-2
                 shadow-[0_5px_8px_rgba(0,0,0,0.35)]
                 md:min-h-21.25 md:grid-cols-[auto_1fr_auto] md:px-4.5
-                lg:min-h-25 lg:px-6    
+                lg:min-h-25 lg:px-6
             "
     >
       {/* Inserting logo png */}
@@ -120,7 +122,14 @@ export default function Header({
           returnFocusRef={menuTriggerRef}
           menuLabel={showAdminMenu ? "Admin" : "Customer"}
         >
-          {showAdminMenu ? adminMenuContent : customerMenuContent}
+          {showAdminMenu ? adminMenuContent : (
+            <>
+              {customerMenuContent ?? (
+                <CustomerNavigationLinks onNavigate={() => setIsMenuOpen(false)} />
+              )}
+              {customerMenuActions}
+            </>
+          )}
         </CustomerMenuOverlay>
       ) : (
         <MenuOverlay isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />

@@ -74,3 +74,58 @@
   .calendar-preview__weekday { font-size: .68rem; }
   .calendar-preview__day { min-height: 2.4rem; font-size: .85rem; }
 }
+
+.calendar-preview__service-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.calendar-preview__service-options {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.5rem;
+}
+
+.calendar-preview__service-option {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #d6d6d6;
+  border-radius: 0.3rem;
+  background: #fff;
+  color: #272727;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.calendar-preview__service-option:hover {
+  border-color: #767676;
+  background: #f8f8f8;
+}
+
+.calendar-preview__service-option--selected {
+  border-color: #323232;
+  background: #f3f3f3;
+}
+
+.calendar-preview__service-checkbox {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: #2d2d2d;
+  cursor: pointer;
+}
+
+.calendar-preview__service-checkbox:focus-visible {
+  outline: 3px solid #1d1d1d;
+  outline-offset: 2px;
+}
+
+.calendar-preview__service-option span {
+  min-width: 0;
+  line-height: 1.4;
+}

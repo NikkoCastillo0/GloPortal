@@ -26,7 +26,19 @@ const serviceFixture = `
       range: async () => empty,
       then(resolve, reject) { return Promise.resolve(empty).then(resolve, reject); },
     }),
-    rpc: async () => empty,
+    rpc: async (name) => {
+      if (name !== 'get_admin_dashboard_summary') return empty;
+      if (signedOut || access === 'signed-out' || access === 'denied' || role !== 'admin') {
+        return { data: null, error: { code: '42501', message: 'Administrator access required.' } };
+      }
+      return {
+        data: {
+          todayCount: 0, todayAppointments: [], customerCount: 0, vehicleCount: 0,
+          lowestStock: [], activeServiceCount: 0, popularService: null, pendingCount: 0,
+        },
+        error: null,
+      };
+    },
   };
 `
 

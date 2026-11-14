@@ -1,6 +1,6 @@
 /* GP-18: Figma's neutral gray homepage and white calendar panel. */
 .calendar-preview {
-  background: #a3a3a3;
+  background: #ebebeb;
   color: #272727;
   padding: clamp(2rem, 5vw, 4rem) 1rem;
 }

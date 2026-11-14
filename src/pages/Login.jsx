@@ -83,25 +83,8 @@ export default function Login() {
       className="
         min-h-[100svh] bg-[#999999] text-[#242424]
         [font-family:Inter,'Inter_Variable',sans-serif]
-        [&>header]:min-h-[82px] [&>header]:px-[18px] [&>header]:py-[11px]
-        [&>header]:bg-[#303030] [&>header]:shadow-none
-        [&>header_.garage-glo-logo_img]:h-[60px]
-        [&>header_.garage-glo-logo_img]:w-[64px]
         md:[--login-unit:min(.65px,0.05787037vw,0.055vh)]
         md:bg-[#919191] md:text-[#1e1e1e]
-        md:[&>header]:grid-cols-[auto_1fr_auto]
-        md:[&>header]:min-h-[calc(187_*_var(--login-unit))]
-        md:[&>header]:px-[calc(55_*_var(--login-unit))]
-        md:[&>header]:py-[calc(18_*_var(--login-unit))]
-        md:[&>header]:bg-[#323232]
-        md:[&>header_.garage-glo-logo_img]:h-[calc(151_*_var(--login-unit))]
-        md:[&>header_.garage-glo-logo_img]:w-[calc(170_*_var(--login-unit))]
-        md:[&>header>nav]:flex
-        md:[&>header>nav]:gap-[calc(100_*_var(--login-unit))]
-        md:[&>header>nav]:mr-[calc(180_*_var(--login-unit))]
-        md:[&>header>nav_a]:text-[calc(48_*_var(--login-unit))]
-        md:[&>header>nav_a]:font-semibold
-        md:[&>header>nav_a]:leading-[1.25]
       "
     >
       <Header role="customer" showNavigation={false} />

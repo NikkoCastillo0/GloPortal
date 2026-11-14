@@ -276,22 +276,36 @@ export default function CalendarPreview() {
                   <button type="button" onClick={refreshAvailability} disabled={loadingSlots}
                     className="calendar-preview__refresh">Refresh</button>
                 </div>
-                <label className="calendar-preview__field-label" htmlFor="booking-service">Select one or more services</label>
-                <div className="grid gap-2">
-                  {services.map((service) => (
-                    <label
-                      key={service.id}
-                      className="flex cursor-pointer items-center gap-2"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedServiceIds.includes(service.id)}
-                        onChange={() => changeService(service.id)}
-                      />
-                      <span>{service.name} ({service.duration_minutes} min)</span>
-                    </label>
-                  ))}
-                </div>
+                <fieldset className="calendar-preview__service-fieldset">
+                  <legend className="calendar-preview__field-label">
+                    Select one or more services
+                  </legend>
+
+                  <div className="calendar-preview__service-options">
+                    {services.map((service) => {
+                      const isSelected = selectedServiceIds.includes(service.id);
+
+                      return (
+                        <label
+                          key={service.id}
+                          className={`calendar-preview__service-option${
+                            isSelected ? " calendar-preview__service-option--selected" : ""
+                          }`}
+                        >
+                          <input
+                            className="calendar-preview__service-checkbox"
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => changeService(service.id)}
+                          />
+                          <span>
+                            {service.name} ({service.duration_minutes} min)
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </fieldset>
 
                 {loadingSlots ? (
                   <p className="calendar-preview__helper" role="status">Loading times...</p>

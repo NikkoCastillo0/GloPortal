@@ -25,7 +25,7 @@ export default function Homepage() {
 
   return (
     <>
-      <Header role="customer" isHome={true} isSignedIn={false} />
+      <Header role="customer" isHome={true}/>
       <main>
         <div
           className="

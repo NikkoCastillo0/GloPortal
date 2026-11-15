@@ -167,7 +167,6 @@ export default function CustomerPortal() {
       <>
         <Header
           role="customer"
-          isSignedIn={true}
           showNavigation={true}
           customerMenuContent={customerMenuContent}
         />

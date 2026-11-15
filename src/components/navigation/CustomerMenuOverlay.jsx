@@ -50,17 +50,14 @@ export default function CustomerMenuOverlay({
             <Dialog.Close
               aria-label={`Close ${menuLabel.toLowerCase()} menu`}
               className="
-                absolute right-0 top-1.5 flex size-11.75 cursor-pointer
-                items-center justify-center rounded-full text-[48px]
-                font-semibold leading-none text-[#323232]
-                text-shadow-[0_4px_4px_rgba(0,0,0,0.25)]
-                hover:bg-[#ececea] focus-visible:outline-2
-                focus-visible:outline-offset-2 focus-visible:outline-[#323232]
-                md:right-0 md:top-0 md:size-9 md:text-3xl md:font-normal
-                md:leading-none md:text-black md:text-shadow-none
+                absolute right-0 top-1.5 flex h-9 w-9 cursor-pointer
+                items-center justify-center rounded-full text-3xl leading-none
+                text-black transition hover:bg-gray-100 hover:text-gray-600
+                focus-visible:outline-2 focus-visible:outline-offset-2
+                focus-visible:outline-[#323232]
               "
             >
-              <span aria-hidden="true">X</span>
+              &times;
             </Dialog.Close>
           </div>
 

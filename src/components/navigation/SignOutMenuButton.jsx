@@ -38,7 +38,7 @@ export default function SignOutMenuButton({ clearCacheOnSignOut = false }) {
         onClick={handleSignOut}
         disabled={isSigningOut}
         aria-busy={isSigningOut}
-        className="w-full rounded-lg bg-black px-4 py-3 text-center text-lg font-semibold text-white transition hover:bg-gray-700 disabled:opacity-70"
+        className="w-full rounded-lg bg-black px-4 py-3 text-center text-lg font-semibold text-white transition hover:bg-[#1f1f1f] disabled:opacity-70"
       >
         {isSigningOut ? 'Signing out...' : 'Sign out'}
       </button>

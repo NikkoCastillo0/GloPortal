@@ -27,6 +27,7 @@ const adminPortalLinks = [
   { label: "Appointment Requests", href: "/viewappointmentrequests"},
   { label: "Appointments", href: "/viewappointments"},
   { label: "Inventory", href: "/viewinventory"},
+  { label: "Customers", href: "/viewcustomers"},
   { label: "Services", href: "/editservices"},
 ]
 

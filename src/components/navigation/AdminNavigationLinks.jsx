@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronRight, ClipboardList, LayoutDashboard, Package, Wrench } from 'lucide-react'
+import { CalendarDays, ChevronRight, ClipboardList, LayoutDashboard, Package, Wrench, UserRound } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { adminNavigationItems } from '../../config/adminNavigationItems.js'
 
@@ -7,6 +7,7 @@ const icons = {
   requests: ClipboardList,
   appointments: CalendarDays,
   inventory: Package,
+  customers: UserRound,
   services: Wrench,
 }
 

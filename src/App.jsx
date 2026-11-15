@@ -11,6 +11,9 @@ import EditServices from './pages/EditServices.jsx'
 import ViewCustomers from './pages/ViewCustomers.jsx'
 import ViewInventory from './pages/ViewInventory.jsx'
 import ViewAppointmentRequests from './pages/ViewAppointmentRequests.jsx'
+import ViewVehicle from './pages/ViewVehicle.jsx'
+import AddVehicle from './pages/AddVehicle.jsx'
+import EditProfile from './pages/EditProfile.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import TermsOfService from './pages/TermsOfService.jsx'
 
@@ -26,6 +29,11 @@ const router = createBrowserRouter([
     {path: "/editservices", element: <EditServices />},
     {path: "/viewcustomers", element: <ViewCustomers />},
     {path: "/viewinventory", element: <ViewInventory />},
+    {path: "/viewvehicle", element: <ViewVehicle />},
+    {path: "/addvehicle", element: <AddVehicle />},
+    {path: "/editprofile", element: <EditProfile />},
+   
+
     {path: "/viewappointmentrequests", element: <ViewAppointmentRequests />},
     {path: "/privacy-policy", element: <PrivacyPolicy />},
     {path: "/terms-of-service", element: <TermsOfService />}

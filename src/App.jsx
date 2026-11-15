@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import SiteLayout from './components/layout/SiteLayout.jsx'
 import Homepage from './pages/Homepage.jsx'
 import ViewAppointments from './pages/ViewAppointments.jsx'
 import EditAppointment from './pages/EditAppointment.jsx'
@@ -15,6 +14,8 @@ import ViewAppointmentRequests from './pages/ViewAppointmentRequests.jsx'
 import ViewVehicle from './pages/ViewVehicle.jsx'
 import AddVehicle from './pages/AddVehicle.jsx'
 import EditProfile from './pages/EditProfile.jsx'
+import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
+import TermsOfService from './pages/TermsOfService.jsx'
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
@@ -31,8 +32,11 @@ const router = createBrowserRouter([
     {path: "/viewvehicle", element: <ViewVehicle />},
     {path: "/addvehicle", element: <AddVehicle />},
     {path: "/editprofile", element: <EditProfile />},
-    {path: "/viewappointmentrequests", element: <ViewAppointmentRequests />}
+   
 
+    {path: "/viewappointmentrequests", element: <ViewAppointmentRequests />},
+    {path: "/privacy-policy", element: <PrivacyPolicy />},
+    {path: "/terms-of-service", element: <TermsOfService />}
 
   ])
 

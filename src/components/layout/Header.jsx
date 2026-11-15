@@ -1,6 +1,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { supabase } from "../../lib/supabase.js";
 import CustomerMenuOverlay from "../navigation/CustomerMenuOverlay";
+import AdminNavigationLinks from "../navigation/AdminNavigationLinks.jsx";
+import CustomerNavigationLinks from "../navigation/CustomerNavigationLinks.jsx";
 import MenuOverlay from "../navigation/not-logged-in-menuOverlay";
 import garageGloLogo from "../../assets/GarageGloLogo.svg";
 import menuIcon from "../../assets/Hamburger-Menu.svg";

@@ -44,6 +44,9 @@ export default function CalendarPreview() {
 
   const [services, setServices] = useState([]);
   const [selectedServiceIds, setSelectedServiceIds] = useState([]);
+  const [unavailableServiceIds, setUnavailableServiceIds] = useState([]);
+  const [loadingDailyServices, setLoadingDailyServices] = useState(false);
+  const [dailyServicesError, setDailyServicesError] = useState(null);
   const [slots, setSlots] = useState([]);
   const [loadingServices, setLoadingServices] = useState(true);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -93,6 +96,52 @@ export default function CalendarPreview() {
     loadServices();
     return () => { cancelled = true; };
   }, []);
+
+  // A service disabled by an admin is hidden for this date only.
+  useEffect(() => {
+    if (!selectedDate) {
+      setUnavailableServiceIds([]);
+      setLoadingDailyServices(false);
+      setDailyServicesError(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadDailyServiceAvailability() {
+      setLoadingDailyServices(true);
+      setDailyServicesError(null);
+
+      const { data, error } = await supabase
+        .from("daily_service_availability")
+        .select("service_id")
+        .eq("date", selectedDate)
+        .eq("is_available", false);
+
+      if (cancelled) return;
+
+      if (error) {
+        console.error("Daily service availability query failed:", error);
+        setDailyServicesError(error.message);
+        setUnavailableServiceIds([]);
+      } else {
+        const unavailableIds = (data ?? []).map((row) => row.service_id);
+        setUnavailableServiceIds(unavailableIds);
+
+        // If the customer had selected a service that is unavailable on this
+        // date, remove it so slots are not requested for that service.
+        const unavailableSet = new Set(unavailableIds);
+        setSelectedServiceIds((currentIds) =>
+          currentIds.filter((id) => !unavailableSet.has(id)),
+        );
+      }
+
+      setLoadingDailyServices(false);
+    }
+
+    loadDailyServiceAvailability();
+    return () => { cancelled = true; };
+  }, [selectedDate, refreshKey]);
 
   // One RPC request checks the whole month across all active services.
   // A day is unavailable only when *none* of the services can be booked.
@@ -177,6 +226,9 @@ export default function CalendarPreview() {
   function selectDay(day) {
     const dateString = `${monthKey}-${String(day).padStart(2, "0")}`;
     setSelectedDate(dateString);
+    setLoadingDailyServices(true);
+    setUnavailableServiceIds([]);
+    setDailyServicesError(null);
     setSelectedTime(null);
     setSlots([]);
     setSlotsError(null);
@@ -201,6 +253,9 @@ export default function CalendarPreview() {
 
   const anyAvailableSlots = slots.some((slot) => slot.is_available);
   const selectedDateLabel = selectedDate ? formatDate(selectedDate) : null;
+  const selectableServices = services.filter(
+    (service) => !unavailableServiceIds.includes(service.id),
+  );
 
   return (
     <section id="calendar" className="calendar-preview" aria-labelledby="calendar-preview-title">
@@ -276,13 +331,26 @@ export default function CalendarPreview() {
                   <button type="button" onClick={refreshAvailability} disabled={loadingSlots}
                     className="calendar-preview__refresh">Refresh</button>
                 </div>
-                <fieldset className="calendar-preview__service-fieldset">
-                  <legend className="calendar-preview__field-label">
-                    Select one or more services
-                  </legend>
+                {loadingDailyServices ? (
+                  <p className="calendar-preview__helper" role="status">
+                    Checking services for this date...
+                  </p>
+                ) : dailyServicesError ? (
+                  <p role="alert" className="calendar-preview__error">
+                    Could not load services for this date: {dailyServicesError}
+                  </p>
+                ) : selectableServices.length === 0 ? (
+                  <p className="calendar-preview__helper">
+                    No services are available on this date.
+                  </p>
+                ) : (
+                  <fieldset className="calendar-preview__service-fieldset">
+                    <legend className="calendar-preview__field-label">
+                      Select one or more services
+                    </legend>
 
-                  <div className="calendar-preview__service-options">
-                    {services.map((service) => {
+                    <div className="calendar-preview__service-options">
+                    {selectableServices.map((service) => {
                       const isSelected = selectedServiceIds.includes(service.id);
 
                       return (
@@ -304,13 +372,16 @@ export default function CalendarPreview() {
                         </label>
                       );
                     })}
-                  </div>
-                </fieldset>
+                    </div>
+                  </fieldset>
+                )}
 
-                {loadingSlots ? (
+                {loadingDailyServices || dailyServicesError || selectableServices.length === 0 ? null : loadingSlots ? (
                   <p className="calendar-preview__helper" role="status">Loading times...</p>
                 ) : slotsError ? (
                   <p role="alert" className="calendar-preview__error">{slotsError}</p>
+                ) : selectedServiceIds.length === 0 ? (
+                  <p className="calendar-preview__helper">Choose at least one available service to see times.</p>
                 ) : !anyAvailableSlots ? (
                   <p className="calendar-preview__helper">No available times for this service on this date. Try another service or day.</p>
                 ) : (

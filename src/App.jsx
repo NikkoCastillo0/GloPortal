@@ -16,6 +16,7 @@ import AddVehicle from './pages/AddVehicle.jsx'
 import EditProfile from './pages/EditProfile.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import TermsOfService from './pages/TermsOfService.jsx'
+import ShopAvailability from './pages/ShopAvailability.jsx'
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
     {path: "/viewvehicle", element: <ViewVehicle />},
     {path: "/addvehicle", element: <AddVehicle />},
     {path: "/editprofile", element: <EditProfile />},
-   
+    {path: "/shopavailability", element: <ShopAvailability />},
 
     {path: "/viewappointmentrequests", element: <ViewAppointmentRequests />},
     {path: "/privacy-policy", element: <PrivacyPolicy />},

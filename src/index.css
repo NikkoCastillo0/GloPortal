@@ -145,10 +145,7 @@ thead{
   background-color:rgb(122, 122, 122);
   color: black;
 }
-tbody{
-  background-color:rgb(93, 93, 93);
-  color: black;
-}
+
 
 html {
   scroll-behavior: smooth;

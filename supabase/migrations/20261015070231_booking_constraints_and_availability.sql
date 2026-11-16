@@ -35,9 +35,11 @@ CHECK (
 -- This helper can inspect appointments but
 -- never returns customer information.
 
-CREATE FUNCTION private.calculate_availability(
-    p_date DATE,
-    p_service_id UUID
+CREATE OR REPLACE FUNCTION private.calculate_availability(
+    FROM public.daily_service_availability AS dsa
+WHERE dsa.service_id = p_service_id
+  AND dsa.date = p_date
+  AND dsa.is_available IS FALSE
 )
 RETURNS TABLE (
     slot_start TIMESTAMPTZ,

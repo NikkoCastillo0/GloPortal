@@ -7,10 +7,10 @@ import signOutIcon from "../../assets/navigation/admin-menu/log-out.svg";
 import chevronIcon from "../../assets/navigation/admin-menu/chevron-right.svg";
 
 const menuItems = [
-  { label: "Dashboard", icon: dashboardIcon },
-  { label: "Appointments", icon: appointmentsIcon },
-  { label: "Customers", icon: customersIcon },
-  { label: "Sign out", icon: signOutIcon },
+  { label: "Dashboard", icon: dashboardIcon, href: "/adminportal" },
+  { label: "Appointments", icon: appointmentsIcon, href: "/viewappointments" },
+  { label: "Customers", icon: customersIcon, href: "/viewcustomers" },
+  { label: "Sign out", icon: signOutIcon, href: "#" },
 ];
 
 /**
@@ -85,12 +85,12 @@ export default function AdminMenuOverlay({ isOpen, onClose, id, children }) {
             "
           >
             {children ??
-              menuItems.map(({ label, icon }, index) => (
-                <button
+              menuItems.map(({ label, icon, href }) => (
+                <a
                   key={label}
-                  type="button"
-                  disabled
-                  aria-current={index === 0 ? "page" : undefined}
+                  href={href}
+                  onClick={onClose}
+                  className="flex w-full items-center gap-3 rounded-[12px] px-3 py-3.75 text-left no-underline"
                 >
                   <img
                     src={icon}
@@ -103,7 +103,7 @@ export default function AdminMenuOverlay({ isOpen, onClose, id, children }) {
                     alt=""
                     className="size-4.5 shrink-0 md:hidden"
                   />
-                </button>
+                </a>
               ))}
           </nav>
 

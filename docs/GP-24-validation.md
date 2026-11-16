@@ -43,7 +43,7 @@ npm install
 npm run preview:appointments
 ```
 
-Open http://127.0.0.1:4174/__gp24/ . The banner and records explicitly identify synthetic fixtures. Use `?state=loading`, `?state=error` or `?state=empty` to inspect those states. This separate Vite server binds only to localhost. Its virtual entry leaves App.jsx, the homepage, production routing and authentication unchanged, and creates no temporary preview HTML/JS files. The retained scripts are a reproducible test harness.
+Open <http://127.0.0.1:4174/__gp24/> . The banner and records explicitly identify synthetic fixtures. Use `?state=loading`, `?state=error` or `?state=empty` to inspect those states. This separate Vite server binds only to localhost. Its virtual entry leaves App.jsx, the homepage, production routing and authentication unchanged, and creates no temporary preview HTML/JS files. The retained scripts are a reproducible test harness.
 
 `npm run preview:appointments -- --live` uses the existing Supabase environment and local Supabase session instead of fixtures. This requires the migration and an authorized authenticated session. The preview provides no login mechanism and does not bypass RLS. A customer session can only read its own records; an administrator is required to inspect all customers' records under the existing policies.
 

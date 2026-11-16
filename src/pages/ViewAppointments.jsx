@@ -116,7 +116,7 @@ export default function ViewAppointments() {
       <Header
         role="admin"
         isHome={false}
-        isSignedIn={true}
+        showNavigation={false}
       />
 
       <main className="appointments-page">

@@ -16,10 +16,11 @@ import AddVehicle from './pages/AddVehicle.jsx'
 import EditProfile from './pages/EditProfile.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import TermsOfService from './pages/TermsOfService.jsx'
+import RouteAccess from './components/auth/RouteAccess.jsx'
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
-    {path: "/login", element: <Login />},
+    {path: "/login", element: <RouteAccess key="login"><Login /></RouteAccess>},
     {path: "/signup", element: <SignUp />},
     {path: "/customerportal", element: <CustomerPortal />},
     {path: "/adminportal", element: <AdminPortal />},

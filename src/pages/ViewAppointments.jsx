@@ -2,10 +2,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import Header from '../components/layout/Header.jsx'
 import AppointmentFilters from '../components/viewAppointments/AppointmentFilters.jsx'
-import AppointmentPagination from '../components/viewAppointments/AppointmentPagination.jsx'
 import AppointmentTable from '../components/viewAppointments/AppointmentTable.jsx'
-import './ViewAppointments.css'
 import { supabase } from '../lib/supabase.js'
+import { AdminPageLayout, AdminPageHeader } from '../components/admin/AdminPageLayout.jsx'
+import AdminDataToolbar from '../components/admin/AdminDataToolbar.jsx'
+import AdminPagination from '../components/admin/AdminPagination.jsx'
 
 const PAGE_SIZE = 6
 
@@ -113,51 +114,53 @@ export default function ViewAppointments() {
 
   return (
     <>
-      <Header
-        role="admin"
-        isHome={false}
-        showNavigation={false}
-      />
-
-      <main className="appointments-page">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-3xl font-semibold">
-            All Appointments
-          </h1>
-          <a
-            href="/editappointments"
-            className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#323232] px-6 py-3 font-semibold text-white"
-          >
-            Edit Appointments
-          </a>
-        </div>
-        <div className="appointment-toolbar">
-          <AppointmentFilters
-            value={filter}
-            onChange={handleFilterChange}
-            date={date}
-            search={search}
-            onSearchChange={(value) => {
-              setSearch(value)
-              setPage(1)
-            }}
-            onDateChange={(nextDate) => {
-              setDate(nextDate)
-              setPage(1)
-            }}
-          />
-
-          <AppointmentPagination
+      <AdminPageLayout
+        header={<Header role="admin" isHome={false} />}
+      >
+        <AdminPageHeader
+          title="All Appointments"
+          action={
+            <a
+              href="/createappointment"
+              className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#323232] px-6 py-3 font-semibold text-white"
+            >
+              Create appointments
+            </a>
+          }
+        >
+          <AdminPagination
             page={page}
             pageSize={PAGE_SIZE}
             totalCount={totalCount}
             isLoading={isLoading}
             onPageChange={setPage}
+            itemLabel="appointments"
+            ariaLabel="Appointment table pagination"
           />
-        </div>
+        </AdminPageHeader>
+          
+        <AdminDataToolbar
+          className="mb-4"
+          filters={
+            <AppointmentFilters
+              value={filter}
+              onChange={handleFilterChange}
+              date={date}
+              search={search}
+              onSearchChange={(value) => {
+                setSearch(value)
+                setPage(1)
+              }}
+              onDateChange={(nextDate) => {
+                setDate(nextDate)
+                setPage(1)
+              }}
+            />
+          }
+        />
 
         {(filter === 'most-jobs' || filter === 'least-jobs') && (
-          <p className="appointment-sort-help">Ordered by each customer's total completed appointments, across all dates.</p>
+          <p className="mb-5 -mt-2 text-sm text-[#717171]">Ordered by each customer's total completed appointments, across all dates.</p>
         )}
 
         <AppointmentTable
@@ -169,7 +172,7 @@ export default function ViewAppointments() {
           onTotalCountChange={updateTotalCount}
           onLoadingChange={setIsLoading}
         />
-      </main>
+      </AdminPageLayout>
     </>
   )
 }

@@ -18,6 +18,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import TermsOfService from './pages/TermsOfService.jsx'
 import ShopAvailability from './pages/ShopAvailability.jsx'
 import RouteAccess from './components/auth/RouteAccess.jsx'
+import { CreateAppointment } from './pages/CreateAppointment.jsx'
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
@@ -35,6 +36,8 @@ const router = createBrowserRouter([
     {path: "/addvehicle", element: <AddVehicle />},
     {path: "/editprofile", element: <EditProfile />},
     {path: "/shopavailability", element: <ShopAvailability />},
+    {path: "/createappointment", element: <CreateAppointment />},
+
 
     {path: "/viewappointmentrequests", element: <ViewAppointmentRequests />},
     {path: "/privacy-policy", element: <PrivacyPolicy />},

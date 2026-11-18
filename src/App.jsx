@@ -19,6 +19,8 @@ import TermsOfService from './pages/TermsOfService.jsx'
 import ShopAvailability from './pages/ShopAvailability.jsx'
 import RouteAccess from './components/auth/RouteAccess.jsx'
 import { CreateAppointment } from './pages/CreateAppointment.jsx'
+import ViewServices from './pages/ViewServices.jsx'
+import AddServices from './pages/AddServices.jsx'
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
@@ -29,6 +31,8 @@ const router = createBrowserRouter([
     {path: "/viewappointments", element: <ViewAppointments />},
     {path: "/editappointment", element: <EditAppointment />},
     {path: "/monthlybooking", element: <MonthlyBooking />},
+    {path: "/viewservices", element: <ViewServices />},
+    {path: "/addservices", element: <AddServices />},
     {path: "/editservices", element: <EditServices />},
     {path: "/viewcustomers", element: <ViewCustomers />},
     {path: "/viewinventory", element: <ViewInventory />},

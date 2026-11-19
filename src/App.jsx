@@ -14,6 +14,7 @@ import ViewAppointmentRequests from './pages/ViewAppointmentRequests.jsx'
 import ViewVehicle from './pages/ViewVehicle.jsx'
 import AddVehicle from './pages/AddVehicle.jsx'
 import EditProfile from './pages/EditProfile.jsx'
+import ChangePassword from './pages/ChangePassword.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import TermsOfService from './pages/TermsOfService.jsx'
 import ShopAvailability from './pages/ShopAvailability.jsx'
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
 
     {path: "/viewappointmentrequests", element: <ViewAppointmentRequests />},
     {path: "/privacy-policy", element: <PrivacyPolicy />},
+    {path: "/changepassword", element: <RouteAccess requiredRole="customer"><ChangePassword /></RouteAccess>},
     {path: "/terms-of-service", element: <TermsOfService />}
 
   ])

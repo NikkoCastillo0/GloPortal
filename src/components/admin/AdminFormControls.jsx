@@ -27,8 +27,7 @@ export function FormField({
     )
 }
 
-const controlClass = 'min-h-11 w-full rounded-lg border border-[#cccccc] bg-white px-3.5 py-2 text-sm text-[#242424] focus:border-[#323232] focus:outline-none focus:ring-2 focus:ring-[#323232]/20 disabled:bg-[#f1f1f1]'
-
+const controlClass = 'box-border min-h-11 w-full min-w-0 max-w-full rounded-lg border border-[#cccccc] bg-white px-3.5 py-2 text-sm text-[#242424] focus:border-[#323232] focus:outline-none focus:ring-2 focus:ring-[#323232]/20 disabled:bg-[#f1f1f1]'
 export function TextInput({ type='text', className='',...props}){
     return(
         <input

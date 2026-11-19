@@ -20,6 +20,7 @@ const customerPortalLinks = [
   { label: "My Vehicles", href: "/viewvehicle"},
   { label: "Add Vehicle", href: "/addvehicle"},
   { label: "Edit Profile", href: "/editprofile"},
+  { label: "Change Password", href: "/changepassword"},
 ];
 
 const adminPortalLinks = [

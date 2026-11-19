@@ -6,5 +6,5 @@ export const customerNavigationItems = [
   { id: 'vehicles', label: 'My Vehicles', to: null },
   { id: 'booking', label: 'Book Appointment', to: '/monthlybooking' },
   { id: 'add-vehicle', label: 'Add Vehicle', to: null },
-  { id: 'profile', label: 'Edit Profile', to: null },
+  { id: 'profile', label: 'Edit Profile', to: '/editprofile' },
 ]

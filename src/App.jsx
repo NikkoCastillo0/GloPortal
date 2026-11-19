@@ -38,7 +38,7 @@ const router = createBrowserRouter([
     {path: "/viewinventory", element: <ViewInventory />},
     {path: "/viewvehicle", element: <ViewVehicle />},
     {path: "/addvehicle", element: <AddVehicle />},
-    {path: "/editprofile", element: <EditProfile />},
+    {path: "/editprofile", element: <RouteAccess requiredRole="customer"><EditProfile /></RouteAccess>},
     {path: "/shopavailability", element: <ShopAvailability />},
     {path: "/createappointment", element: <CreateAppointment />},
 

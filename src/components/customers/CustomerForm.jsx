@@ -20,7 +20,7 @@ export default function CustomerForm({ customer }) {
   return (
     <AdminPageLayout header={<Header role="admin" isHome={false} />}>
       <AdminPageHeader title={title} />
-      <div className="max-w-[800px] space-y-5">
+      <div className="mx-auto w-full max-w-[800px] space-y-5">
         <AdminNotice tone="info">
           UI preview only. Customer details are not saved.
         </AdminNotice>

@@ -40,3 +40,14 @@ npx playwright test --config playwright.admin-dashboard.config.mjs
 ```
 
 The browser suite uses isolated synthetic fixtures, never the live database.
+
+## Inventory UI
+
+`/viewinventory` links to `/addinventoryitem` and
+`/editinventoryitem?id=valve-stem` (or another mock item's ID). The forms use
+local sample records. Edits are temporary; submitting a form displays a preview
+notice without saving or changing the inventory listing. Cancel returns to the list.
+
+Run `node --test tests/inventory-forms.mjs` for isolated browser checks. The tests
+block external requests and use Playwright's Chromium by default. Set
+`GP306_BROWSER_CHANNEL=msedge` to use an already installed Microsoft Edge instead.

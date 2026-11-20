@@ -10,6 +10,8 @@ import AdminPortal from './pages/AdminPortal.jsx'
 import EditServices from './pages/EditServices.jsx'
 import ViewCustomers from './pages/ViewCustomers.jsx'
 import ViewInventory from './pages/ViewInventory.jsx'
+import AddInventoryItem from './pages/AddInventoryItem.jsx'
+import EditInventoryItem from './pages/EditInventoryItem.jsx'
 import ViewAppointmentRequests from './pages/ViewAppointmentRequests.jsx'
 import ViewVehicle from './pages/ViewVehicle.jsx'
 import AddVehicle from './pages/AddVehicle.jsx'
@@ -36,6 +38,8 @@ const router = createBrowserRouter([
     {path: "/editservices", element: <EditServices />},
     {path: "/viewcustomers", element: <ViewCustomers />},
     {path: "/viewinventory", element: <ViewInventory />},
+    {path: "/addinventoryitem", element: <AddInventoryItem />},
+    {path: "/editinventoryitem", element: <EditInventoryItem />},
     {path: "/viewvehicle", element: <ViewVehicle />},
     {path: "/addvehicle", element: <AddVehicle />},
     {path: "/editprofile", element: <EditProfile />},

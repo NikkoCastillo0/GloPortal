@@ -106,9 +106,9 @@ export default function AdminDashboard({ summary = null, children }) {
         </AdminDashboardCard>
 
         <AdminDashboardCard title="Services" 
-        actionLabel="Edit Services" 
-        navigateTo="/editservices"
-        overview="View and edit all available services.">
+        actionLabel="View Services" 
+        navigateTo="/viewservices"
+        overview="View and manage all available services.">
           <div className="text-center md:space-y-8">
             <p>Active Services: {count(summary?.activeServiceCount)}</p>
             <p>

@@ -121,7 +121,7 @@ export default function ViewAppointments() {
           title="All Appointments"
           action={
             <a
-              href="/createappointment"
+              href="createappointment"
               className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#323232] px-6 py-3 font-semibold text-white"
             >
               Create appointments

@@ -18,9 +18,12 @@ import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import TermsOfService from './pages/TermsOfService.jsx'
 import ShopAvailability from './pages/ShopAvailability.jsx'
 import RouteAccess from './components/auth/RouteAccess.jsx'
-import { CreateAppointment } from './pages/CreateAppointment.jsx'
+import {CreateAppointment} from './pages/CreateAppointment.jsx'
 import ViewServices from './pages/ViewServices.jsx'
 import AddServices from './pages/AddServices.jsx'
+import CreateAppointmentRequest from './pages/CreateAppointmentRequest.jsx'
+import EditAppointmentRequest from './pages/EditAppointmentRequest.jsx'
+
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
@@ -41,6 +44,8 @@ const router = createBrowserRouter([
     {path: "/editprofile", element: <RouteAccess requiredRole="customer"><EditProfile /></RouteAccess>},
     {path: "/shopavailability", element: <ShopAvailability />},
     {path: "/createappointment", element: <CreateAppointment />},
+    {path: "/createappointmentrequest", element: <CreateAppointmentRequest />},
+    {path: "/editappointmentrequest", element: <EditAppointmentRequest />},
 
 
     {path: "/viewappointmentrequests", element: <ViewAppointmentRequests />},

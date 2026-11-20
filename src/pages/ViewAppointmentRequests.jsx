@@ -3,9 +3,12 @@ import {useState} from 'react'
 import {AdminPageLayout,AdminPageHeader,} from '../components/admin/AdminPageLayout.jsx'
 import AppointmentRequestFilters from "../components/viewAppointmentRequests/AppointmentRequestFilters.jsx"
 import AppointmentRequestTable from '../components/viewAppointmentRequests/AppointmentRequestTable.jsx'
+import {Link, useNavigate} from 'react-router-dom'
+
 
 
 export default function ViewAppointmentRequests() {
+    const navigate = useNavigate()
     const[filter, setFilter] = useState('date')
     const[search, setSearch] = useState('')
     const requests = [
@@ -38,6 +41,14 @@ export default function ViewAppointmentRequests() {
         <AdminPageHeader
         title="Appointment Requests"
         description="Review pending appointment requests and accept or deny each one."
+        action={
+            <Link
+                to="/createappointmentrequest"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#323232] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#484848]"
+            >
+                Manually create appointment
+            </Link>
+        }
         />
 
         <AppointmentRequestFilters
@@ -51,7 +62,12 @@ export default function ViewAppointmentRequests() {
         aria-label="Appointment requests"
         className="mt-5 min-w-0"
         >
-            <AppointmentRequestTable requests={requests} />
+            <AppointmentRequestTable 
+                requests={requests}
+                onEdit={(request) =>
+                    navigate(`/editappointmentrequest?id=${encodeURIComponent(request.id)}`)
+                } 
+            />
         </section>
     </AdminPageLayout>
   )

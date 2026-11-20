@@ -3,7 +3,7 @@ import { createServer } from 'vite'
 const port = 4184
 const origin = `http://127.0.0.1:${port}`
 const entry = '\0gp268-preview'
-const customerPaths = new Set(['/viewcustomers'])
+const customerPaths = new Set(['/viewcustomers', '/addcustomer', '/editcustomer'])
 const server = await createServer({
   envDir: false,
   cacheDir: 'node_modules/.vite-gp268-preview',

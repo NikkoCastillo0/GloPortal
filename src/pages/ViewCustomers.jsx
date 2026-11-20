@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../components/layout/Header.jsx'
 import { AdminPageLayout, AdminPageHeader } from '../components/admin/AdminPageLayout.jsx'
 import AdminDataTable from '../components/admin/AdminDataTable.jsx'
@@ -30,15 +31,13 @@ const columns = [
     key: 'edit',
     header: 'Edit',
     render: (customer) => (
-      <button
-        type="button"
-        disabled
-        title="Customer forms will be available with GP-302"
+      <Link
+        to={`/editcustomer?id=${customer.id}`}
         aria-label={`Edit ${customer.firstName} ${customer.lastName}`}
         className="inline-flex min-h-11 items-center rounded-lg border border-[#bdbdbd] bg-white px-4 font-semibold text-[#323232] hover:bg-[#f4f4f4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#323232]"
       >
         Edit
-      </button>
+      </Link>
     ),
   },
 ]
@@ -55,29 +54,25 @@ export default function ViewCustomers() {
         description="Customer contact, vehicle and job history."
         action={
           <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              disabled
-              title="Customer forms will be available with GP-302"
+            <Link
+              to="/addcustomer"
               className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#323232] px-6 py-3 font-semibold text-white hover:bg-[#484848]"
             >
               Add customer
-            </button>
-            <button
-              type="button"
-              disabled
-              title="Customer forms will be available with GP-302"
+            </Link>
+            <Link
+              to="/editcustomer"
               className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#bdbdbd] bg-white px-6 py-3 font-semibold text-[#323232] hover:bg-[#f4f4f4]"
             >
               Edit Customers
-            </button>
+            </Link>
           </div>
         }
       />
 
       <div className="space-y-5">
         <AdminNotice tone="info">
-          UI preview: sample customers only. Search, date filters and pagination do not change the displayed records. Add and Edit controls are disabled until the customer forms are added in GP-302.
+          UI preview: sample customers only. Search, date filters and pagination do not change the displayed records.
         </AdminNotice>
         <AdminDataToolbar
           filters={

@@ -22,9 +22,10 @@ export default function AppointmentRequestForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="overflow-hidden rounded-xl border border-[#dedede] bg-white shadow-sm"
+      className="rounded-xl border border-[#dedede] bg-white p-6 shadow-sm sm:p-10"
     >
-    <div className="flex flex-row flex-wrap gap-2 md:flex-col md:items-stretch">        <FormField label="Customer" htmlFor="customerId" required>
+      <div className="grid min-w-0 grid-cols-1 gap-4">
+        <FormField label="Customer" htmlFor="customerId" required>
           <SelectInput
             id="customerId"
             name="customerId"
@@ -123,10 +124,7 @@ export default function AppointmentRequestForm({
           />
         </FormField>
 
-        <AdminFormActions
-          onCancel={onCancel}
-          submitLabel={submitLabel}
-        />
+        <AdminFormActions onCancel={onCancel} submitLabel={submitLabel} />
       </div>
     </form>
   )

@@ -14,7 +14,7 @@ test('six responsive overview cards link to their registered pages', async ({ pa
     ['Manage Availability', '/shopavailability', 'Shop Availability Preview'],
   ]) {
     await page.goto('/__admin-preview/')
-    await page.getByRole('button', { name: label, exact: true }).click()
+    await page.getByRole('link', { name: label, exact: true }).click()
     await expect(page).toHaveURL(new RegExp(`${path}$`))
     await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible()
   }

@@ -1,4 +1,5 @@
-import AdminDashboardCard from "./AdminDashboardCard.jsx";
+import { Link } from "react-router-dom";
+import DashboardCard from "../dashboard/DashboardCard.jsx";
 
 const appointmentTime = new Intl.DateTimeFormat("en-US", {
   timeZone: "America/Los_Angeles",
@@ -9,6 +10,8 @@ const appointmentTime = new Intl.DateTimeFormat("en-US", {
 export default function AdminDashboard({ summary = null, children }) {
   const count = (value) =>
     value == null ? "—" : value.toLocaleString("en-US");
+  const actionClassName =
+    "inline-flex min-h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-white px-3 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
 
   return (
     <main className="mx-auto max-w-382.5 px-5 pb-10 pt-7 md:px-12 md:py-16">
@@ -19,29 +22,36 @@ export default function AdminDashboard({ summary = null, children }) {
         </p>
       </header>
 
-      <dl className="mb-7 grid grid-cols-3 rounded-[18px] border border-[#cccccc] bg-white p-4 text-center md:hidden">
-        {[
-          ["Today", summary?.todayCount],
-          ["Customers", summary?.customerCount],
-          ["Requests", summary?.pendingCount],
-        ].map(([label, value]) => (
-          <div key={label} className="flex flex-col-reverse gap-1">
-            <dt className="text-xs text-[#666666]">{label}</dt>
-            <dd className="text-[28px] font-bold leading-tight">
-              {count(value)}
-            </dd>
-          </div>
-        ))}
-      </dl>
+      <DashboardCard className="mb-7 md:hidden">
+        <dl className="grid grid-cols-3 text-center">
+          {[
+            ["Today", summary?.todayCount],
+            ["Customers", summary?.customerCount],
+            ["Requests", summary?.pendingCount],
+          ].map(([label, value]) => (
+            <div key={label} className="flex flex-col-reverse gap-1">
+              <dt className="text-xs text-[#666666]">{label}</dt>
+              <dd className="text-[28px] font-bold leading-tight">
+                {count(value)}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </DashboardCard>
 
       {children}
 
       <div className="grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-x-20 md:gap-y-24">
-        <AdminDashboardCard title="Appointments" 
-        actionLabel="View All Appointments" 
-        navigateTo="/viewappointments"
-        overview="View and manage all approved appointments.">
-          <p className="md:mb-6 md:font-semibold">Today’s Appointments</p>
+        <DashboardCard
+          title="Appointments"
+          className="min-w-0"
+          action={
+            <Link to="/viewappointments" className={actionClassName}>
+              View All Appointments
+            </Link>
+          }
+        >
+          <p className="mb-3 font-semibold">Today’s Appointments</p>
           {summary ? (
             summary.todayAppointments.length ? (
               <>
@@ -69,24 +79,34 @@ export default function AdminDashboard({ summary = null, children }) {
           ) : (
             <p>—</p>
           )}
-        </AdminDashboardCard>
+        </DashboardCard>
 
-        <AdminDashboardCard title="Customers" 
-        actionLabel="View All Customers" 
-        navigateTo="/viewcustomers"
-        overview="View and manage all GarageGlo customers.">
-          <div className="text-center text-[22px] font-bold leading-tight md:space-y-8 md:text-xl lg:text-2xl xl:text-3xl">
+        <DashboardCard
+          title="Customers"
+          className="min-w-0"
+          action={
+            <Link to="/viewcustomers" className={actionClassName}>
+              View All Customers
+            </Link>
+          }
+        >
+          <div className="space-y-4 text-center text-xl font-bold leading-tight md:space-y-8 md:text-2xl">
             <p>Total Customers: {count(summary?.customerCount)}</p>
             <p>Registered Vehicles: {count(summary?.vehicleCount)}</p>
           </div>
-        </AdminDashboardCard>
+        </DashboardCard>
 
-        <AdminDashboardCard title="Inventory" 
-        actionLabel="View All Inventory" 
-        navigateTo="/viewinventory"
-        overview="View and manage all inventory items.">
+        <DashboardCard
+          title="Inventory"
+          className="min-w-0"
+          action={
+            <Link to="/viewinventory" className={actionClassName}>
+              View All Inventory
+            </Link>
+          }
+        >
           <div className="text-center">
-            <p className="md:mb-6 md:font-semibold">Lowest Stock</p>
+            <p className="mb-3 font-semibold">Lowest Stock</p>
             {summary ? (
               summary.lowestStock.length ? (
                 <ul>
@@ -103,13 +123,18 @@ export default function AdminDashboard({ summary = null, children }) {
               <p>—</p>
             )}
           </div>
-        </AdminDashboardCard>
+        </DashboardCard>
 
-        <AdminDashboardCard title="Services" 
-        actionLabel="View Services" 
-        navigateTo="/viewservices"
-        overview="View and manage all available services.">
-          <div className="text-center md:space-y-8">
+        <DashboardCard
+          title="Services"
+          className="min-w-0"
+          action={
+            <Link to="/viewservices" className={actionClassName}>
+              View Services
+            </Link>
+          }
+        >
+          <div className="space-y-4 text-center md:space-y-8">
             <p>Active Services: {count(summary?.activeServiceCount)}</p>
             <p>
               Most Popular:{" "}
@@ -118,29 +143,35 @@ export default function AdminDashboard({ summary = null, children }) {
                 : "—"}
             </p>
           </div>
-        </AdminDashboardCard>
+        </DashboardCard>
 
-        <AdminDashboardCard
+        <DashboardCard
           title="Appointment Requests"
-          actionLabel="Review Requests"
-          navigateTo="/viewappointmentrequests"
-          overview="Approve and deny any pending customer appointments."
+          className="min-w-0"
+          action={
+            <Link to="/viewappointmentrequests" className={actionClassName}>
+              Review Requests
+            </Link>
+          }
         >
-          <p className="text-center text-[22px] font-bold leading-tight md:text-3xl xl:text-4xl">
+          <p className="text-center text-xl font-bold leading-tight md:text-2xl">
             {summary
               ? `${count(summary.pendingCount)} ${summary.pendingCount === 1 ? "request" : "requests"} waiting review`
               : "— requests waiting review"}
           </p>
-        </AdminDashboardCard>
+        </DashboardCard>
 
-        <AdminDashboardCard
+        <DashboardCard
           title="Shop Availability"
-          actionLabel="Manage Availability"
-          navigateTo="/shopavailability"
-          overview="Manage weekly shop availability and service overrides."
+          className="min-w-0"
+          action={
+            <Link to="/shopavailability" className={actionClassName}>
+              Manage Availability
+            </Link>
+          }
         >
           <p className="text-center">Manage the shop’s weekly hours and service availability.</p>
-        </AdminDashboardCard>
+        </DashboardCard>
       </div>
     </main>
   );

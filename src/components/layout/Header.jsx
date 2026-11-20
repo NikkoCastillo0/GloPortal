@@ -28,7 +28,7 @@ const adminPortalLinks = [
   { label: "Appointments", href: "/viewappointments"},
   { label: "Inventory", href: "/viewinventory"},
   { label: "Customers", href: "/viewcustomers"},
-  { label: "Services", href: "/editservices"},
+  { label: "Services", href: "/viewservices"},
 ]
 
 export default function Header({

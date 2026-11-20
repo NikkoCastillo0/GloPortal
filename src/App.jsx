@@ -8,6 +8,7 @@ import SignUp from "./pages/SignUp.jsx";
 import CustomerPortal from "./pages/CustomerPortal.jsx";
 import AdminPortal from "./pages/AdminPortal.jsx";
 import Vehicles from "./pages/Vehicles.jsx";
+import VehicleForm from "./pages/VehicleForm.jsx";
 import EditServices from "./pages/EditServices.jsx";
 import ViewCustomers from "./pages/ViewCustomers.jsx";
 import AddCustomer from "./pages/AddCustomer.jsx";
@@ -40,6 +41,8 @@ const router = createBrowserRouter([
   { path: "/signup", element: <SignUp /> },
   { path: "/customerportal", element: <CustomerPortal /> },
   { path: "/vehicles", element: <Vehicles /> },
+  { path: "/vehicles/add", element: <VehicleForm mode="add" /> },
+  { path: "/vehicles/edit", element: <VehicleForm mode="edit" /> },
   { path: "/adminportal", element: <AdminPortal /> },
   { path: "/viewappointments", element: <ViewAppointments /> },
   { path: "/editappointment", element: <EditAppointment /> },

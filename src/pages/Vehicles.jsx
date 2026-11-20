@@ -1,29 +1,7 @@
 import Header from "../components/layout/Header.jsx";
 import SignOutMenuButton from "../components/navigation/SignOutMenuButton.jsx";
-
-const vehicles = [
-  {
-    year: "1989",
-    make: "BMW",
-    model: "325is",
-    licensePlate: "7ABC123",
-    color: "Black",
-  },
-  {
-    year: "1996",
-    make: "Toyota",
-    model: "4Runner",
-    licensePlate: "8XYZ456",
-    color: "Grey",
-  },
-  {
-    year: "2002",
-    make: "Honda",
-    model: "Civic",
-    licensePlate: "9DEF789",
-    color: "Blue",
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { vehicles } from "../mock/vehicles.js";
 
 const vehicleFields = [
   { label: "Year", key: "year", width: "w-[14%]" },
@@ -42,14 +20,21 @@ const vehicleDetailClass =
   "grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] items-baseline gap-3";
 
 function EditButton() {
+  const navigate = useNavigate();
+
   return (
-    <button className={editButtonClass} type="button">
+    <button
+      className={editButtonClass}
+      onClick={() => navigate("/vehicles/edit")}
+      type="button"
+    >
       Edit
     </button>
   );
 }
 
 export default function Vehicles() {
+  const navigate = useNavigate();
   const customerMenuContent = <SignOutMenuButton />;
 
   return (
@@ -67,6 +52,7 @@ export default function Vehicles() {
           </h1>
           <button
             className="inline-flex h-10 items-center rounded-lg bg-[#292929] px-5 text-sm font-semibold text-white hover:bg-[#111] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#126b9b]"
+            onClick={() => navigate("/vehicles/add")}
             type="button"
           >
             Add vehicle

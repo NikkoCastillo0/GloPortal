@@ -2,6 +2,7 @@ import Header from '../components/layout/Header.jsx'
 import { AdminPageLayout, AdminPageHeader } from '../components/admin/AdminPageLayout.jsx'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { FormField, TextInput, SelectInput, AdminFormActions} from '../components/admin/AdminFormControls.jsx'
 
 // sample data for demonstration
 const SAMPLE_SERVICES = [
@@ -96,29 +97,36 @@ export default function EditServices() {
 
               <div className="overflow-hidden rounded-lg bg-white shadow">
                 <div className="px-4 py-5 sm:p-6 grid min-w-0 grid-cols-1 gap-3 lg:grid-cols">
-                    <label htmlFor="name" className="block text-lg font-bold text-gray-700">Select A Service</label>
-                    <select id="name" value={form.id} className="w-full border border-gray-400 p-2 rounded" onChange={handleServiceChange}>
-                        {SAMPLE_SERVICES.map((service) => (
-                            <option key={service.id} value={service.id}>
-                                {service.name}
-                            </option>
-                        ))}
-                    </select>
-                    <label htmlFor="description" className="block text-lg font-bold text-gray-700">Description</label>
-                    <input id="description" name="description" type="text" placeholder="Enter a description" value={form.description} onChange={handleFieldChange} className="w-full border border-gray-400 p-2 rounded" />
-                    <label htmlFor="status" className="block text-lg font-bold text-gray-700">Status</label>
-                    <select id="status" name="status" value={form.status.toLowerCase()} onChange={(event) => setForm((currentForm) => ({ ...currentForm, status: event.target.value === 'active' ? 'Active' : 'Inactive' }))} className="w-full border border-gray-400 p-2 rounded">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                    <label htmlFor="duration_minutes" className="block text-lg font-bold text-gray-700">Duration (minutes)</label>
-                    <input id="duration_minutes" name="duration_Minutes" type="text" placeholder="Enter time duration" value={form.duration_Minutes} onChange={handleFieldChange} className="w-full border border-gray-400 p-2 rounded " />
-                    <label htmlFor="price" className="block text-lg font-bold text-gray-700">Cost ($USD)</label>
-                    <input id="price" name="price" type="text" placeholder="Enter a price" value={form.price} onChange={handleFieldChange} className="w-full border border-gray-400 p-2 rounded" />
-                    <div className="py-5 sm:grid grid-cols-[minmax(13rem,0.8fr)_minmax(16rem,1.4fr)] gap-3 lg:grid-cols-[minmax(13rem,15rem)_minmax(16rem,20rem)] justify-end">
-                        <button className = " text-black px-4 py-2 rounded border border-gray-400 cursor-pointer" onClick={() => {navigate("/viewservices")}}>Cancel</button>
-                        <button className = "bg-[#323232] text-white px-4 py-2 rounded border cursor-pointer" onClick={() => {navigate("/viewservices")}}>Save Changes</button>
-                    </div>
+                    <FormField label="Service Name">
+                        <SelectInput id="name" value={form.id} onChange={handleServiceChange}>
+                            {SAMPLE_SERVICES.map((service) => (
+                                <option key={service.id} value={service.id}>
+                                    {service.name}
+                                </option>
+                            ))}
+                        </SelectInput>
+                    </FormField>
+                    <FormField label="Description">
+                        <TextInput id="description" type="text" placeholder="Enter a description" value={form.description} onChange={handleFieldChange}/>
+                    </FormField>
+                    <FormField label="Status">
+                        <SelectInput id="status" value={form.status.toLowerCase()} onChange={(event) => setForm((currentForm) => ({ ...currentForm, status: event.target.value === 'active' ? 'Active' : 'Inactive' }))}>
+                            <option value="" disabled selected>Select Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </SelectInput>
+                    </FormField>
+                    <FormField label="Duration (minutes)">
+                        <TextInput id="duration_minutes" type="text" placeholder="Enter time duration" value={form.duration_Minutes} onChange={handleFieldChange}/>
+                    </FormField>
+                    <FormField label="Cost ($USD)">
+                        <TextInput id="price" type="text" placeholder="Enter a price" value={form.price} onChange={handleFieldChange}/>
+                    </FormField>
+                    <FormField>
+                        <AdminFormActions
+                            onCancel={() => navigate('/viewservices')}
+                        />
+                    </FormField>
                 </div>
               </div>
         </AdminPageLayout>

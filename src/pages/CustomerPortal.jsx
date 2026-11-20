@@ -226,7 +226,8 @@ export default function CustomerPortal() {
           <VehicleCard
             vehicle={dashboardData.vehicle}
             isLoading={isDashboardLoading}
-            onViewAll={() => {}}
+            onViewAll={() => navigate('/vehicles')}
+            onAddVehicle={() => navigate('/vehicles')}
           />
         </div>
 

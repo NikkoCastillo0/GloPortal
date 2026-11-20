@@ -7,12 +7,14 @@ import MonthlyBooking from './pages/MonthlyBooking.jsx'
 import SignUp from "./pages/SignUp.jsx"
 import CustomerPortal from './pages/CustomerPortal.jsx'
 import AdminPortal from './pages/AdminPortal.jsx'
+import Vehicles from './pages/Vehicles.jsx'
 
 const router = createBrowserRouter([
     {path: "/", element: <Homepage />},
     {path: "/login", element: <Login />},
     {path: "/signup", element: <SignUp />},
     {path: "/customerportal", element: <CustomerPortal />},
+    {path: "/vehicles", element: <Vehicles />},
     {path: "/adminportal", element: <AdminPortal />},
     {path: "/viewappointments", element: <ViewAppointments />},
     {path: "/editappointment", element: <EditAppointment />},

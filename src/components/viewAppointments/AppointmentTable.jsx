@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react'
 import { appointmentSearchFilter } from '../../lib/appointmentSearch.js'
 import { supabase } from '../../lib/supabase.js'
+import AdminDataTable from '../admin/AdminDataTable.jsx'
+import AdminStatusBadge from '../admin/AdminStatusBadge.jsx'
+import {AdminErrorState, AdminLoadingState} from '../admin/AdminFeedback.jsx'
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   dateStyle: 'short',
@@ -15,17 +18,37 @@ const priceFormatter = new Intl.NumberFormat('en-US', {
 })
 
 const columns = [
-  'Date',
-  'Last Name',
-  'First Name',
-  'E-Mail',
-  'Phone',
-  'Service',
-  'Vehicle',
-  'Price',
-  'Notes',
+  {
+    key: 'starts_at',
+    header: 'Date & Time',
+    render: (appointment) => formatDate(appointment.starts_at),
+  },
+  {
+    key: 'customer',
+    header: 'Customer',
+    render: (appointment) =>
+      `${appointment.first_name ?? ''} ${appointment.last_name ?? ''}`.trim() || '-',
+  },
+  { key: 'email', header: 'Email' },
+  { key: 'phone', header: 'Phone' },
+  { key: 'vehicle', header: 'Vehicle' },
+  { key: 'service_name', header: 'Service' },
+  {
+    key: 'quoted_price_cents',
+    header: 'Price',
+    render: (appointment) => formatPrice(appointment.quoted_price_cents),
+  },
+  {
+    key: 'status',
+    header: 'Status',
+    render: (appointment) => <AdminStatusBadge status={appointment.status} />,
+  },
+  {
+    key: 'notes',
+    header: 'Notes',
+    render: (appointment) => appointment.notes || '-',
+  },
 ]
-
 function formatDate(value) {
   return value ? dateFormatter.format(new Date(value)) : '-'
 }
@@ -94,7 +117,6 @@ export default function AppointmentTable({
         let query = supabase
           .from('appointment_filter_records')
           .select('*', { count: 'exact' })
-          .eq('status', 'completed')
 
         // The view derives this date in Pacific time, including DST boundaries.
         if (date) query = query.eq('appointment_date', date)
@@ -143,64 +165,34 @@ export default function AppointmentTable({
     return () => {
       isCurrentRequest = false
     }
+
+
   }, [filter, search, date, page, pageSize, onTotalCountChange, onLoadingChange])
 
+
+  if (isLoading) {
+    return <AdminLoadingState message="Loading appointments..." />
+  }
+
+  if (errorMessage) {
+    return <AdminErrorState>{errorMessage}</AdminErrorState>
+  }
+
   return (
-    <div
-      aria-busy={isLoading}
-      className="max-w-full overflow-x-auto rounded border"
-      tabIndex={0}
-      role="region"
-      aria-label="Appointments"
-    >
-      {errorMessage && <p role="alert">{errorMessage}</p>}
-
-      <table className="w-full text-left text-sm">
-        <caption className="sr-only">Completed appointments</caption>
-
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <th key={column} scope="col">
-                {column}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {isLoading ? (
-            <tr>
-              <td colSpan={columns.length}>
-                <span role="status">Loading appointments...</span>
-              </td>
-            </tr>
-          ) : appointments.length > 0 ? (
-            appointments.map((appointment) => (
-              <tr key={appointment.id}>
-                <td>{formatDate(appointment.starts_at)}</td>
-                <td>{appointment.last_name}</td>
-                <td>{appointment.first_name}</td>
-                <td>{appointment.email}</td>
-                <td>{appointment.phone}</td>
-                <td>{appointment.service_name}</td>
-                <td>{appointment.vehicle}</td>
-                <td>{formatPrice(appointment.quoted_price_cents)}</td>
-                <td>{appointment.notes}</td>
-
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={columns.length}>
-                {errorMessage
-                  ? 'Appointments could not be loaded.'
-                  : 'No completed appointments found.'}
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+    <AdminDataTable
+      rows={appointments}
+      columns={columns}
+      getRowKey={(appointment) => appointment.id}
+      emptyMessage="No appointments found."
+      actions={(appointment) => (
+        <a
+          href={`/editappointment?id=${encodeURIComponent(appointment.id)}`}
+          className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#cccccc] bg-white px-3 text-sm font-semibold text-[#323232] hover:bg-[#f4f4f4]"
+        >
+          Edit
+        </a>
+      )}
+    />
   )
+
 }

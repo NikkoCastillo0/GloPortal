@@ -5,7 +5,7 @@ import BusinessHighlights from "../components/home/BusinessHighlights.jsx";
 import ServiceCarousel from "../components/home/ServiceCarousel.jsx";
 import CalendarPreview from "../components/home/CalendarPreview.jsx";
 import ContactSection from "../components/home/ContactSection.jsx";
-import Footer from "../components/layout/Footer.jsx";
+import Footer from "../components/layout/Footer.jsx"
 
 export default function Homepage() {
   useEffect(() => {
@@ -26,11 +26,11 @@ export default function Homepage() {
 
   return (
     <>
-      <Header role="customer" isHome={true} isSignedIn={false} />
+      <Header role="customer" isHome={true}/>
       <main>
         <div
           className="
-            flex items-center justify-center gap-[60px] bg-[#999999] p-[40px]
+            flex items-center justify-center gap-[60px] bg-[#ebebeb] p-[40px]
             [@media(max-width:768px)]:flex-col [@media(max-width:768px)]:gap-[25px]
             [@media(max-width:768px)]:px-[15px] [@media(max-width:768px)]:py-[25px]
           "

@@ -1,8 +1,12 @@
-export default function AdminDashboardCard({ title, actionLabel, children, className = '' }) {
+import { useNavigate } from 'react-router-dom'
+
+export default function AdminDashboardCard({ title, actionLabel, children, className = '', navigateTo, overview }) {
+  const navigate = useNavigate()
   const titleId = `admin-${title.toLowerCase().replaceAll(' ', '-')}`
 
   return (
     <section
+      title={overview}
       aria-labelledby={titleId}
       className={`flex min-w-0 flex-col overflow-hidden rounded-[18px] border border-[#cccccc] bg-[#d9d9d9] md:rounded-md ${className}`}
     >
@@ -13,14 +17,13 @@ export default function AdminDashboardCard({ title, actionLabel, children, class
         {title}
       </h2>
       <div className="flex flex-1 flex-col gap-4 p-4 md:gap-6 md:p-6">
-        <div className="flex flex-1 flex-col justify-center text-[15px] leading-relaxed md:min-h-44 md:text-center md:text-xl lg:text-2xl xl:text-3xl">
+        <div className="flex flex-1 flex-col justify-center text-[15px] leading-relaxed [overflow-wrap:anywhere] md:min-h-44 md:text-center md:text-xl lg:text-2xl xl:text-3xl">
           {children}
         </div>
         <button
           type="button"
-          disabled
-          title="Navigation is not available yet"
-          className="min-h-12 w-full rounded-full bg-[#323232] px-3 py-2 text-base text-white disabled:cursor-not-allowed md:border-2 md:border-black md:text-xl md:font-semibold md:shadow-sm xl:text-3xl"
+          onClick={() => navigate(navigateTo)}
+          className="min-h-12 w-full rounded-full bg-[#323232] px-3 py-2 text-base text-white disabled:cursor-not-allowed md:border-2 md:border-black md:text-xl md:font-semibold md:shadow-sm xl:text-3xl cursor-pointer"
         >
           {actionLabel}
         </button>

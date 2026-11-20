@@ -7,10 +7,10 @@ import signOutIcon from "../../assets/navigation/admin-menu/log-out.svg";
 import chevronIcon from "../../assets/navigation/admin-menu/chevron-right.svg";
 
 const menuItems = [
-  { label: "Dashboard", icon: dashboardIcon },
-  { label: "Appointments", icon: appointmentsIcon },
-  { label: "Customers", icon: customersIcon },
-  { label: "Sign out", icon: signOutIcon },
+  { label: "Dashboard", icon: dashboardIcon, href: "/adminportal" },
+  { label: "Appointments", icon: appointmentsIcon, href: "/viewappointments" },
+  { label: "Customers", icon: customersIcon, href: "/viewcustomers" },
+  { label: "Sign out", icon: signOutIcon, href: "#" },
 ];
 
 /**
@@ -53,20 +53,16 @@ export default function AdminMenuOverlay({ isOpen, onClose, id, children }) {
               Admin
             </p>
             <Dialog.Close
-              type="button"
-              aria-label="Close admin menu"
+              aria-label={`Close ${menuLabel.toLowerCase()} menu`}
               className="
-                cursor-pointer rounded-full hover:bg-[#ececea]
+                absolute right-0 top-1.5 flex h-9 w-9 cursor-pointer
+                items-center justify-center rounded-full text-3xl leading-none
+                text-black transition hover:bg-gray-100 hover:text-gray-600
                 focus-visible:outline-2 focus-visible:outline-offset-2
                 focus-visible:outline-[#323232]
-                absolute right-0 top-1.5 flex size-11.75 items-center
-                justify-center text-[48px]
-                font-semibold leading-[normal] text-[#323232]
-                text-shadow-[0_4px_4px_rgba(0,0,0,0.25)]
-                md:-right-6 md:top-0
               "
             >
-              <span aria-hidden="true">X</span>
+              &times;
             </Dialog.Close>
           </div>
 
@@ -89,12 +85,12 @@ export default function AdminMenuOverlay({ isOpen, onClose, id, children }) {
             "
           >
             {children ??
-              menuItems.map(({ label, icon }, index) => (
-                <button
+              menuItems.map(({ label, icon, href }) => (
+                <a
                   key={label}
-                  type="button"
-                  disabled
-                  aria-current={index === 0 ? "page" : undefined}
+                  href={href}
+                  onClick={onClose}
+                  className="flex w-full items-center gap-3 rounded-[12px] px-3 py-3.75 text-left no-underline"
                 >
                   <img
                     src={icon}
@@ -107,7 +103,7 @@ export default function AdminMenuOverlay({ isOpen, onClose, id, children }) {
                     alt=""
                     className="size-4.5 shrink-0 md:hidden"
                   />
-                </button>
+                </a>
               ))}
           </nav>
 

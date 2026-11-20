@@ -136,7 +136,9 @@
 }
 
 @layer base {
-  table, th, td {
+  table,
+  th,
+  td {
     border: 2px solid rgb(18, 18, 18);
     border-collapse: collapse;
     padding: 15px;
@@ -160,4 +162,11 @@ html {
   html {
     scroll-padding-top: 122px;
   }
+}
+
+.appointment-date-input::-webkit-date-and-time-value {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  text-align: left;
 }

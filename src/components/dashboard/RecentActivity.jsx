@@ -16,7 +16,7 @@ export default function RecentActivity({ activities = [], className = '' }) {
 
   return (
     <DashboardCard title="Recent Activity" className={className}>
-      <ul className="space-y-4" aria-label="Recent activity history">
+      <ul className="space-y-4 [overflow-wrap:anywhere]" aria-label="Recent activity history">
         {activities.map((activity) => (
           <li key={activity.id} className="rounded-lg bg-gray-200 p-6">
             <p className="text-xl font-extrabold text-gray-900">

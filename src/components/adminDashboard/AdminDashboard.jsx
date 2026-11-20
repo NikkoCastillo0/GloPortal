@@ -125,13 +125,21 @@ export default function AdminDashboard({ summary = null, children }) {
           actionLabel="Review Requests"
           navigateTo="/viewappointmentrequests"
           overview="Approve and deny any pending customer appointments."
-          className="md:col-span-2 md:mx-auto md:w-full md:max-w-5xl"
         >
           <p className="text-center text-[22px] font-bold leading-tight md:text-3xl xl:text-4xl">
             {summary
               ? `${count(summary.pendingCount)} ${summary.pendingCount === 1 ? "request" : "requests"} waiting review`
               : "— requests waiting review"}
           </p>
+        </AdminDashboardCard>
+
+        <AdminDashboardCard
+          title="Shop Availability"
+          actionLabel="Manage Availability"
+          navigateTo="/shopavailability"
+          overview="Manage weekly shop availability and service overrides."
+        >
+          <p className="text-center">Manage the shop’s weekly hours and service availability.</p>
         </AdminDashboardCard>
       </div>
     </main>

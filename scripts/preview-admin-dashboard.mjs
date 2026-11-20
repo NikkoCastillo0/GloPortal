@@ -30,8 +30,10 @@ const server = await createServer({
                 React.createElement(Route, { path: '/viewappointments', element: React.createElement('main', null, React.createElement('h1', null, 'All Appointments Preview')) }),
                 React.createElement(Route, { path: '/viewcustomers', element: React.createElement('main', null, React.createElement('h1', null, 'All Customers Preview')) }),
                 React.createElement(Route, { path: '/viewinventory', element: React.createElement('main', null, React.createElement('h1', null, 'All Inventory Preview')) }),
+                React.createElement(Route, { path: '/viewservices', element: React.createElement('main', null, React.createElement('h1', null, 'View Services Preview')) }),
                 React.createElement(Route, { path: '/editservices', element: React.createElement('main', null, React.createElement('h1', null, 'Edit Services Preview')) }),
-                React.createElement(Route, { path: '/viewappointmentrequests', element: React.createElement('main', null, React.createElement('h1', null, 'Appointment Requests Preview')) })
+                React.createElement(Route, { path: '/viewappointmentrequests', element: React.createElement('main', null, React.createElement('h1', null, 'Appointment Requests Preview')) }),
+                React.createElement(Route, { path: '/shopavailability', element: React.createElement('main', null, React.createElement('h1', null, 'Shop Availability Preview')) })
               )
             )
           )

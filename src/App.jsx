@@ -14,6 +14,8 @@ import ViewCustomers from "./pages/ViewCustomers.jsx";
 import AddCustomer from "./pages/AddCustomer.jsx";
 import EditCustomer from "./pages/EditCustomer.jsx";
 import ViewInventory from "./pages/ViewInventory.jsx";
+import AddInventoryItem from "./pages/AddInventoryItem.jsx";
+import EditInventoryItem from "./pages/EditInventoryItem.jsx";
 import ViewAppointmentRequests from "./pages/ViewAppointmentRequests.jsx";
 import ViewVehicle from "./pages/ViewVehicle.jsx";
 import AddVehicle from "./pages/AddVehicle.jsx";
@@ -54,6 +56,8 @@ const router = createBrowserRouter([
   { path: "/addcustomer", element: <AddCustomer /> },
   { path: "/editcustomer", element: <EditCustomer /> },
   { path: "/viewinventory", element: <ViewInventory /> },
+  { path: "/addinventoryitem", element: <AddInventoryItem /> },
+  { path: "/editinventoryitem", element: <EditInventoryItem /> },
   { path: "/viewvehicle", element: <ViewVehicle /> },
   { path: "/addvehicle", element: <AddVehicle /> },
   {

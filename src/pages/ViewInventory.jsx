@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../components/layout/Header.jsx'
 import AdminDataTable from '../components/admin/AdminDataTable.jsx'
 import AdminDataToolbar from '../components/admin/AdminDataToolbar.jsx'
@@ -6,37 +7,7 @@ import AdminPagination from '../components/admin/AdminPagination.jsx'
 import AdminSearchInput from '../components/admin/AdminSearchInput.jsx'
 import { AdminPageLayout, AdminPageHeader } from '../components/admin/AdminPageLayout.jsx'
 import { SelectInput, TextInput } from '../components/admin/AdminFormControls.jsx'
-
-const SAMPLE_INVENTORY = [
-  {
-    id: 'valve-stem',
-    name: 'Valve Stem',
-    quantity: 17,
-    lastRestock: '2026-09-09',
-    purchaseUrl: 'https://www.amazon.com/dp/B01LOK7BPQ',
-  },
-  {
-    id: 'valve-stem-core',
-    name: 'Valve Stem Core',
-    quantity: 14,
-    lastRestock: '2026-09-09',
-    purchaseUrl: 'https://www.fleetpride.com/parts/haltec-tire-repair-supplies-a100vc1',
-  },
-  {
-    id: 'blue-wheel-tape',
-    name: 'Blue Wheel Tape',
-    quantity: 5,
-    lastRestock: '2026-08-21',
-    purchaseUrl: 'https://www.amazon.com/dp/B0F9T2QVQQ',
-  },
-  {
-    id: 'tpms-sensor',
-    name: 'TPMS Sensor',
-    quantity: 3,
-    lastRestock: '2026-08-21',
-    purchaseUrl: 'https://store.bartecusa.com/rite-sensor',
-  },
-]
+import { SAMPLE_INVENTORY } from '../mock/inventoryMock.js'
 
 const restockDateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -63,14 +34,14 @@ function PurchaseLink({ item }) {
   )
 }
 
-function EditItemButton({ item }) {
+function EditItemLink({ item }) {
   return (
-    <button
-      type="button"
+    <Link
+      to={`/editinventoryitem?id=${encodeURIComponent(item.id)}`}
       aria-label={`Edit ${item.name}`}
       className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#cccccc] bg-white px-3 text-sm font-semibold text-[#323232] hover:bg-[#f4f4f4] focus-visible:outline-2 focus-visible:outline-offset-2"    >
       Edit
-    </button>
+    </Link>
   )
 }
 
@@ -110,7 +81,7 @@ export default function ViewInventory() {
       header: 'Purchase Link',
       render: (item) => <PurchaseLink item={item} />,
     },
-    { key: 'edit', header: 'Edit', render: (item) => <EditItemButton item={item} /> },
+    { key: 'edit', header: 'Edit', render: (item) => <EditItemLink item={item} /> },
   ]
 
   return (
@@ -119,12 +90,12 @@ export default function ViewInventory() {
         title="Inventory"
         description="Current shop supplies and restock information."
         action={
-          <button
-            type="button"
+          <Link
+            to="/addinventoryitem"
             className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#323232] px-6 py-3 font-semibold text-white hover:bg-[#484848] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#323232] sm:w-auto"
           >
             Add Item
-          </button>
+          </Link>
         }
       />
 
@@ -179,7 +150,7 @@ export default function ViewInventory() {
               <h2 id={`inventory-${item.id}`} className="min-w-0 wrap-anywhere text-xl font-bold">
                 {item.name}
               </h2>
-              <EditItemButton item={item} />
+              <EditItemLink item={item} />
             </div>
             <dl className="grid gap-3 text-sm">
               <div className="flex flex-wrap items-center justify-between gap-3">

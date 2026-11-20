@@ -5,76 +5,9 @@ import AdminDataTable from '../components/admin/AdminDataTable.jsx'
 import AdminPagination from '../components/admin/AdminPagination.jsx'
 import AdminSearchInput from '../components/admin/AdminSearchInput.jsx'
 import { AdminPageLayout, AdminPageHeader } from '../components/admin/AdminPageLayout.jsx'
+import { SAMPLE_SERVICES } from '../mock/servicesMock.js'
 
 const PAGE_SIZE = 6
-
-// sample data for demonstration
-const SAMPLE_SERVICES = [
-  {
-    id: 'tire-mount-balance',
-    name: 'Tire Mount and Balance',
-    description: 'Tire mounting and balancing for a smoother ride.',
-    duration_Minutes: 60,
-    price: 25,
-    status: 'Active',
-  },
-  {
-    id: 'tire-plug-patch',
-    name: 'Tire Plug/Patch',
-    description: 'Repair for safely repairable tire punctures.',
-    duration_Minutes: 45,
-    price: 20,
-    status: 'Active',
-  },
-  {
-    id: 'wheel-balancing',
-    name: 'Wheel Balancing',
-    description: 'Correct uneven wheel weight distribution.',
-    duration_Minutes: 45,
-    price: 15,
-    status: 'Active',
-  },
-  {
-    id: 'tpms-service',
-    name: 'TPMS Service',
-    description: 'Inspection and service for tire pressure sensors.',
-    duration_Minutes: 45,
-    price: 30,
-    status: 'Active',
-  },
-  {
-    id: 'tire-rotation',
-    name: 'Tire Rotation',
-    description: 'Rotate tires to support even tread wear.',
-    duration_Minutes: 30,
-    price: 20,
-    status: 'Active',
-  },
-  {
-    id: 'flat-tire-inspection',
-    name: 'Flat Tire Inspection',
-    description: 'Inspect a flat tire and assess repair options.',
-    duration_Minutes: 20,
-    price: 10,
-    status: 'Inactive',
-  },
-  {
-    id: 'seasonal-tire-change',
-    name: 'Seasonal Tire Change',
-    description: 'Swap a vehicle between seasonal tire sets.',
-    duration_Minutes: 60,
-    price: 40,
-    status: 'Active',
-  },
-  {
-    id: 'tire-disposal',
-    name: 'Tire Disposal',
-    description: 'Responsible disposal of an old tire.',
-    duration_Minutes: 15,
-    price: 5,
-    status: 'Inactive',
-  },
-]
 
 const formatPrice = (price) =>
   new Intl.NumberFormat('en-US', {

@@ -68,8 +68,7 @@ function EditItemButton({ item }) {
     <button
       type="button"
       aria-label={`Edit ${item.name}`}
-      className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#767676] bg-white px-4 text-sm font-semibold text-[#323232] hover:bg-[#ececea] focus-visible:outline-2 focus-visible:outline-offset-2"
-    >
+      className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#cccccc] bg-white px-3 text-sm font-semibold text-[#323232] hover:bg-[#f4f4f4] focus-visible:outline-2 focus-visible:outline-offset-2"    >
       Edit
     </button>
   )
@@ -94,7 +93,7 @@ export default function ViewInventory() {
         const nextQuantity = event.target.value
         setQuantities((current) => ({ ...current, [item.id]: nextQuantity }))
       }}
-      className="min-w-0 max-w-28"
+      className="!w-0 !min-w-20"
     />
   )
 

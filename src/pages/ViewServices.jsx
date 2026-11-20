@@ -225,9 +225,9 @@ export default function ViewServices() {
         emptyMessage="No services match your search and filters."
         actions={(service) => (
           <a
-            href="/editservices"
+            href={`/editservices?id=${encodeURIComponent(service.id)}`}
             aria-label={`Edit ${service.name}`}
-            className="inline-flex min-h-9 items-center justify-center rounded-full border border-[#767676] px-4 text-sm font-semibold text-[#323232] hover:bg-[#ececea] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#323232]"
+            className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#cccccc] bg-white px-3 text-sm font-semibold text-[#323232] hover:bg-[#f4f4f4] focus-visible:outline-2 focus-visible:outline-offset-2"
           >
             Edit
           </a>

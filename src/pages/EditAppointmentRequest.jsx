@@ -54,18 +54,20 @@ export default function EditAppointmentRequest() {
         description="Update the details for this appointment request."
       />
 
-      <AppointmentRequestForm
-        values={values}
-        onChange={handleChange}
-        customers={customers}
-        vehicles={vehicles}
-        services={services}
-        times={times}
-        status="pending"
-        onCancel={() => navigate(-1)}
-        onSubmit={handleSubmit}
-        submitLabel="Save changes"
-      />
+      <div className="mx-auto w-full max-w-4xl">
+        <AppointmentRequestForm
+          values={values}
+          onChange={handleChange}
+          customers={customers}
+          vehicles={vehicles}
+          services={services}
+          times={times}
+          status="pending"
+          onCancel={() => navigate(-1)}
+          onSubmit={handleSubmit}
+          submitLabel="Save changes"
+        />
+      </div>
     </AdminPageLayout>
   )
 }

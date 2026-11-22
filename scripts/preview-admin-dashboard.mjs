@@ -1,11 +1,16 @@
 import { createServer } from 'vite'
+import { realpath } from 'node:fs/promises'
 import { dashboardSummary, emptyDashboardSummary } from './admin-dashboard-fixtures.mjs'
 
 const port = process.argv.includes('--test') ? 4178 : 4177
 const entry = '\0admin-dashboard-preview'
 const server = await createServer({
   cacheDir: `node_modules/.vite-admin-dashboard-${port}`,
-  server: { host: '127.0.0.1', port, strictPort: true },
+  server: {
+    host: '127.0.0.1', port, strictPort: true,
+    // Reused dependencies can live outside an isolated worktree.
+    fs: { allow: [process.cwd(), await realpath('node_modules')] },
+  },
   plugins: [{
     name: 'admin-dashboard-preview',
     resolveId(id) {
@@ -45,6 +50,7 @@ const server = await createServer({
       return `let currentAuth = new URLSearchParams(location.search).get('auth') || 'admin';
         export const supabase = {
           auth: {
+            getSession: async () => ({ data: { session: currentAuth === 'guest' ? null : { user: { id: 'synthetic-user' } } }, error: null }),
             getUser: async () => ({ data: { user: currentAuth === 'guest' ? null : { id: 'synthetic-user' } }, error: null }),
             onAuthStateChange(callback) {
               const handleAuth = (event) => {
@@ -84,6 +90,7 @@ const server = await createServer({
         res.setHeader('Content-Type', 'text/html; charset=utf-8')
         res.end(await vite.transformIndexHtml(req.url, `<!doctype html><html><head>
           <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link rel="icon" href="data:,">
           <title>Admin dashboard test preview</title></head><body>
           <aside>Synthetic test fixtures — not live shop data.</aside>
           <div id="root"></div><script type="module" src="/@id/virtual:admin-dashboard-preview"></script>

@@ -22,16 +22,16 @@ export default function AdminDashboard({ summary = null, children }) {
         </p>
       </header>
 
-      <DashboardCard className="mb-7 md:hidden">
-        <dl className="grid grid-cols-3 text-center">
+      <DashboardCard className="mb-7 min-w-0">
+        <dl aria-label="Admin quick view" className="-mx-2 grid min-w-0 grid-cols-3 gap-1 text-center sm:mx-0 sm:gap-2">
           {[
-            ["Today", summary?.todayCount],
-            ["Customers", summary?.customerCount],
-            ["Requests", summary?.pendingCount],
+            ["Today's appointments", summary?.todayCount],
+            ["Total customers", summary?.customerCount],
+            ["Pending requests", summary?.pendingCount],
           ].map(([label, value]) => (
-            <div key={label} className="flex flex-col-reverse gap-1">
-              <dt className="text-xs text-[#666666]">{label}</dt>
-              <dd className="text-[28px] font-bold leading-tight">
+            <div key={label} className="flex min-w-0 flex-col-reverse justify-end gap-1">
+              <dt className="wrap-normal text-xs text-[#666666]">{label}</dt>
+              <dd className="min-w-0 wrap-anywhere text-[28px] font-bold leading-tight">
                 {count(value)}
               </dd>
             </div>

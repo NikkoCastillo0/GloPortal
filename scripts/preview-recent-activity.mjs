@@ -10,6 +10,7 @@ const serviceFixture = `
   const empty = { data: [], count: 0, error: null };
   export const supabase = {
     auth: {
+      getSession: async () => ({ data: { session: access === 'signed-out' ? null : { user: { id: 'recent-activity-preview-user' } } } }),
       getUser: async () => {
         if (access === 'loading') return new Promise(() => {});
         return { data: { user: access === 'signed-out' ? null : { id: 'recent-activity-preview-user' } }, error: null };

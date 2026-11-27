@@ -230,10 +230,10 @@ export default function CustomerPortal() {
           />
         </div>
 
-        {/* Secondary Dashboard Section - Quick Actions & Recent Activity (Figma Page 25) */}
+        {/* Secondary Dashboard Section - Recent Activity & Quick Actions (Figma Page 25) */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <QuickActions />
           <RecentActivity activities={dashboardData.recentActivities} />
+          <QuickActions />
         </div>
       </main>
     </div>

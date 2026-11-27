@@ -14,7 +14,7 @@ export default defineConfig({
     reuseExistingServer: false,
     env: { RAYON_NUM_THREADS: '1' },
   },
-  projects: [320, 390, 768, 1280].map(width => ({
+  projects: [320, 375, 390, 768, 1280, 1440].map(width => ({
     name: width + 'px',
     use: { viewport: { width, height: 900 } },
   })),

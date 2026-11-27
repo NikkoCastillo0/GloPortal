@@ -121,7 +121,7 @@ test('the existing card appearance and responsive two-column layout are preserve
   await card.screenshot({ path: testInfo.outputPath('recent-activity.png') })
 })
 
-test('the real customer dashboard keeps Recent Activity beside its neighboring cards', async ({ page }) => {
+test('the real customer dashboard puts Recent Activity before Quick Actions in DOM and visual order', async ({ page }, testInfo) => {
   // Scenario parameters belong only to the component preview, never the real route.
   await page.goto('/customerportal?activity=long')
   await expect(page.getByRole('heading', { name: 'Customer Dashboard', exact: true })).toBeVisible()
@@ -130,7 +130,54 @@ test('the real customer dashboard keeps Recent Activity beside its neighboring c
   const card = page.getByRole('region', { name: 'Recent Activity', exact: true })
   await expect(card).toBeVisible()
   await expect(card).not.toContainText('APPOINTMENT'.repeat(12))
-  await expectResponsiveLayout(page, card)
+  await expect(page.locator('main section h2')).toHaveText([
+    'Next Appointment', 'My Vehicles', 'Recent Activity', 'Quick Actions',
+  ])
+  const cards = page.getByRole('region')
+  const boxes = await Promise.all((await cards.all()).map(region => region.boundingBox()))
+  expect(boxes).toHaveLength(4)
+  if (page.viewportSize().width < 768) {
+    for (let index = 1; index < boxes.length; index++) {
+      expect(boxes[index].y).toBeGreaterThanOrEqual(boxes[index - 1].y + boxes[index - 1].height)
+    }
+  } else {
+    expect(boxes[1].x).toBeGreaterThan(boxes[0].x)
+    expect(boxes[2].y).toBeGreaterThanOrEqual(boxes[0].y + boxes[0].height)
+    expect(boxes[3].x).toBeGreaterThanOrEqual(
+      boxes[2].x + boxes[2].width
+    )
+    expect(boxes[3].y).toBe(boxes[2].y)
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  await page.evaluate(() => document.fonts.ready)
+  await page.screenshot({ path: testInfo.outputPath('customer-dashboard-card-order.png'), fullPage: true })
+})
+
+test('reordered dashboard retains keyboard navigation and existing card actions', async ({ page }) => {
+  await page.goto('/customerportal')
+  const actions = page.getByRole('region', { name: 'Quick Actions', exact: true })
+  await expect(actions).toBeVisible()
+  const vehicleButton = page.getByRole('button', { name: 'View All Vehicles', exact: true })
+  await vehicleButton.focus()
+  await page.keyboard.press('Tab')
+  await expect(actions.getByRole('link', { name: 'Edit Profile', exact: true })).toBeFocused()
+  await page.keyboard.press('Tab')
+  await expect(actions.getByRole('link', { name: 'Book Appointment', exact: true })).toBeFocused()
+  const vehicleAction = page.viewportSize().width < 768 ? 'Edit Vehicles' : 'Add Vehicle'
+  await expect(actions.getByRole('button', { name: vehicleAction + ' Coming soon', exact: true })).toBeDisabled()
+  await page.getByRole('button', { name: 'View Details', exact: true }).click()
+  await expect(page).toHaveURL(/\/customerportal$/)
+  await vehicleButton.click()
+  await expect(page).toHaveURL(/\/vehicles$/)
+  await expect(page.getByRole('heading', { name: 'Your Vehicles', exact: true })).toBeVisible()
+  await page.goBack()
+  await actions.getByRole('link', { name: 'Edit Profile', exact: true }).click()
+  await expect(page).toHaveURL(/\/editprofile$/)
+  await expect(page.getByRole('heading', { name: 'Edit Profile', exact: true })).toBeVisible()
+  await page.goBack()
+  await actions.getByRole('link', { name: 'Book Appointment', exact: true }).click()
+  await expect(page).toHaveURL(/\/monthlybooking$/)
+  await expect(page.getByRole('heading', { name: 'Monthly Booking', exact: true })).toBeVisible()
 })
 
 test('unchanged dashboard access checks handle loading, signed-out, denied, and admin states', async ({ page }) => {
